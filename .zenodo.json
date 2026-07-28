@@ -1,0 +1,33 @@
+{
+  "title": "Forecasting a World That Accelerates: An Evidence-Grounded, Constraint-Limited, Regime-Switching Framework for AI-Era Decisions",
+  "upload_type": "software",
+  "description": "Formal paper, complete executable forecasting protocol, strict machine-readable schemas, probabilistic reference engine, controlled experiments, source-linked demonstrations, prospective registry, and reproducibility package.",
+  "creators": [
+    {
+      "name": "Boucher, Vincent",
+      "affiliation": "MONTREAL.AI & QUEBEC.AI"
+    }
+  ],
+  "access_right": "open",
+  "license": "AGPL-3.0-or-later",
+  "version": "2.0.0",
+  "publication_date": "2026-07-28",
+  "keywords": [
+    "forecasting",
+    "artificial intelligence",
+    "acceleration",
+    "regime switching",
+    "probabilistic forecasting",
+    "prospective validation",
+    "decision science",
+    "reproducible research"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/MontrealAI/forecasting-a-world-that-accelerates",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ],
+  "notes": "Mixed-license package: software is AGPL-3.0-or-later; paper, prompt, schemas, documentation, and original research artifacts are CC BY-NC-SA 4.0 under LICENSE.md. Trademarks are reserved. No DOI or preprint identifier is claimed until issued. Update all citation metadata after archival."
+}
