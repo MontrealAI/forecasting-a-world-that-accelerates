@@ -1,0 +1,35 @@
+
+\section{Related Work and Positioning}
+
+\subsection{Technological forecasting and model uncertainty}
+
+Classical forecasting distinguishes trend, seasonality, structural breaks, diffusion, and uncertainty, while emphasizing evaluation against held-out observations \citep{hyndman2021,hamilton1989,diebold1995}. Information-theoretic selection and multimodel inference provide a principled alternative to choosing one apparently best in-sample curve \citep{akaike1974,burnham2002}. Proper scoring rules evaluate probabilistic forecasts rather than rewarding overconfident point estimates \citep{gneiting2007}. The present framework adopts these foundations but adds a target-specific translation from technical progress to realized output and an explicit recursive-improvement regime.
+
+\subsection{AI capability, cost, and reliability measurement}
+
+Task-completion time horizons translate agent performance into the human-expert duration of tasks at a specified success probability \citep{kwa2025}. METR's current public page reports an expanded suite and warns that measurements above 16 hours are unreliable with that suite \citep{metr2026}. This metric is valuable but is neither runtime nor a general measure of economy-wide automation. Cost-of-pass and price-performance work shows why a benchmark score without the cost of obtaining a correct result can misstate deployable progress \citep{erol2025,gundlach2025}. Reliability research further shows that consistency, robustness, predictability, and bounded failure severity cannot be compressed into one benchmark success rate \citep{rabanser2026}.
+
+\subsection{Automation, diffusion, and economic bottlenecks}
+
+GATE integrates compute-based AI development, automation, investment, adjustment costs, and semi-endogenous growth \citep{erdil2025gate}. Work on AI in R\&D emphasizes the share of research tasks automated, productivity on those tasks, and bottleneck strength \citep{jones2025rnd}. Weak-link and O-ring mechanisms explain why a chain of complementary tasks can be limited by its least substitutable component \citep{kremer1993,jones2026future}. Empirical evidence on coding tools demonstrates a production hierarchy in which activity gains attenuate before releases and use \citep{demirer2026}. Bass diffusion and related adoption models supply useful demand-side dynamics \citep{bass1969}.
+
+\subsection{Endogenous acceleration and recursive improvement}
+
+Economic models have long considered R\&D-driven growth and possible departures from stable growth rates \citep{jones1995,nordhaus2021,trammell2023}. Recent work derives conditions under which automation across innovation networks can overcome diminishing returns and generate superexponential growth \citep{davidson2026}. A 2026 survey distinguishes bounded self-refinement from increasingly closed research loops and stresses the central role of evaluators, grounding, compute, and human direction-setting \citep{chen2026rsi}. The discontinuity model below is therefore not an assertion that a singularity will occur. It is a conditional stress model whose parameters must be tied to independently verified loop closure and whose output remains constrained by physical and institutional capacity.
+
+\subsection{Forecasting systems and evaluation}
+
+SWE-bench supplies a reproducible real-world software issue benchmark, while its Verified subset focuses on human-screened solvable tasks \citep{jimenez2024,swebench2026}. GitHub operational statistics further illustrate that adoption volume and workflow latency require their own denominators rather than serving as direct causal productivity estimates \citep{githuboctoverse2025,githubagent2026}. ForecastBench demonstrates the value of dynamic, future-resolving questions and leakage-resistant evaluation for AI forecasting systems \citep{karger2024}. A recent review of AGI forecasting methods calls for better data, repeated updating, adversarial validation, and explicit treatment of methodological gaps \citep{sarma2026}. The present framework complements event-probability forecasting by concentrating on quantitative realized outcomes, task-graph capacity, and regime-dependent decision policies.
+
+\subsection{Positioning}
+
+No claim is made that the literature lacks adjacent integrated models. Rather, the paper's testable proposition is that forecast quality and decision usefulness improve when the following chain is made explicit in one protocol:
+\[
+\begin{aligned}
+\text{fresh evidence}&\rightarrow\text{pace and acceleration}\rightarrow\text{technical capacity}\\
+&\rightarrow\text{verified execution}\rightarrow\text{authorized deployment}\\
+&\rightarrow\text{adoption}\rightarrow\text{realized outcome}\\
+&\rightarrow\text{action and recalculation}.
+\end{aligned}
+\]
+That proposition can be evaluated by hindcasts, ablations, calibration, decision regret, and independent replication.

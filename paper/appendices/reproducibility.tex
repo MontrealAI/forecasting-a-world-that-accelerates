@@ -1,0 +1,69 @@
+\section{Reproducibility and Machine-Readable Protocol}
+\label{app:reproducibility}
+
+The canonical repository destination is
+\begin{center}
+\url{https://github.com/MontrealAI/forecasting-a-world-that-accelerates}.
+\end{center}
+The URL is a publication target until the repository is actually created and visible. The release never treats a local folder, checksum, or intended URL as an external timestamp.
+
+\subsection{Package map}
+
+\begin{longtable}{p{0.31\textwidth}p{0.59\textwidth}}
+\toprule
+\textbf{Path} & \textbf{Purpose}\\
+\midrule
+\texttt{paper/} & LaTeX source, bibliography, generated tables and figures, and compiled preprint.\\
+\texttt{protocol/prompt.*} & Complete versioned executable protocol reproduced in Appendix~\ref{app:prompt}.\\
+\texttt{protocol/v2/} & Strict version 2 input, output, and registry JSON Schemas plus a complete reference case.\\
+\texttt{protocol/variables.yaml} & Canonical variable dictionary and units.\\
+\texttt{src/fwta/} & Python implementation of canonical equations, generalized realization, growth models, probabilistic ensembles, scenarios, task graphs, scoring, reporting, registry, and provenance.\\
+\texttt{tests/} & Deterministic unit, schema, engine, registry, scoring, workflow, and reproduction tests.\\
+\texttt{data/public/} & Frozen source-linked excerpts and controlled fixtures.\\
+\texttt{data/provenance/} & Source, retrieval, selection, hash, and limitation records.\\
+\texttt{results/ceiling/} & Complete reference forecast JSON and self-contained HTML report.\\
+\texttt{results/empirical/} & METR and SWE-bench demonstration outputs.\\
+\texttt{registry/} & Hash-chained prospective records, preregistration template, and verification instructions.\\
+\texttt{release/} & SBOM, manifest, publication status, release notes, and validation report.\\
+\texttt{scripts/} & Build, verification, packaging, repository configuration, and release tools.\\
+\texttt{.github/} & CI, compatibility matrix, code scanning, Pages, and draft-release workflows.\\
+\bottomrule
+\end{longtable}
+
+\subsection{One-command forecast}
+
+After installing the package, a complete reference run is:
+\begin{Verbatim}[fontsize=\small,frame=single,breaklines=true]
+fwta forecast protocol/v2/examples/canonical-reference-input.yaml \
+  --schema protocol/v2/input.schema.json \
+  --output results/ceiling/reference-forecast.json \
+  --report results/ceiling/reference-forecast.html \
+  --output-schema protocol/v2/output.schema.json
+\end{Verbatim}
+The report is standalone and includes the canonical equations, scenario chart, milestones, bottlenecks, triggers, actions, limitations, and embedded machine-readable output.
+
+\subsection{Clean local reproduction}
+
+\begin{Verbatim}[fontsize=\small,frame=single]
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e '.[dev]'
+make verify
+\end{Verbatim}
+The default tests, controlled experiments, frozen excerpts, and reference forecast require no API key and make no network request. Dependency installation may require network access. The package also supplies a Dockerfile, Compose definition, pinned direct requirements, SBOM generator, Windows instructions, and CI compatibility matrix.
+
+\subsection{Prospective registration}
+
+A completed forecast can be appended to the local registry and verified with:
+\begin{Verbatim}[fontsize=\small,frame=single,breaklines=true]
+fwta register results/ceiling/reference-forecast.json \
+  --registry registry/records.json \
+  --record results/ceiling/registry-record.json
+fwta registry-verify --registry registry/records.json
+\end{Verbatim}
+The chain detects mutation within the published sequence. Independent dating requires a public signed release, archival deposit, or preprint service.
+
+\subsection{Release integrity and boundaries}
+
+The release process builds source and wheel distributions, recompiles the paper, validates schemas, reruns experiments, generates a CycloneDX SBOM, scans for common secret patterns, and emits SHA-256 manifests. A checksum proves byte identity with a specified artifact; it does not independently prove authorship, legal priority, non-infringement, or publication time. The publication workflow creates a draft release so an authorized owner can complete the IP and legal gate before public disclosure.

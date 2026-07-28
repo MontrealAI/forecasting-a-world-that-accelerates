@@ -1,0 +1,87 @@
+
+\section{Candidate Growth Regimes and Discontinuities}
+
+No model class is assumed ex ante. The protocol fits or evaluates a family whose members encode different causal stories.
+
+\subsection{Linear and exponential baselines}
+
+\begin{align}
+X_L(t)&=X_0+vt,\\
+X_E(t)&=X_0e^{gt}.
+\end{align}
+The linear model is useful as a conservative absolute-change baseline. The exponential model assumes a stable proportional rate.
+
+\subsection{Acceleration and decaying acceleration}
+
+If the proportional growth rate rises linearly, $g(t)=g_0+at$, then
+\begin{equation}
+\label{eq:accelerating}
+X_A(t)=X_0\exp\left(g_0t+\tfrac12at^2\right).
+\end{equation}
+Constant acceleration is often too aggressive. If acceleration decays as $\dot g(t)=a_0e^{-\kappa t}$, then
+\begin{equation}
+\label{eq:decay-acc}
+X(t)=X_0\exp\left[g_0t+\frac{a_0}{\kappa}t-\frac{a_0}{\kappa^2}\left(1-e^{-\kappa t}\right)\right].
+\end{equation}
+This model permits current acceleration while making its persistence an estimable parameter.
+
+\subsection{Constrained and moving-ceiling models}
+
+A generalized logistic process is
+\begin{equation}
+\dot X=rX\left[1-\left(\frac{X}{K}\right)^\nu\right].
+\end{equation}
+The ceiling $K$ need not be a permanent physical limit. It can represent capacity under the current compute, regulation, capital, demand, or institutional regime. A moving-ceiling model combines acceleration and constraints:
+\begin{equation}
+\label{eq:moving-ceiling}
+\dot X=g(t)X B(t)\left[1-\left(\frac{X}{K(t)}\right)^\nu\right].
+\end{equation}
+
+\subsection{Change points and regime switching}
+
+A continuous one-change log-linear model is
+\begin{equation}
+\ln X(t)=\alpha+g_1t+\Delta g\,(t-\tau)_+ + \epsilon_t,
+\end{equation}
+where $(x)_+=\max(x,0)$. More general hidden-state models can follow Hamilton-style regime switching \citep{hamilton1989}. Change points are useful for release-driven jumps, benchmark revisions, policy shocks, and new production architectures, but retrospective fit can overstate prospective detectability.
+
+\subsection{Conditional recursive-improvement regime}
+
+Let $A_R(t)\in[0,1]$ be the independently verified and authorized fraction of the AI-improvement loop that operates autonomously. Let $g(t)=\dd\ln X/\dd t$. After transition time $\tau$,
+\begin{equation}
+\label{eq:recursive-g}
+\dot g(t)=\left[\kappa A_R(t)-\delta\right]g(t).
+\end{equation}
+If $q=\kappa A_R-\delta>0$ is locally constant,
+\begin{equation}
+g(t)=g_\tau e^{q(t-\tau)}
+\end{equation}
+and
+\begin{equation}
+\label{eq:double-exp}
+\boxed{X_D(t)=JX(\tau^-)\exp\left[\frac{g_\tau}{q}\left(e^{q(t-\tau)}-1\right)\right].}
+\end{equation}
+$J\ge1$ is an immediate jump. This double-exponential form is a stress model for a growth rate that compounds; it is not a prediction of infinite physical output. The operational form substitutes $g(t)$ into Equation~\eqref{eq:moving-ceiling} so compute, energy, capital, fabrication, authority, safety, and adoption remain binding where appropriate.
+
+A transition hazard can be tied to observable triggers:
+\begin{equation}
+\lambda(t)=\lambda_0\exp(\gamma^\top z(t)),\qquad
+\Pr(\tau\le T)=1-\exp\left[-\int_0^T\lambda(u)\dd u\right].
+\end{equation}
+Candidate elements of $z(t)$ include fresh-task autonomous R\&D gains, independently reproduced multi-generation improvements, experiment-loop compression, long-horizon reliability, automated evaluation, deployment authority, and available compute/energy. Precise probabilities are not warranted where these relationships are weakly identified.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]{regime_paths.pdf}
+\caption{Controlled examples of linear, exponential, accelerating, constrained, and regime-changing paths. Curves illustrate structural differences; they are not empirical AI timelines.}
+\label{fig:regime-paths}
+\end{figure}
+
+\subsection{Scenario definitions}
+
+\begin{description}[style=nextline]
+\item[Base.] Verified progress continues, some saturation occurs, institutions adjust gradually, and no recursive-improvement transition occurs.
+\item[Accelerated.] Recent acceleration is partly persistent; costs, task time, automation, and parallelism improve faster; constraints and adoption respond more quickly, with acceleration allowed to decay.
+\item[Discontinuous.] A conditional transition closes a material part of the improvement loop and causes the growth rate itself to compound, while real-world output remains constraint-limited.
+\end{description}
+Scenarios are reported separately. An expected value alone can hide the asymmetric implications of a low-probability discontinuity.

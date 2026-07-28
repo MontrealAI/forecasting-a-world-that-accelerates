@@ -1,0 +1,50 @@
+\section{Prospective Validation, Registry, and Independent Replication}
+\label{sec:validation-program}
+
+\subsection{Why retrospective fit is insufficient}
+
+A framework designed for regime change can easily overfit a historical narrative. The decisive scientific test is prospective: freeze the evidence, issue the distribution before outcomes are known, preserve the versioned code and assumptions, and score the result after resolution. The repository therefore treats forecasting as an append-only evidence process rather than a sequence of replaceable reports.
+
+\subsection{Hash-chained forecast registry}
+
+Let $F_k$ be the canonical machine-readable forecast record, $h_{k-1}$ the preceding registry hash, and $\mathcal H$ SHA-256. The registry record is
+\begin{equation}
+h_k=\mathcal H\!\left(\operatorname{canon}(F_k)\,\|\,h_{k-1}\right),
+\end{equation}
+where $\operatorname{canon}$ is deterministic JSON serialization. Each record includes the forecast identifier, protocol and engine versions, input hash, research cutoff, creation time, previous hash, and current record hash. This detects silent alteration within the published chain. It is not an independent timestamp until the chain is anchored in a public release, archive, or preprint record.
+
+\subsection{Preregistration contract}
+
+Before the forecast origin, a prospective entry should freeze:
+\begin{itemize}
+\item the target, unit, scope, success definition, and resolution source;
+\item the exact evidence cutoff and source snapshots;
+\item candidate models, transformations, bounds, and exclusion rules;
+\item scenario definitions and whether $\pi_s$ are probabilities or decision weights;
+\item interval levels, milestones, triggers, and recalculation policy;
+\item primary and secondary scoring rules;
+\item allowed corrections and the distinction between an update and a new forecast.
+\end{itemize}
+The repository supplies a preregistration template and registry verifier. Corrections must append a superseding record; they must not rewrite the prior entry.
+
+\subsection{Independent replication design}
+
+An independent team should receive only the public release and a clean environment. It should verify byte-level artifacts, install the built distribution, reproduce the controlled and public-evidence outputs, rerun the complete forecast command, and document deviations. A stronger replication selects at least one previously unseen target and executes the protocol without assistance from the original author. The replication report should disclose operating system, Python and TeX versions, dependency hashes, command logs, output hashes, and unresolved discrepancies.
+
+\subsection{Decision validation}
+
+Prediction accuracy is not the only objective. For actions $a$ and realized state $s$, define regret
+\begin{equation}
+\operatorname{Regret}(a,s)=V_s^*-V_s(a).
+\end{equation}
+Prospective tests should compare the protocol's recommended portfolio with simpler policies such as last-value continuation, constant exponential extrapolation, fixed planning assumptions, and a no-forecast baseline. The framework earns its complexity only if it improves calibration, information value, or decision regret at acceptable operating cost.
+
+\subsection{Publication gates}
+
+The repository uses separate gates for artifact quality and scientific evidence:
+\begin{description}
+\item[Release gate.] Tests, schemas, end-to-end execution, reproducible paper build, SBOM, checksums, security scan, and legal/IP review checklist pass.
+\item[Prospective-evidence gate.] A meaningful set of preregistered forecasts has resolved and been scored.
+\item[Validated-method gate.] Results outperform declared baselines across targets, survive independent replication, and remain useful after accounting for operating cost and decision consequences.
+\end{description}
+Passing the release gate justifies publishing a high-quality research artifact. It does not permit the prospective or validated-method labels prematurely.

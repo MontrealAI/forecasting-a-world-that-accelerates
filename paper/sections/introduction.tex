@@ -1,0 +1,54 @@
+
+\section{Introduction}
+
+Forecasting during gradual change is difficult. Forecasting while the rate of change is itself changing is categorically harder. A timeline inferred from yesterday's capability, cost, or execution speed can be obsolete before the forecast horizon ends. Yet simply replacing a conservative extrapolation with an aggressive exponential is not enough. Technical progress does not automatically become dependable work; dependable work does not automatically receive authority; authorized systems do not automatically diffuse through institutions; and adopted tools do not automatically remove physical, legal, capital, energy, supply-chain, or demand constraints.
+
+Recent empirical work makes each part of this separation increasingly salient. Frontier-agent task horizons have advanced rapidly but remain task-suite-specific and uncertain outside their measurement domain \citep{kwa2025,metr2026}. Cost-adjusted capability can improve faster than raw benchmark scores reveal \citep{gundlach2025,erol2025}, while agent reliability can lag capability gains \citep{rabanser2026}. Production evidence in software shows that large gains in coding activity attenuate between commits, projects, releases, and actual use \citep{demirer2026}. Economic models likewise emphasize weak links, automation shares, adjustment costs, diffusion, and resource constraints \citep{erdil2025gate,jones2025rnd,jones2026future,trammell2023,davidson2026}.
+
+The resulting forecasting problem is not one-dimensional. It requires an evidence clock, a target definition, a translation from capability to verified work, a demand/absorption branch, a bottleneck operator, competing dynamic regimes, uncertainty over regime transitions, and an action rule that remains sensible when probabilities are unstable.
+
+\subsection{Research question}
+
+This paper asks:
+
+\begin{quote}
+How should realized outcomes be forecast when capability, cost, task duration, automation, parallelism, reliability, adoption, and constraints evolve at different rates—and when the law governing those rates may change during the forecast itself?
+\end{quote}
+
+The answer is a modular framework rather than a universal point forecast. Its compact core is
+\begin{equation}
+\label{eq:canonical-intro}
+Y_s(t)=B_s(t)\min\left\{Q_0\exp\left[\int_0^t g_{Q,s}(u)\dd u\right],\;M_s(t)D_s(t)U_s(t)\right\}.
+\end{equation}
+The first branch is technical capacity; the second is absorptive demand; $B_s(t)$ represents residual constraints not already counted in either branch. Scenario $s$ permits the governing dynamics to differ across base, accelerated, and discontinuous regimes.
+
+\subsection{Contributions}
+
+Version 2.0.0 makes eight integrated contributions.
+
+\begin{enumerate}
+\item \textbf{Realized-outcome architecture.} It models realized output as the bottleneck-adjusted minimum of technical capacity and absorptive demand rather than as a direct function of capability alone.
+\item \textbf{Generalized realization family.} It embeds the hard minimum in a branch-specific constant-elasticity family so substitutability and transfer constraints are explicit rather than hidden.
+\item \textbf{Acceleration accounting.} It separates metric levels, proportional growth rates, acceleration of those rates, bounded-variable transformations, and explicit 6--12 month comparisons.
+\item \textbf{Capability-to-work translation.} It maps task success probabilities into retries, verification, fallback, authority latency, critical paths, parallel efficiency, correlated failure, and cost per verified outcome.
+\item \textbf{Regime uncertainty.} It compares linear, exponential, accelerating, decaying-acceleration, constrained, change-point, and recursive-improvement dynamics instead of assuming a single trajectory.
+\item \textbf{Forecast-to-decision layer.} It selects no-regret and option-preserving actions using expected value, learning value, option value, downside risk, and minimax regret.
+\item \textbf{Probabilistic executable specification.} It publishes the full prompt, strict schemas, complete engine, residual-bootstrap model averaging, milestone distributions, self-contained reports, tests, and release machinery as a coordinated research artifact.
+\item \textbf{Prospective validation contract.} It provides a hash-chained registry, preregistration template, proper scoring code, independent-replication procedure, and explicit gates separating release quality from validated predictive performance.
+\end{enumerate}
+
+The novelty claim is deliberately bounded. Linear growth, exponential growth, logistic diffusion, item-response models, survival hazards, critical-path analysis, information criteria, model averaging, and conditional value-at-risk all have established antecedents. The contribution lies in their integration and operationalization for acceleration-aware forecasts of realized outcomes.
+
+\subsection{Design principles}
+
+The framework is governed by seven principles:
+
+\begin{enumerate}
+\item use the newest comparable evidence and record its exact clock;
+\item never silently equate benchmark performance with economic realization;
+\item model verification, authority, and adoption as first-class variables;
+\item recalculate work from the current task graph rather than inherited timelines;
+\item fit multiple regimes and expose model uncertainty;
+\item treat a recursive-improvement transition as conditional and constrained, not decorative;
+\item end with a dated monitoring and action policy, not only a projection.
+\end{enumerate}

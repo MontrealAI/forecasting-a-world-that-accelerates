@@ -1,0 +1,106 @@
+\section{Compact Canonical Model and Generalized Realization Family}
+
+\subsection{The compact canonical model}
+
+Let $s\in\mathcal S=\{\text{downside},\text{base},\text{accelerated},\text{discontinuous}\}$ denote a scenario. Define technical capacity
+\begin{equation}
+Q_s(t)=Q_0\exp\left[\int_0^t g_{Q,s}(u)\dd u\right]
+\end{equation}
+and absorptive demand
+\begin{equation}
+Z_s(t)=M_s(t)D_s(t)U_s(t).
+\end{equation}
+The compact canonical model is
+\begin{equation}
+\label{eq:canonical}
+\boxed{
+Y_s(t)=B_s(t)\min\left\{
+Q_0\exp\left[\int_0^t g_{Q,s}(u)\dd u\right],
+\;M_s(t)D_s(t)U_s(t)
+\right\}.}
+\end{equation}
+
+Definitions are:
+\begin{itemize}
+\item $Y_s(t)$: realized target outcome under scenario $s$;
+\item $Q_0$: baseline technically deliverable output;
+\item $g_{Q,s}(t)$: technical-output growth rate;
+\item $M_s(t)$: addressable market, mission volume, or demand pool;
+\item $D_s(t)\in[0,1]$: eligible adoption or penetration fraction;
+\item $U_s(t)$: utilization or realized value per adopter;
+\item $B_s(t)\in(0,1]$: residual realization bottleneck not already represented elsewhere.
+\end{itemize}
+
+The $\min$ operator is substantive. Output cannot exceed the amount that can be technically supplied or the amount the relevant institution, market, or mission can absorb. A system can be highly capable but unused; demand can be abundant while production remains technically constrained. The model is deliberately memorable and conservative about complementarity.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]{canonical_branches.pdf}
+\caption{Illustrative compact canonical branches. Realized output follows the lower branch and is then reduced by constraints not already represented in that branch. The figure is controlled, not an empirical forecast.}
+\label{fig:canonical-branches}
+\end{figure}
+
+\subsection{Generalized realization family}
+
+The hard minimum is not the only defensible aggregation law. Some domains permit partial substitution, and constraints can operate asymmetrically on technical supply, absorptive demand, or the transfer between them. Version 2.0.0 therefore embeds Equation~\eqref{eq:canonical} in a generalized constant-elasticity realization family:
+\begin{equation}
+\label{eq:generalized-realization}
+\boxed{
+Y_s(t)=B_s^X(t)
+\left[
+\alpha_s\bigl(B_s^Q(t)Q_s(t)\bigr)^{-\rho_s}
++(1-\alpha_s)\bigl(B_s^Z(t)Z_s(t)\bigr)^{-\rho_s}
+\right]^{-1/\rho_s}.}
+\end{equation}
+Here $B_s^Q$ acts on technical production, $B_s^Z$ acts on absorptive demand, $B_s^X$ acts on realization or transfer, $\alpha_s\in(0,1)$ controls branch weight, and $\rho_s>0$ controls substitutability. As $\rho_s\rightarrow\infty$,
+\begin{equation}
+Y_s(t)\rightarrow B_s^X(t)\min\{B_s^Q(t)Q_s(t),B_s^Z(t)Z_s(t)\}.
+\end{equation}
+Equation~\eqref{eq:canonical} is recovered when the branch-specific factors equal one and $B_s^X=B_s$. Finite $\rho$ should be used only when substitution has domain evidence; otherwise the hard minimum is the transparent baseline. The reference engine supports both and requires the operator choice to be recorded.
+
+\subsection{Technical-output decomposition}
+
+The technical-output growth rate is
+\begin{equation}
+\label{eq:technical-growth}
+\boxed{
+\begin{aligned}
+g_{Q,s}(t)=\;&\beta_\theta\dot\theta_s(t)
+-\beta_c\frac{\dot c_s(t)}{c_s(t)}
+-\beta_\tau\frac{\dot\tau_s(t)}{\tau_s(t)}\\
+&+\beta_A\frac{\dot A_s(t)}{A_s(t)+\varepsilon}
++\beta_P\frac{\dot P_s(t)}{P_s(t)}
++\beta_R\frac{\dot R_s(t)}{R_s(t)}.
+\end{aligned}}
+\end{equation}
+Here $\theta$ is latent capability, $c$ cost per attempt or unit of work, $\tau$ task-completion time, $A$ automatable workflow share, $P$ effective parallelism, $R$ verified reliability, $\beta_j$ target-specific elasticities, and $\varepsilon>0$ a stabilizer.
+
+Equation~\eqref{eq:technical-growth} is an accounting and estimation structure, not permission to set every elasticity to one. Capability, cost, speed, automation, parallelism, and reliability often share causes. Their coefficients are not causally identified by a short aggregate time series. A defensible implementation must estimate them from panel or task-level variation, constrain them using domain knowledge, or declare them scenario assumptions and perform sensitivity analysis.
+
+\subsection{Capability measurement}
+
+Raw benchmark averages saturate and change composition. A latent item-response representation is
+\begin{equation}
+\Pr(\text{success on item }i\mid t)=\sigma\!\left[a_i(\theta(t)-b_i)\right],
+\qquad \sigma(x)=\frac{1}{1+e^{-x}},
+\end{equation}
+where $b_i$ is item difficulty and $a_i$ discrimination \citep{rasch1980}. For an economically meaningful task, capability becomes deployable only after its success probability, verification burden, failure severity, authority, and cost jointly satisfy the acceptance rule.
+
+\subsection{Residual bottlenecks}
+
+For constraint factors $b_k(t)\in(0,1]$ and weights $w_k\ge0$ summing to one, a smooth weakest-link aggregator is
+\begin{equation}
+\label{eq:bottleneck}
+B_\varrho(t)=\left[\sum_{k=1}^{K}w_k b_k(t)^{-\varrho}\right]^{-1/\varrho},\qquad \varrho>0.
+\end{equation}
+As $\varrho\rightarrow\infty$, $B_\varrho$ approaches the minimum factor. Smaller $\varrho$ permits several constraints to matter jointly. The notation $\varrho$ is distinct from the realization-family parameter $\rho_s$.
+
+\subsection{Double-counting and dimensional audit}
+
+Every material factor is assigned to exactly one substantive location: technical capacity, absorptive demand, branch-specific bottleneck, or transfer bottleneck. It may additionally appear as a diagnostic but not as a second penalty. If legal authorization is already embedded in eligible adoption $D(t)$, applying the same eligibility fraction again in $B^Z$ is double counting. If workflow reliability already determines cost per verified output, multiplying by that identical reliability again may be inappropriate.
+
+Before fitting, the analyst must also verify dimensional consistency. $Q_s$ and $Z_s$ must be expressed in compatible units and over the same time basis. A stock cannot be minimized directly against a flow without conversion; a probability cannot be multiplied into currency without a defined exposure or quantity; a benchmark percentage cannot be interpreted as mission throughput without a mapping model.
+
+\begin{methodbox}
+\textbf{Plain-language interpretation.} Realized output is governed by what can be produced, what can be absorbed, and what can cross the boundary between them. The compact model uses a hard weakest link. The generalized model permits explicit, evidence-backed asymmetry and partial substitution without hiding those choices.
+\end{methodbox}

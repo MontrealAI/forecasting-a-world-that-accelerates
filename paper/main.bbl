@@ -1,0 +1,284 @@
+\begin{thebibliography}{37}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Akaike(1974)]{akaike1974}
+Hirotugu Akaike.
+\newblock A new look at the statistical model identification.
+\newblock \emph{IEEE Transactions on Automatic Control}, 19\penalty0
+  (6):\penalty0 716--723, 1974.
+\newblock \doi{10.1109/TAC.1974.1100705}.
+
+\bibitem[Amdahl(1967)]{amdahl1967}
+Gene~M. Amdahl.
+\newblock Validity of the single processor approach to achieving large scale
+  computing capabilities.
+\newblock In \emph{Proceedings of the April 18--20, 1967, Spring Joint Computer
+  Conference}, pages 483--485, 1967.
+\newblock \doi{10.1145/1465482.1465560}.
+
+\bibitem[Bass(1969)]{bass1969}
+Frank~M. Bass.
+\newblock A new product growth for model consumer durables.
+\newblock \emph{Management Science}, 15\penalty0 (5):\penalty0 215--227, 1969.
+\newblock \doi{10.1287/mnsc.15.5.215}.
+
+\bibitem[Bonney et~al.(2024)Bonney, Breaux, Buffington, Dinlersoz, Foster,
+  Goldschlag, Haltiwanger, Kroff, and Savage]{census2024btos}
+Kathryn Bonney, Cory Breaux, Catherine Buffington, Emin Dinlersoz, Lucia
+  Foster, Nathan Goldschlag, John Haltiwanger, Zachary Kroff, and Keith Savage.
+\newblock Tracking firm use of ai in real time: A snapshot from the business
+  trends and outlook survey.
+\newblock Technical Report CES-WP-24-16, U.S. Census Bureau, Center for
+  Economic Studies, March 2024.
+\newblock URL
+  \url{https://www.census.gov/library/working-papers/2024/adrm/CES-WP-24-16.html}.
+
+\bibitem[Bonney et~al.(2026)Bonney, Breaux, Dinlersoz, Foster, Haltiwanger, and
+  Pande]{census2026micro}
+Kathryn Bonney, Cory Breaux, Emin Dinlersoz, Lucia Foster, John Haltiwanger,
+  and Aditya Pande.
+\newblock The microstructure of ai diffusion: Evidence from firms, business
+  functions, and worker tasks.
+\newblock Technical Report CES-WP-26-25, U.S. Census Bureau, Center for
+  Economic Studies, April 2026.
+\newblock URL
+  \url{https://www.census.gov/library/working-papers/2026/adrm/CES-WP-26-25.html}.
+
+\bibitem[Burnham and Anderson(2002)]{burnham2002}
+Kenneth~P. Burnham and David~R. Anderson.
+\newblock \emph{Model Selection and Multimodel Inference: A Practical
+  Information-Theoretic Approach}.
+\newblock Springer, New York, 2 edition, 2002.
+\newblock \doi{10.1007/b97636}.
+
+\bibitem[Chen et~al.(2026)Chen, Wang, and Qu]{chen2026rsi}
+Mingguang Chen, Licheng Wang, and Bo~Qu.
+\newblock Recursive self-improvement in ai: From bounded self-refinement to
+  autonomous research loops.
+\newblock \emph{arXiv preprint arXiv:2607.07663}, 2026.
+\newblock \doi{10.48550/arXiv.2607.07663}.
+
+\bibitem[Davidson et~al.(2026)Davidson, Halperin, Houlden, and
+  Korinek]{davidson2026}
+Tom Davidson, Basil Halperin, Thomas Houlden, and Anton Korinek.
+\newblock When does automating ai research produce explosive growth? feedback
+  loops in innovation networks.
+\newblock Working Paper 35155, National Bureau of Economic Research, April
+  2026.
+
+\bibitem[Demirer et~al.(2026)Demirer, Musolff, and Yang]{demirer2026}
+Mert Demirer, Leon Musolff, and Liyuan Yang.
+\newblock Writing code vs. shipping code: Productivity effects across
+  generations of ai coding tools.
+\newblock Working Paper 35275, National Bureau of Economic Research, May 2026.
+
+\bibitem[Diebold and Mariano(1995)]{diebold1995}
+Francis~X. Diebold and Roberto~S. Mariano.
+\newblock Comparing predictive accuracy.
+\newblock \emph{Journal of Business \& Economic Statistics}, 13\penalty0
+  (3):\penalty0 253--263, 1995.
+\newblock \doi{10.1080/07350015.1995.10524599}.
+
+\bibitem[Erdil et~al.(2025)Erdil, Potlogea, Besiroglu, Roldan, Ho, Sevilla,
+  Barnett, Vrzla, and Sandler]{erdil2025gate}
+Ege Erdil, Andrei Potlogea, Tamay Besiroglu, Edu Roldan, Anson Ho, Jaime
+  Sevilla, Matthew Barnett, Matej Vrzla, and Robert Sandler.
+\newblock {GATE}: An integrated assessment model for ai automation.
+\newblock \emph{arXiv preprint arXiv:2503.04941}, 2025.
+\newblock \doi{10.48550/arXiv.2503.04941}.
+
+\bibitem[Erol et~al.(2025)Erol, El, Suzgun, Yuksekgonul, and Zou]{erol2025}
+Mehmet~Hamza Erol, Batu El, Mirac Suzgun, Mert Yuksekgonul, and James Zou.
+\newblock Cost-of-pass: An economic framework for evaluating language models.
+\newblock \emph{arXiv preprint arXiv:2504.13359}, 2025.
+\newblock \doi{10.48550/arXiv.2504.13359}.
+
+\bibitem[{GitHub}(2025)]{githuboctoverse2025}
+{GitHub}.
+\newblock Octoverse: A new developer joins github every second as ai leads
+  typescript to number one, 2025.
+\newblock URL
+  \url{https://github.blog/news-insights/octoverse/octoverse-a-new-developer-joins-github-every-second-as-ai-leads-typescript-to-1/}.
+\newblock Official GitHub Octoverse report; accessed 2026-07-28.
+
+\bibitem[{GitHub}(2026)]{githubagent2026}
+{GitHub}.
+\newblock Copilot coding agent now starts work 50 percent faster, March 2026.
+\newblock URL
+  \url{https://github.blog/changelog/2026-03-19-copilot-coding-agent-now-starts-work-50-faster/}.
+\newblock Official GitHub Changelog; accessed 2026-07-28.
+
+\bibitem[Gneiting and Raftery(2007)]{gneiting2007}
+Tilmann Gneiting and Adrian~E. Raftery.
+\newblock Strictly proper scoring rules, prediction, and estimation.
+\newblock \emph{Journal of the American Statistical Association}, 102\penalty0
+  (477):\penalty0 359--378, 2007.
+\newblock \doi{10.1198/016214506000001437}.
+
+\bibitem[Grundy et~al.(2026)Grundy, Breaux, and Khatiwoda]{census2026aiuse}
+Adam Grundy, Cory Breaux, and Dhanapati Khatiwoda.
+\newblock Large firms with at least 20 employees biggest ai users.
+\newblock U.S. Census Bureau, May 2026.
+\newblock URL
+  \url{https://www.census.gov/library/stories/2026/05/ai-use-businesses.html}.
+\newblock Reports 19.8 percent for the collection period ending May 3, 2026 and
+  documents the November 2025 wording change; accessed 2026-07-28.
+
+\bibitem[Gundlach et~al.(2025)Gundlach, Lynch, Mertens, and
+  Thompson]{gundlach2025}
+Hans Gundlach, Jayson Lynch, Matthias Mertens, and Neil Thompson.
+\newblock The price of progress: Algorithmic efficiency and the falling cost of
+  ai inference.
+\newblock \emph{arXiv preprint arXiv:2511.23455}, 2025.
+\newblock \doi{10.48550/arXiv.2511.23455}.
+
+\bibitem[Gustafson(1988)]{gustafson1988}
+John~L. Gustafson.
+\newblock Reevaluating amdahl's law.
+\newblock \emph{Communications of the ACM}, 31\penalty0 (5):\penalty0 532--533,
+  1988.
+\newblock \doi{10.1145/42411.42415}.
+
+\bibitem[Hamilton(1989)]{hamilton1989}
+James~D. Hamilton.
+\newblock A new approach to the economic analysis of nonstationary time series
+  and the business cycle.
+\newblock \emph{Econometrica}, 57\penalty0 (2):\penalty0 357--384, 1989.
+\newblock \doi{10.2307/1912559}.
+
+\bibitem[Hyndman and Athanasopoulos(2021)]{hyndman2021}
+Rob~J. Hyndman and George Athanasopoulos.
+\newblock \emph{Forecasting: Principles and Practice}.
+\newblock OTexts, 3 edition, 2021.
+\newblock URL \url{https://otexts.com/fpp3/}.
+
+\bibitem[Jimenez et~al.(2024)Jimenez, Yang, Wettig, Yao, Pei, Press, and
+  Narasimhan]{jimenez2024}
+Carlos~E. Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir
+  Press, and Karthik Narasimhan.
+\newblock {SWE-bench}: Can language models resolve real-world {GitHub} issues?
+\newblock In \emph{International Conference on Learning Representations}, 2024.
+\newblock \doi{10.48550/arXiv.2310.06770}.
+\newblock Oral presentation.
+
+\bibitem[Jones(2025)]{jones2025rnd}
+Benjamin~F. Jones.
+\newblock Artificial intelligence in research and development.
+\newblock Working Paper 34312, National Bureau of Economic Research, October
+  2025.
+
+\bibitem[Jones(1995)]{jones1995}
+Charles~I. Jones.
+\newblock R\&d-based models of economic growth.
+\newblock \emph{Journal of Political Economy}, 103\penalty0 (4):\penalty0
+  759--784, 1995.
+\newblock \doi{10.1086/262002}.
+
+\bibitem[Jones(2026)]{jones2026future}
+Charles~I. Jones.
+\newblock A.i. and our economic future.
+\newblock Working Paper 34779, National Bureau of Economic Research, 2026.
+\newblock Revised June 2026.
+
+\bibitem[Karger et~al.(2024)Karger, Bastani, Chen, Jacobs, Halawi, Zhang, and
+  Tetlock]{karger2024}
+Ezra Karger, Houtan Bastani, Yueh-Han Chen, Zachary Jacobs, Danny Halawi, Fred
+  Zhang, and Philip~E. Tetlock.
+\newblock Forecastbench: A dynamic benchmark of ai forecasting capabilities.
+\newblock \emph{arXiv preprint arXiv:2409.19839}, 2024.
+\newblock \doi{10.48550/arXiv.2409.19839}.
+
+\bibitem[Kremer(1993)]{kremer1993}
+Michael Kremer.
+\newblock The o-ring theory of economic development.
+\newblock \emph{Quarterly Journal of Economics}, 108\penalty0 (3):\penalty0
+  551--575, 1993.
+\newblock \doi{10.2307/2118405}.
+
+\bibitem[Kwa et~al.(2025)Kwa, West, Becker, Deng, Garcia, Hasin, Jawhar,
+  Kinniment, Rush, von Arx, Bloom, Broadley, Du, Goodrich, Jurkovic, Miles,
+  Nix, Lin, Parikh, Rein, Sato, Wijk, Ziegler, Barnes, and Chan]{kwa2025}
+Thomas Kwa, Ben West, Joel Becker, Amy Deng, Katharyn Garcia, Max Hasin, Sami
+  Jawhar, Megan Kinniment, Nate Rush, Sydney von Arx, Ryan Bloom, Thomas
+  Broadley, Haoxing Du, Brian Goodrich, Nikola Jurkovic, Luke~Harold Miles,
+  Seraphina Nix, Tao Lin, Neev Parikh, David Rein, Lucas Jun~Koba Sato, Hjalmar
+  Wijk, Daniel~M. Ziegler, Elizabeth Barnes, and Lawrence Chan.
+\newblock Measuring ai ability to complete long tasks.
+\newblock \emph{arXiv preprint arXiv:2503.14499}, 2025.
+\newblock \doi{10.48550/arXiv.2503.14499}.
+
+\bibitem[{METR}(2026)]{metr2026}
+{METR}.
+\newblock Task-completion time horizons of frontier ai models, May 2026.
+\newblock URL \url{https://metr.org/time-horizons/}.
+\newblock Last updated May 8, 2026; accessed July 28, 2026.
+
+\bibitem[Nordhaus(2021)]{nordhaus2021}
+William~D. Nordhaus.
+\newblock Are we approaching an economic singularity? information technology
+  and the future of economic growth.
+\newblock \emph{American Economic Journal: Macroeconomics}, 13\penalty0
+  (1):\penalty0 299--332, 2021.
+\newblock \doi{10.1257/mac.20170105}.
+
+\bibitem[Rabanser et~al.(2026)Rabanser, Kapoor, Kirgis, Liu, Utpala, and
+  Narayanan]{rabanser2026}
+Stephan Rabanser, Sayash Kapoor, Peter Kirgis, Kangheng Liu, Saiteja Utpala,
+  and Arvind Narayanan.
+\newblock Towards a science of ai agent reliability.
+\newblock \emph{arXiv preprint arXiv:2602.16666}, 2026.
+\newblock \doi{10.48550/arXiv.2602.16666}.
+
+\bibitem[Rasch(1980)]{rasch1980}
+Georg Rasch.
+\newblock \emph{Probabilistic Models for Some Intelligence and Attainment
+  Tests}.
+\newblock University of Chicago Press, Chicago, 1980.
+\newblock Expanded edition of the 1960 work.
+
+\bibitem[Rockafellar and Uryasev(2000)]{rockafellar2000}
+R.~Tyrrell Rockafellar and Stanislav Uryasev.
+\newblock Optimization of conditional value-at-risk.
+\newblock \emph{Journal of Risk}, 2\penalty0 (3):\penalty0 21--41, 2000.
+\newblock \doi{10.21314/JOR.2000.038}.
+
+\bibitem[Sarma et~al.(2026)Sarma, Bhatt, Jacob, and Steratore]{sarma2026}
+Gopal~P. Sarma, Sunny~D. Bhatt, Michael Jacob, and Rachel Steratore.
+\newblock Artificial general intelligence forecasting and scenario analysis:
+  State of the field, methodological gaps, and strategic implications.
+\newblock \emph{arXiv preprint arXiv:2604.22766}, 2026.
+\newblock \doi{10.48550/arXiv.2604.22766}.
+
+\bibitem[{SWE-bench}(2026)]{swebench2026}
+{SWE-bench}.
+\newblock {SWE-bench} verified leaderboard and evaluation repository, 2026.
+\newblock URL \url{https://www.swebench.com/}.
+\newblock Official benchmark and leaderboard materials; accessed 2026-07-28.
+
+\bibitem[Trammell and Korinek(2023)]{trammell2023}
+Philip Trammell and Anton Korinek.
+\newblock Economic growth under transformative ai.
+\newblock Working Paper 31815, National Bureau of Economic Research, 2023.
+\newblock Revised April 2026.
+
+\bibitem[{U.S. Census Bureau}(2023)]{census2023ai}
+{U.S. Census Bureau}.
+\newblock Only 3.8\% of businesses use ai to produce goods and services,
+  highest use in information sector, November 2023.
+\newblock URL
+  \url{https://www.census.gov/library/stories/2023/11/businesses-use-ai.html}.
+\newblock Reference period October 23--November 5, 2023; accessed 2026-07-28.
+
+\bibitem[{U.S. Census Bureau}(2025)]{census2025history}
+{U.S. Census Bureau}.
+\newblock July 2025: Science fiction, July 2025.
+\newblock URL
+  \url{https://www.census.gov/about/history/stories/monthly/2025/july-2025.html}.
+\newblock Reports that the May 2025 BTOS estimate was close to 10 percent;
+  accessed 2026-07-28.
+
+\end{thebibliography}

@@ -1,0 +1,95 @@
+
+\section{Selected Derivations}
+\label{app:derivations}
+
+\subsection{Technical capacity from an instantaneous growth rate}
+
+By definition $g_Q(t)=\dd\ln Q(t)/\dd t$. Integrating from 0 to $t$ gives
+\[
+\ln Q(t)-\ln Q_0=\int_0^t g_Q(u)\dd u,
+\]
+so
+\[
+Q(t)=Q_0\exp\left[\int_0^t g_Q(u)\dd u\right].
+\]
+
+\subsection{Technical-growth decomposition}
+
+Suppose
+\[
+Q=Q_0e^{\beta_\theta(\theta-\theta_0)}c^{-\beta_c}\tau^{-\beta_\tau}(A+\varepsilon)^{\beta_A}P^{\beta_P}R^{\beta_R}
+\]
+up to normalization constants. Taking a time derivative of $\ln Q$ yields Equation~\eqref{eq:technical-growth}.
+
+\subsection{Expected truncated geometric attempts}
+
+For success probability $p$ and maximum $m$ attempts, the number of attempts is at least $k$ with probability $(1-p)^{k-1}$. Therefore
+\[
+\E[N]=\sum_{k=1}^{m}\Pr(N\ge k)=\sum_{k=1}^{m}(1-p)^{k-1}=\frac{1-(1-p)^m}{p}.
+\]
+
+\subsection{Accelerating-exponential crossing time}
+
+Set $M=X_0e^{g_0t+at^2/2}$. Then
+\[
+\tfrac12at^2+g_0t-\ln(M/X_0)=0.
+\]
+For $a>0$, the nonnegative root is
+\[
+T_M=\frac{-g_0+\sqrt{g_0^2+2a\ln(M/X_0)}}{a}.
+\]
+
+\subsection{Exponential and logistic crossing times}
+
+For $X=X_0e^{gt}$,
+\[
+T_M=\frac{\ln(M/X_0)}{g}.
+\]
+For $X=K/[1+(K/X_0-1)e^{-rt}]$,
+\[
+T_M=\frac1r\ln\left(\frac{K/X_0-1}{K/M-1}\right),\qquad 0<M<K.
+\]
+
+\subsection{Double-exponential crossing time}
+
+From Equation~\eqref{eq:double-exp}, for $M>JX(\tau^-)$,
+\[
+T_M=\tau+\frac1q\ln\left[1+\frac q{g_\tau}\ln\left(\frac{M}{JX(\tau^-)}\right)\right].
+\]
+
+\subsection{Discontinuity hazard}
+
+For a nonnegative time-varying hazard $\lambda(t)$, survival is
+\[
+S(T)=\exp\left[-\int_0^T\lambda(u)\dd u\right],
+\]
+so cumulative transition probability is $1-S(T)$.
+
+
+\subsection{Hard-min limit of the generalized realization family}
+
+Let $x=B^Q Q>0$, $z=B^Z Z>0$, and
+\[
+G_\rho(x,z)=\left[\alpha x^{-\rho}+(1-\alpha)z^{-\rho}\right]^{-1/\rho}.
+\]
+Assume without loss of generality that $x\le z$. Then
+\[
+G_\rho(x,z)=x\left[\alpha+(1-\alpha)(x/z)^\rho\right]^{-1/\rho}.
+\]
+Since $(x/z)^\rho\to0$ and $\alpha^{-1/\rho}\to1$ as $\rho\to\infty$, $G_\rho(x,z)\to x=\min\{x,z\}$. Multiplying by $B^X$ yields the hard-min limit stated after Equation~\eqref{eq:generalized-realization}.
+
+\subsection{Generalized bottleneck limit}
+
+Equation~\eqref{eq:bottleneck} is a weighted power mean of order $-\varrho$. As $\varrho\to\infty$, the order tends to $-\infty$, whose limit is the minimum component.
+
+\subsection{Workflow reliability}
+
+Independent retry success is one minus the probability all attempts fail: $r_i^*=1-(1-r_i)^{m_i}$. Independent required tasks multiply. Taking logs converts the product to a sum; $\Omega_{\mathrm{corr}}$ subtracts a common-mode penalty.
+
+\subsection{Uncertainty decomposition}
+
+The law of total variance gives
+\[
+\Var(Y)=\E[\Var(Y\mid M)]+\Var(\E[Y\mid M]),
+\]
+which separates within-model from between-model uncertainty.

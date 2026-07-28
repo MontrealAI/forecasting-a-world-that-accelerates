@@ -1,0 +1,55 @@
+
+\section{The Evidence Clock and Pace Measurement}
+
+\subsection{Target before trajectory}
+
+A forecast begins by defining the dependent variable $Y(t)$. The unit, scope, baseline date, baseline value, success criterion, and realization conditions must be explicit. A revenue forecast, for example, is not interchangeable with an adoption forecast; a completion-date forecast is not interchangeable with a capability threshold; a bounded probability should not be fitted as an unbounded positive quantity.
+
+Each material input is labelled as \emph{observed}, \emph{derived}, \emph{estimated}, \emph{assumed}, or \emph{scenario-conditional}. Vague predicates such as ``autonomous,'' ``commercial,'' or ``complete'' are converted into measurable acceptance criteria. If the target cannot be observed directly, the analyst publishes the proxy construction and weights rather than hiding them in prose.
+
+\subsection{Four dates, not one}
+
+A current-looking source can contain stale measurements. The evidence ledger therefore separates:
+
+\begin{enumerate}
+\item event date;
+\item measurement or benchmark-execution date;
+\item model or product release date;
+\item publication or source-update date.
+\end{enumerate}
+
+The research cutoff is an exact timestamp and time zone. Sources receive a grade: A for primary/directly reproducible, B for strong independent transparent analysis, C for indirect or self-reported evidence, and D for speculative or promotional material. A base forecast should not rest principally on C/D evidence when stronger evidence exists.
+
+\subsection{Comparable rates and acceleration}
+
+For a positive metric $X(t)$ and a window $h$ measured in years, the continuously compounded rate is
+\begin{equation}
+\label{eq:growth}
+g_X^{(h)}(t)=\frac{\ln X(t)-\ln X(t-h)}{h}.
+\end{equation}
+Recent and prior windows yield
+\begin{equation}
+\label{eq:acceleration}
+a_X(t)=\frac{g_X^{(h)}(t)-g_X^{(h)}(t-h)}{h}.
+\end{equation}
+The equivalent annual proportional improvement and doubling time are
+\begin{equation}
+G_X=e^{g_X}-1,\qquad T_2=\frac{\ln 2}{g_X}\quad(g_X>0).
+\end{equation}
+
+For lower-is-better variables, the relevant series is inverted:
+\begin{equation}
+E_c(t)=\frac{c_0}{c(t)},\qquad S_\tau(t)=\frac{\tau_0}{\tau(t)}.
+\end{equation}
+For bounded variables such as adoption, automation, or success probability, log-odds changes can be more stable near the boundaries:
+\begin{equation}
+\logit(x)=\ln\frac{x}{1-x}.
+\end{equation}
+
+\begin{warningbox}
+\textbf{Comparability rule.} A benchmark revision, changed task distribution, altered scaffold, pricing-unit change, context-window change, or revised scoring rule creates a new measurement regime unless an explicit bridge is constructed. Two successive releases improving does not by itself establish acceleration.
+\end{warningbox}
+
+\subsection{Required pace matrix}
+
+The operational protocol requests current, roughly six-month-prior, and roughly twelve-month-prior observations for capability, cost per attempt, cost per verified outcome, task time, human supervision, automation share, autonomous horizon, parallelism, verified reliability, adoption, utilization, demand, compute, energy, capital, authority, trust, regulation, supply chains, and physical execution where relevant. The purpose is not to multiply every trend. It is to identify which factors are independent drivers, which are correlated manifestations of the same advance, and which have become binding constraints.

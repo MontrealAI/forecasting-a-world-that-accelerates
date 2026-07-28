@@ -1,0 +1,58 @@
+
+\section{Variable Dictionary}
+\label{app:variables}
+
+\small
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.14\textwidth}>{\raggedright\arraybackslash}p{0.54\textwidth}>{\raggedright\arraybackslash}p{0.22\textwidth}}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Domain / unit}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Domain / unit}\\
+\midrule
+\endhead
+$Y_s(t)$ & Realized target outcome under scenario $s$ & Target-specific, nonnegative\\
+$Q_0$ & Baseline technically deliverable output & Positive\\
+$g_{Q,s}(t)$ & Instantaneous proportional growth rate of technical output & Inverse time\\
+$M_s(t)$ & Addressable market, mission volume, or demand pool & Nonnegative\\
+$D_s(t)$ & Adoption or penetration fraction & $[0,1]$\\
+$U_s(t)$ & Utilization or realized value per adopter & Nonnegative\\
+$B_s(t)$ & Compact residual bottleneck factor after double-counting audit & $(0,1]$\\
+$B_s^Q(t)$ & Technical-production bottleneck in generalized realization family & $(0,1]$\\
+$B_s^Z(t)$ & Absorptive-demand bottleneck in generalized realization family & $(0,1]$\\
+$B_s^X(t)$ & Transfer or realization bottleneck in generalized realization family & $(0,1]$\\
+$Z_s(t)$ & Absorptive demand, $M_sD_sU_s$ & Same unit as $Q_s$\\
+$\alpha_s$ & Branch weight in generalized realization family & $(0,1)$\\
+$\rho_s$ & Substitution/weakest-link sharpness in generalized realization family & Positive\\
+$\theta(t)$ & Latent capability level & Scale-dependent\\
+$c(t)$ & Cost per attempt or unit of work & Positive currency/unit\\
+$\tau(t)$ & Task-completion time & Positive time\\
+$A(t)$ & Automatable workflow share & $[0,1]$\\
+$P(t)$ & Effective parallelism & Positive\\
+$R(t)$ & Verified reliability & $(0,1]$\\
+$\beta_j$ & Target-specific elasticity of component $j$ & Dimensionless\\
+$\varepsilon$ & Stabilizing constant for automation share & Positive, small\\
+$b_k(t)$ & Constraint factor $k$ & $(0,1]$\\
+$w_k$ & Bottleneck weight & Nonnegative, sums to 1\\
+$\varrho$ & Constraint-aggregator sharpness in Equation~\eqref{eq:bottleneck} & Positive\\
+$p_i$ & Per-attempt autonomous success probability for task $i$ & $[0,1]$\\
+$m_i$ & Maximum autonomous attempts before escalation & Positive integer\\
+$\bar\tau_i$ & Expected duration of task $i$ & Time\\
+$W$ & Sum of expected task work & Time\\
+$CP$ & Expected critical-path duration & Time\\
+$n$ & Parallel worker or agent count & Positive integer\\
+$\eta$ & Parallel-efficiency exponent & $(0,1]$\\
+$H_{\mathrm{coord}}$ & Coordination overhead & Time\\
+$\Omega_{\mathrm{corr}}$ & Correlated-failure penalty in log reliability & Nonnegative\\
+$A_R(t)$ & Verified and authorized autonomous share of improvement loop & $[0,1]$\\
+$\tau$ & Regime-transition time (context-dependent; distinct from task time by subscript) & Time\\
+$J$ & Immediate multiplicative jump at transition & $\ge1$\\
+$q$ & Post-transition compounding rate of the growth rate & Inverse time\\
+$\lambda(t)$ & Transition hazard & Inverse time\\
+$K(t)$ & Current regime-dependent ceiling & Positive\\
+$\nu$ & Generalized logistic shape & Positive\\
+$\pi_s$ & Scenario probability or decision weight & $[0,1]$, sums to 1 when probabilistic\\
+\bottomrule
+\end{longtable}
+\normalsize

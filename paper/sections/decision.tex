@@ -1,0 +1,53 @@
+
+\section{From Forecast to Decision and Recalculation}
+
+\subsection{Action under regime uncertainty}
+
+Let $a$ be an action portfolio and $s$ a scenario with probability or decision weight $\pi_s$. One decision rule is
+\begin{equation}
+\label{eq:decision}
+a^*=\arg\max_a\left\{\sum_s\pi_s\left[\mathrm{NPV}_s(a)+V_{\mathrm{learning},s}(a)+V_{\mathrm{option},s}(a)\right]-\lambda\CVaR_\alpha(L_s(a))\right\},
+\end{equation}
+subject to budget, authority, reliability, security, legal, and irreversible-loss constraints \citep{rockafellar2000}. When scenario probabilities are too fragile, minimax regret offers a probability-light alternative:
+\begin{equation}
+a^*=\arg\min_a\max_s\left[V_s^*-V_s(a)\right].
+\end{equation}
+
+The preferred present-regime portfolio contains:
+\begin{itemize}
+\item no-regret actions useful in all scenarios;
+\item short, high-information experiments;
+\item reversible investments that expand quickly if acceleration triggers fire;
+\item pre-authorized capacity, governance, and safety options for discontinuities;
+\item delayed irreversible commitments whose value depends on weakly identified tail assumptions.
+\end{itemize}
+
+\subsection{Trigger dashboard}
+
+Each trigger has a metric, current value, threshold, source, affected scenario, forecast impact, owner, and required action. Acceleration triggers may include fresh-task gains, falling cost per verified outcome, longer reliable operating horizons, independently reproduced automated R\&D, faster adoption, or compute/energy expansion. Deceleration triggers include reliability plateaus, benchmark contamination, higher verification burden, weak conversion, regulation, incidents, and infrastructure delays.
+
+\subsection{Dated recalculation}
+
+For horizon $H$, the default scheduled interval is
+\begin{equation}
+\Delta=\min\{30\text{ days},0.1H\}.
+\end{equation}
+The actual recalculation time is
+\begin{equation}
+\label{eq:recalc}
+t_{\mathrm{recalc}}=\min\left\{t_0+\Delta,T_{\mathrm{forecast\ break}},T_{\mathrm{trigger}},T_{\mathrm{regime\ change}}\right\}.
+\end{equation}
+A statistical break can be declared when
+\begin{equation}
+\left|\ln Y_{\mathrm{observed}}(t)-\ln\widehat Y(t)\right|>z_\alpha\sigma_{\mathrm{pred}}(t).
+\end{equation}
+For a forecast initiated on July 28, 2026, the default monthly date is August 27, 2026 unless $0.1H$ is shorter or a trigger fires first.
+
+\subsection{Revenue specialization}
+
+For sales targets, let $L(t)$ be qualified opportunities, $q(t)$ conversion probability, $\ell(t)$ sales-cycle lag, $V(t)$ average contract value, and $K_{\mathrm{delivery}}(t)$ delivery capacity. Then
+\begin{align}
+N_{\mathrm{closed}}(t)&=L(t-\ell)q(t-\ell),\\
+\mathrm{Bookings}(t)&=V(t)\min\{L(t-\ell)q(t-\ell),K_{\mathrm{delivery}}(t)\}.
+\end{align}
+For identifiable opportunities, $\E[\mathrm{Bookings}]=\sum_i p_iV_i$. Capability affects revenue only through explicit channels such as lead volume, conversion, cycle time, pricing, delivery, expansion, and retention.

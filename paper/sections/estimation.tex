@@ -1,0 +1,79 @@
+\section{Estimation, Probabilistic Forecasting, and Model Uncertainty}
+
+\subsection{Observation model and comparable likelihoods}
+
+For candidate model $m$ with positive trajectory $f_m(t;\Theta_m)$, a basic log-scale observation equation is
+\begin{equation}
+\ln y_t=\ln f_m(t;\Theta_m)+\epsilon_t.
+\end{equation}
+The reference implementation optimizes a Gaussian log-likelihood on log outcomes and counts the residual-scale parameter when calculating information criteria. A robust production analysis may instead use
+\begin{equation}
+\epsilon_t\sim t_\nu(0,\sigma_m),
+\end{equation}
+heteroskedastic errors, explicit measurement-error models, or revision processes. Competing models must be compared using likelihoods defined on the same observation scale and data. Mixing least-squares objectives, uncounted change-point searches, and incomparable residual definitions produces misleading information weights.
+
+\subsection{Information criteria and model averaging}
+
+For maximized log likelihood $\hat L_m$, $k_m$ estimated parameters, and $n$ observations,
+\begin{equation}
+\mathrm{AICc}_m=2k_m-2\ln\hat L_m+\frac{2k_m(k_m+1)}{n-k_m-1}.
+\end{equation}
+Weights are
+\begin{equation}
+w_m=\frac{\exp(-\Delta_m/2)}{\sum_j\exp(-\Delta_j/2)},\qquad
+\Delta_m=\mathrm{AICc}_m-\min_j\mathrm{AICc}_j.
+\end{equation}
+The full predictive distribution can average over model and scenario uncertainty:
+\begin{equation}
+\label{eq:model-scenario-average}
+p(Y_T\mid\mathcal D)=\sum_{s\in\mathcal S}\pi_s\sum_mw_{m,s}\,p(Y_T\mid M_{m,s},\mathcal D).
+\end{equation}
+Model averaging is not automatically superior. Component models can be redundant, misspecified, or unstable outside the identification range. Rolling-origin performance is therefore reported alongside in-sample criteria, and scenario weights are never presented as objective frequencies when they are judgmental decision weights.
+
+\subsection{Residual-bootstrap predictive distributions}
+
+Version 2.0.0 implements a reproducible residual-bootstrap ensemble. For each draw $b$:
+\begin{enumerate}
+\item select model $m_b$ according to the model weights;
+\item resample centered log residuals from $m_b$;
+\item refit the selected model to the bootstrap series;
+\item predict the requested dates and optionally draw process noise;
+\item apply the target bounds, realization operator, and scenario transformation.
+\end{enumerate}
+The resulting samples $\{Y_s^{(b)}(t)\}_{b=1}^{B}$ generate medians, means, and central 50\%, 80\%, and 95\% intervals. In the technical-to-realized implementation, each draw also propagates disclosed log-scale or logit-scale uncertainty through market size, adoption, utilization, technical constraints, demand constraints, and transfer constraints. This prevents a deterministic active ceiling from collapsing the realized-output interval even when technical-capacity uncertainty is substantial. Common random numbers are used across scenarios so that scenario comparisons are not dominated by unrelated Monte Carlo noise. The implementation currently treats these realization-parameter draws as independent unless a domain-specific model replaces them; that approximation must be disclosed and tested when dependence is material. The procedure captures residual, discrete-model, and declared realization-parameter uncertainty but not every source of structural uncertainty. It is intentionally transparent and replaceable by a Bayesian posterior, block bootstrap, state-space model, copula, or domain-specific simulator.
+
+\subsection{Rolling-origin hindcasting and proper scores}
+
+At historical cutoff $t_k$, only evidence dated at or before $t_k$ may be used to predict later observations. This procedure detects leakage and tests whether a model adapts quickly enough to acceleration, saturation, or a break. Point metrics include log-RMSE, log-MAE, and sMAPE. Probabilistic evaluation uses proper scores \citep{gneiting2007}, including the Brier score
+\begin{equation}
+\mathrm{BS}=\frac{1}{N}\sum_{i=1}^{N}(p_i-o_i)^2,
+\end{equation}
+the logarithmic score, the continuous ranked probability score, and interval score. Coverage alone is insufficient: arbitrarily wide intervals can cover everything while providing little information.
+
+\subsection{Uncertainty decomposition}
+
+Total predictive variance decomposes as
+\begin{equation}
+\Var(Y)=\E_M[\Var(Y\mid M)]+\Var_M[\E(Y\mid M)].
+\end{equation}
+A complete forecast separately records measurement, parameter, residual, model, scenario, transition-timing, execution, and decision uncertainty. Sensitivity to parameter $\Theta_j$ is
+\begin{equation}
+S_j=\frac{\partial\ln Y}{\partial\ln\Theta_j}.
+\end{equation}
+Intervals should widen when evidence is sparse, non-comparable, near a benchmark ceiling, or extrapolated far beyond the observed domain. An external measurement boundary should normally be reported as a boundary, not converted into false certainty by clipping every draw to the same cap.
+
+\subsection{Milestone distributions}
+
+A milestone $M$ is achieved only when output, reliability, and deployability conditions are simultaneously satisfied:
+\begin{equation}
+T_M=\inf\left\{t:Y(t)\ge M,\;R(t)\ge R_M,\;b_k(t)\ge b_{k,M}\right\}.
+\end{equation}
+The engine evaluates $T_M$ across predictive samples and returns the probability of crossing by the horizon and conditional crossing-date quantiles. A milestone date with a low crossing probability is not presented as a scheduled fact.
+
+\subsection{Change-point and discontinuity uncertainty}
+
+A selected break date is not known merely because it maximizes an in-sample criterion. Where transition timing matters, the ideal forecast integrates over it:
+\begin{equation}
+p(Y_T\mid\mathcal D)=\sum_\tau p(Y_T\mid\tau,\mathcal D)p(\tau\mid\mathcal D),
+\end{equation}
+or uses a hidden-state, survival, or Bayesian change-point model. The reference engine uses a transparent hazard-driven transformation for discontinuity scenarios; it is a stress model, not a claim of calibrated singularity probability.

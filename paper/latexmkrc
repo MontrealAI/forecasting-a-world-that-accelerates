@@ -1,0 +1,7 @@
+if (-x '/usr/bin/bibtex') {
+  $bibtex = 'bibtex %O %B';
+} elsif (-x '/usr/bin/bibtex.original') {
+  $bibtex = 'bibtex.original %O %B';
+} else {
+  $bibtex = 'bibtex %O %B';
+}

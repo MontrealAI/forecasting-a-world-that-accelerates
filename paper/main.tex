@@ -1,0 +1,154 @@
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage[letterpaper,top=0.78in,bottom=0.82in,left=0.84in,right=0.84in]{geometry}
+\usepackage{mathtools}
+\usepackage{libertinus-otf}
+\usepackage{microtype}
+\setmonofont{DejaVu Sans Mono}[Scale=MatchLowercase]
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\usepackage{graphicx,float,caption,subcaption}
+\usepackage[dvipsnames,table]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{fvextra}
+\usepackage{csquotes}
+\usepackage[round,authoryear]{natbib}
+\usepackage{doi}
+\usepackage{hyperref}
+\usepackage[nameinlink,capitalise,noabbrev]{cleveref}
+\usepackage{xurl}
+\usepackage{lastpage}
+\usepackage{setspace}
+\usepackage{etoolbox}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds}
+
+% Fixed PDF trailer identifier for byte-reproducible release builds.
+\AtBeginDocument{\special{pdf:trailerid [<ca1bec502620e6fde0c5cb753e33fffb><ca1bec502620e6fde0c5cb753e33fffb>]}}
+
+\definecolor{FWNavy}{HTML}{13213A}
+\definecolor{FWBlue}{HTML}{2E6173}
+\definecolor{FWGold}{HTML}{A88345}
+\definecolor{FWIvory}{HTML}{F7F3EA}
+\definecolor{FWInk}{HTML}{1C2637}
+\definecolor{FWMuted}{HTML}{5E6776}
+\definecolor{FWLine}{HTML}{D8D0C3}
+\definecolor{FWRed}{HTML}{8E3B46}
+\definecolor{FWGreen}{HTML}{2E6B57}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=FWBlue,
+  citecolor=FWBlue,
+  urlcolor=FWBlue,
+  pdftitle={Forecasting a World That Accelerates},
+  pdfauthor={Vincent Boucher},
+  pdfsubject={Acceleration-aware, constraint-limited, regime-switching forecasting},
+  pdfkeywords={forecasting, AI, acceleration, regime switching, hindcasting, reliability, decision science}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\footnotesize\textcolor{FWMuted}{FORECASTING A WORLD THAT ACCELERATES}}
+\fancyhead[R]{\sffamily\footnotesize\textcolor{FWMuted}{V2.0.0 · CEILING EDITION · JULY 28, 2026}}
+\fancyfoot[L]{\sffamily\scriptsize\textcolor{FWMuted}{MONTREAL.AI · QUEBEC.AI}}
+\fancyfoot[R]{\sffamily\scriptsize\textcolor{FWMuted}{\thepage\ / \pageref{LastPage}}}
+\renewcommand{\headrulewidth}{0.25pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}{\sffamily\bfseries\Large\color{FWNavy}}{\thesection}{0.65em}{}
+\titleformat{\subsection}{\sffamily\bfseries\large\color{FWBlue}}{\thesubsection}{0.65em}{}
+\titleformat{\subsubsection}{\sffamily\bfseries\normalsize\color{FWInk}}{\thesubsubsection}{0.65em}{}
+\titlespacing*{\section}{0pt}{2.1em}{0.8em}
+\titlespacing*{\subsection}{0pt}{1.5em}{0.55em}
+\setlist{nosep,leftmargin=1.5em,itemsep=0.25em,topsep=0.45em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.58em}
+\setlength{\emergencystretch}{2em}
+\captionsetup{font=small,labelfont={bf,sf,color=FWNavy},textfont={color=FWInk}}
+\graphicspath{{figures/}{paper/figures/}}
+
+\newtcolorbox{keybox}[1][]{enhanced,breakable,colback=FWIvory,colframe=FWGold,boxrule=0.7pt,arc=0pt,left=10pt,right=10pt,top=8pt,bottom=8pt,#1}
+\newtcolorbox{warningbox}[1][]{enhanced,breakable,colback=FWRed!4,colframe=FWRed,boxrule=0.7pt,arc=0pt,left=10pt,right=10pt,top=8pt,bottom=8pt,#1}
+\newtcolorbox{methodbox}[1][]{enhanced,breakable,colback=FWBlue!4,colframe=FWBlue,boxrule=0.7pt,arc=0pt,left=10pt,right=10pt,top=8pt,bottom=8pt,#1}
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\scenario}[1]{\textsc{#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\CVaR}{\operatorname{CVaR}}
+\newcommand{\logit}{\operatorname{logit}}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\fwta}{\textsc{FWTA}}
+
+\IfFileExists{sections/introduction.tex}{\def\PaperRoot{.}}{\def\PaperRoot{paper}}
+\IfFileExists{../protocol/prompt.txt}{\def\ProtocolPath{../protocol/prompt.txt}}{\def\ProtocolPath{protocol/prompt.txt}}
+
+\begin{document}
+\begin{titlepage}
+\pagecolor{FWIvory}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[FWNavy] (current page.north west) rectangle ([yshift=-3.15in]current page.north east);
+  \fill[FWGold] ([yshift=-3.15in]current page.north west) rectangle ([yshift=-3.21in]current page.north east);
+  \draw[FWGold,line width=0.7pt] ([xshift=0.84in,yshift=0.82in]current page.south west) -- ([xshift=-0.84in,yshift=0.82in]current page.south east);
+\end{tikzpicture}
+\vspace*{0.22in}
+{\sffamily\small\bfseries\color{FWGold}\MakeUppercase{MONTREAL.AI · QUEBEC.AI · Research Preprint · Ceiling Edition}}\\[0.48in]
+{\sffamily\bfseries\fontsize{31}{34}\selectfont\color{white} Forecasting a World\\[0.10in]That Accelerates}\\[0.25in]
+{\sffamily\fontsize{14}{18}\selectfont\color{white!88} An Evidence-Grounded, Constraint-Limited, Regime-Switching\\Framework for AI-Era Decisions}
+
+\vspace{1.12in}
+\begin{keybox}
+\centering
+{\large\bfseries\color{FWNavy} Compact canonical model}\vspace{0.35em}
+\begin{equation*}
+\boxed{
+Y_s(t)=B_s(t)\min\!\left\{
+Q_0\exp\!\left[\int_0^t g_{Q,s}(u)\dd u\right],
+\;M_s(t)D_s(t)U_s(t)
+\right\}}
+\end{equation*}
+\small Realized output is the lesser of what can be technically produced and what the relevant market, institution, or mission can absorb, after residual bottlenecks are applied.
+\end{keybox}
+
+\vfill
+{\sffamily\large\bfseries Vincent Boucher}\\
+{\sffamily President, MONTREAL.AI \& QUEBEC.AI}\\[0.35em]
+{\sffamily\small Montréal, Québec, Canada · \href{mailto:info@quebec.ai}{info@quebec.ai}}\\[0.9em]
+{\sffamily\small Version 2.0.0 · Ceiling Edition · July 28, 2026 · Research cutoff: July 28, 2026 (America/Montréal)}\\[0.25em]
+{\sffamily\footnotesize Canonical repository: \url{https://github.com/MontrealAI/forecasting-a-world-that-accelerates}}
+\vspace{0.55in}
+\end{titlepage}
+\nopagecolor
+
+\input{\PaperRoot/sections/frontmatter}
+\tableofcontents
+\clearpage
+\input{\PaperRoot/sections/introduction}
+\input{\PaperRoot/sections/related-work}
+\input{\PaperRoot/sections/evidence-clock}
+\input{\PaperRoot/sections/canonical-model}
+\input{\PaperRoot/sections/regimes}
+\input{\PaperRoot/sections/workflows}
+\input{\PaperRoot/sections/estimation}
+\input{\PaperRoot/sections/evaluation}
+\input{\PaperRoot/sections/decision}
+\input{\PaperRoot/sections/validation-program}
+\input{\PaperRoot/sections/limitations}
+\input{\PaperRoot/sections/conclusion}
+
+\clearpage
+\appendix
+\input{\PaperRoot/appendices/prompt}
+\input{\PaperRoot/appendices/derivations}
+\input{\PaperRoot/appendices/variables}
+\input{\PaperRoot/appendices/reproducibility}
+\input{\PaperRoot/appendices/governance}
+
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{\PaperRoot/references}
+\end{document}

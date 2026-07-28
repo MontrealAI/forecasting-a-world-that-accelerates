@@ -1,0 +1,67 @@
+
+\section{From Capability to Verified Work}
+
+Historical project duration is not a physical constant. When execution, verification, retries, and parallelism change, the workflow must be recomputed from its current graph $G=(V,E)$.
+
+\subsection{Expected attempts and task duration}
+
+For task $i$, let $p_i$ be autonomous success probability per attempt and $m_i$ the maximum attempts before escalation. The expected number of attempts is
+\begin{equation}
+N_i^{\mathrm{attempt}}=\frac{1-(1-p_i)^{m_i}}{p_i},
+\end{equation}
+and escalation probability is $(1-p_i)^{m_i}$. With AI execution time $\tau_i^{AI}$, verification time $\tau_i^V$, human fallback $\tau_i^H$, authority latency $\ell_i^A$, and external latency $\ell_i^E$,
+\begin{equation}
+\label{eq:task-duration}
+\bar\tau_i=N_i^{\mathrm{attempt}}(\tau_i^{AI}+\tau_i^V)+(1-p_i)^{m_i}\tau_i^H+\ell_i^A+\ell_i^E.
+\end{equation}
+The separation matters: faster inference does not shorten a statutory waiting period, board approval, procurement cycle, laboratory incubation, or physical shipment.
+
+\subsection{Critical path and effective parallelism}
+
+Total expected work and critical path are
+\begin{equation}
+W=\sum_{i\in V}\bar\tau_i,\qquad
+CP=\max_{\pi\in\mathcal P(G)}\sum_{i\in\pi}\bar\tau_i.
+\end{equation}
+With $n$ workers and parallel-efficiency exponent $\eta\in(0,1]$,
+\begin{equation}
+\label{eq:workflow-time}
+\boxed{T_{\mathrm{workflow}}\approx\max\left\{CP,\frac{W}{n^\eta}\right\}+H_{\mathrm{coord}}(n).}
+\end{equation}
+This is an Amdahl-style constraint: parallel workers cannot erase a serial critical path \citep{amdahl1967,gustafson1988}.
+
+\subsection{Reliability and verified cost}
+
+If per-attempt verified reliability is $r_i$, then with $m_i$ independent attempts
+\begin{equation}
+r_i^*=1-(1-r_i)^{m_i}.
+\end{equation}
+For required steps,
+\begin{equation}
+\ln R_{\mathrm{workflow}}=\sum_i\ln r_i^*-\Omega_{\mathrm{corr}},
+\end{equation}
+where $\Omega_{\mathrm{corr}}\ge0$ penalizes common-mode failures. Expected cost is calculated from attempts, verification, and fallback; cost per verified successful workflow is
+\begin{equation}
+C_{\mathrm{verified}}=\frac{C_{\mathrm{workflow}}}{R_{\mathrm{workflow}}}.
+\end{equation}
+Raw token price is therefore not the decision-relevant cost when retries, verification, and failure severity dominate.
+
+\subsection{Controlled workflow result}
+
+The reference fixture contains parallel research tasks, a serial synthesis/review/release chain, retries, verification, and coordination overhead. Its total expected work is approximately \SI{14.88}{\hour}, but the critical path is \SI{13.26}{\hour}. Moving from one to two workers reduces duration; adding further workers eventually increases estimated duration because the critical path remains and coordination overhead rises.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.84\textwidth]{workflow_parallelism.pdf}
+\caption{Controlled workflow duration as parallel workers increase. The critical path prevents unlimited compression; coordination eventually offsets additional parallel capacity.}
+\label{fig:workflow-parallelism}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Selected controlled workflow outcomes.}
+\input{\PaperRoot/tables/generated-workflow.tex}
+\label{tab:workflow}
+\end{table}
+
+The separate authority-latency example in the package demonstrates an even stronger case: a 24-hour authorization task dominates a workflow despite rapid machine execution. These examples are mechanical demonstrations, not estimates of a particular organization.
