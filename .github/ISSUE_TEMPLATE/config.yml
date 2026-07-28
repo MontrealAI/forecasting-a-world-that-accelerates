@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report
+    url: mailto:info@quebec.ai
+    about: Report vulnerabilities privately; do not post exploits in a public issue.

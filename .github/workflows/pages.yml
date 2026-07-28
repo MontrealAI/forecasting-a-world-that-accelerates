@@ -1,0 +1,78 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'paper/**'
+      - 'protocol/**'
+      - 'results/reference/**'
+      - 'README.md'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  SOURCE_DATE_EPOCH: "1785254400"
+  PYTHONHASHSEED: "0"
+  TZ: "UTC"
+  MPLCONFIGDIR: ".cache/matplotlib"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  build:
+    name: pages-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Configure Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install package and TeX
+        run: |
+          python -m pip install -e .
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk texlive-bibtex-extra texlive-fonts-recommended \
+            texlive-latex-extra texlive-xetex
+      - name: Build publication site
+        run: |
+          make paper
+          rm -rf _site
+          cp -R site _site
+          cp "dist/Forecasting_A_World_That_Accelerates_v$(cat VERSION).pdf" _site/paper.pdf
+          cp protocol/prompt.md _site/prompt.md
+          cp protocol/protocol-specification.json _site/protocol-specification.json
+          (cd _site && sha256sum paper.pdf prompt.md protocol-specification.json > SHA256SUMS.txt)
+          touch _site/.nojekyll
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    name: pages
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

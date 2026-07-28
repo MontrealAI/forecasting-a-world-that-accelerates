@@ -1,0 +1,34 @@
+name: Method proposal
+description: Propose a falsifiable methodological improvement
+title: "[Method]: "
+labels: [methodology]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Forecasting failure or research question
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Include equations, assumptions, and how the proposal differs from the current method.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and evaluation
+      description: Primary sources, test design, hindcast, ablation, or falsification criteria.
+    validations:
+      required: true
+  - type: checkboxes
+    id: integrity
+    attributes:
+      label: Integrity
+      options:
+        - label: I have distinguished original contribution from established antecedents.
+          required: true
+        - label: I can license every submitted element under the destination file's license.
+          required: true

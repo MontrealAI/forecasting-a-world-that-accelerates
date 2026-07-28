@@ -1,0 +1,115 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version without the v prefix'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+env:
+  SOURCE_DATE_EPOCH: "1785254400"
+  PYTHONHASHSEED: "0"
+  TZ: "UTC"
+  MPLCONFIGDIR: ".cache/matplotlib"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository and tags
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install project, verification, and TeX dependencies
+        run: |
+          python -m pip install -e '.[dev]'
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk poppler-utils texlive-bibtex-extra texlive-fonts-recommended \
+            texlive-latex-extra texlive-xetex
+      - name: Resolve and validate version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION_VALUE="${{ inputs.version }}"
+          test "$VERSION_VALUE" = "$(cat VERSION)"
+          echo "version=$VERSION_VALUE" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION_VALUE" >> "$GITHUB_OUTPUT"
+      - name: Verify release tag state
+        id: tag_state
+        shell: bash
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          CURRENT_SHA="$(git rev-parse HEAD)"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            git fetch --force origin "refs/tags/$TAG:refs/tags/$TAG"
+            TAG_SHA="$(git rev-list -n 1 "$TAG")"
+            test "$TAG_SHA" = "$CURRENT_SHA"
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Forecasting a World That Accelerates $TAG"
+            git push origin "refs/tags/$TAG"
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Verify and package
+        run: make release-bundle VERSION=${{ steps.version.outputs.version }}
+      - name: Build Python distribution
+        run: python scripts/build_python_distribution.py --outdir dist
+      - name: Refresh checksums after Python distributions
+        run: python scripts/update_dist_checksums.py --version ${{ steps.version.outputs.version }}
+      - name: Attest release artifacts
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+        with:
+          subject-path: 'dist/*'
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-v${{ steps.version.outputs.version }}
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 90
+      - name: Create or refresh draft GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION_VALUE: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            IS_DRAFT="$(gh release view "$TAG" --json isDraft --jq .isDraft)"
+            test "$IS_DRAFT" = "true"
+            gh release upload "$TAG" dist/* --clobber
+            gh release edit "$TAG" \
+              --title="Forecasting a World That Accelerates $TAG" \
+              --notes-file="release/RELEASE_NOTES_v${VERSION_VALUE}.md" \
+              --draft
+          else
+            gh release create "$TAG" dist/* \
+              --title="Forecasting a World That Accelerates $TAG" \
+              --notes-file="release/RELEASE_NOTES_v${VERSION_VALUE}.md" \
+              --verify-tag \
+              --draft
+          fi

@@ -1,0 +1,57 @@
+name: Paper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'paper/**'
+      - 'protocol/prompt.md'
+      - 'protocol/prompt.txt'
+      - 'results/reference/**'
+      - 'scripts/build_paper.sh'
+      - 'scripts/generate_paper_tables.py'
+      - '.github/workflows/paper.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SOURCE_DATE_EPOCH: "1785254400"
+  PYTHONHASHSEED: "0"
+  TZ: "UTC"
+  MPLCONFIGDIR: ".cache/matplotlib"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  paper:
+    name: paper
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install Python package
+        run: python -m pip install -e .
+      - name: Install TeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk texlive-bibtex-extra texlive-fonts-recommended \
+            texlive-latex-extra texlive-xetex
+      - name: Build paper
+        run: make paper
+      - name: Upload compiled paper
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: forecasting-a-world-that-accelerates-paper
+          path: dist/Forecasting_A_World_That_Accelerates_v*.pdf
+          if-no-files-found: error
+          retention-days: 30
