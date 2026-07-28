@@ -30,23 +30,7 @@ The Pages workflow deliberately deploys the already reviewed, version-controlled
 
 ## One-time GitHub Web UI steps
 
-### 1. Merge the prepared pull request
-
-Open the pull request titled:
-
-```text
-Publish the paper automatically with GitHub Pages
-```
-
-Review the file list, then click:
-
-```text
-Merge pull request
-→ Squash and merge
-→ Confirm squash and merge
-```
-
-### 2. Enable GitHub Pages
+### 1. Enable GitHub Pages before merging
 
 Open the repository and click:
 
@@ -63,7 +47,27 @@ Source: GitHub Actions
 
 GitHub may save the setting immediately. If a Save button appears, click it.
 
-### 3. Run the first deployment
+Enabling the source first lets the merge trigger the first successful deployment automatically.
+
+### 2. Merge the prepared pull request
+
+Open the pull request titled:
+
+```text
+Publish the paper automatically with GitHub Pages
+```
+
+Review the file list, then click:
+
+```text
+Merge pull request
+→ Squash and merge
+→ Confirm squash and merge
+```
+
+The merge changes watched publication paths on `main`, so the **Publish GitHub Pages** workflow should begin automatically.
+
+### 3. Watch the first deployment
 
 Open:
 
@@ -72,19 +76,19 @@ Actions
 → Publish GitHub Pages
 ```
 
-Click:
-
-```text
-Run workflow
-→ Branch: main
-→ Run workflow
-```
-
 Wait for both jobs to become green:
 
 ```text
 Build publication website
 Deploy publication website
+```
+
+If no run begins within about one minute, click:
+
+```text
+Run workflow
+→ Branch: main
+→ Run workflow
 ```
 
 ### 4. Open the website
