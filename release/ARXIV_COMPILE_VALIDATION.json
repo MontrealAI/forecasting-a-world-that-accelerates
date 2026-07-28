@@ -1,0 +1,64 @@
+{
+  "claim_boundary": "Clean-room XeLaTeX/BibTeX source compilation and render equivalence; not arXiv acceptance or an externally assigned preprint identifier.",
+  "compile_result": "passed",
+  "compiled_pdf_bytes": 385540,
+  "compiled_pdf_sha256": "9b12e4369c723e0ef23c533ad8dd462b0aeb5acdeb4146a2e8a65e5987283dc9",
+  "compiler": "XeLaTeX with BibTeX via latexmk",
+  "extracted_text_byte_identical": true,
+  "extracted_text_sha256": "93a5c363e800cbf9de7c07dbcf847757996ddc5e32b0543870d164132dcee8cc",
+  "generated_at": "2026-07-28T16:00:00+00:00",
+  "package_version": "2.0.0",
+  "pages": 53,
+  "release_preprint_bytes": 385540,
+  "release_preprint_sha256": "9b12e4369c723e0ef23c533ad8dd462b0aeb5acdeb4146a2e8a65e5987283dc9",
+  "render_spotcheck_pages": [
+    1,
+    2,
+    10,
+    30,
+    53
+  ],
+  "render_spotchecks": [
+    {
+      "compiled_png_sha256": "efbaba475be0d0957c7258e7f0d246fa3b1e722b6fc93506420b550d80b50abd",
+      "page": 1,
+      "pixel_identical": true,
+      "release_png_sha256": "efbaba475be0d0957c7258e7f0d246fa3b1e722b6fc93506420b550d80b50abd"
+    },
+    {
+      "compiled_png_sha256": "37d9510c5aa4f6ead61be1c78bd4853966f0e69dc899e042f851cf6f0ce0dba0",
+      "page": 2,
+      "pixel_identical": true,
+      "release_png_sha256": "37d9510c5aa4f6ead61be1c78bd4853966f0e69dc899e042f851cf6f0ce0dba0"
+    },
+    {
+      "compiled_png_sha256": "fd4b9f1961679ea3b5c0f0c3ff3cf6eb6d25d506818d8276597f4365719761a3",
+      "page": 10,
+      "pixel_identical": true,
+      "release_png_sha256": "fd4b9f1961679ea3b5c0f0c3ff3cf6eb6d25d506818d8276597f4365719761a3"
+    },
+    {
+      "compiled_png_sha256": "4bc97420650820cf9ed6b683aacd887d7046202d7733c5f571c2170531f3fa90",
+      "page": 30,
+      "pixel_identical": true,
+      "release_png_sha256": "4bc97420650820cf9ed6b683aacd887d7046202d7733c5f571c2170531f3fa90"
+    },
+    {
+      "compiled_png_sha256": "f31cf97f75c18a61f11af41f97f3eeeb128f4a75f8acf38a287b740f6c753f05",
+      "page": 53,
+      "pixel_identical": true,
+      "release_png_sha256": "f31cf97f75c18a61f11af41f97f3eeeb128f4a75f8acf38a287b740f6c753f05"
+    }
+  ],
+  "render_spotchecks_pixel_identical": true,
+  "schema_version": "1.0.0",
+  "source_contents": [
+    "main.tex",
+    "main.bbl",
+    "paper/",
+    "protocol/prompt.txt",
+    "README.txt",
+    "CC-BY-NC-SA-4.0.txt"
+  ],
+  "source_stage": "ephemeral clean-room staging directory outside the repository"
+}

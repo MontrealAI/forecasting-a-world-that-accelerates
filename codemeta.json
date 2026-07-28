@@ -1,0 +1,45 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "Forecasting a World That Accelerates",
+  "description": "Complete probabilistic reference engine and executable research protocol for evidence-grounded, constraint-limited, regime-switching forecasts of realized outcomes.",
+  "version": "2.0.0",
+  "datePublished": "2026-07-28",
+  "codeRepository": "https://github.com/MontrealAI/forecasting-a-world-that-accelerates",
+  "license": [
+    "https://spdx.org/licenses/AGPL-3.0-or-later.html",
+    "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+  ],
+  "programmingLanguage": "Python",
+  "runtimePlatform": "Python 3.11 or later",
+  "author": {
+    "@type": "Person",
+    "givenName": "Vincent",
+    "familyName": "Boucher",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "MONTREAL.AI & QUEBEC.AI"
+    },
+    "email": "info@quebec.ai"
+  },
+  "maintainer": {
+    "@type": "Organization",
+    "name": "MONTREAL.AI",
+    "email": "info@quebec.ai"
+  },
+  "keywords": [
+    "forecasting",
+    "AI",
+    "acceleration",
+    "regime switching",
+    "probabilistic forecasting",
+    "prospective validation",
+    "hindcasting"
+  ],
+  "dateModified": "2026-07-28",
+  "applicationCategory": "Scientific software",
+  "isPartOf": {
+    "@type": "ScholarlyArticle",
+    "name": "Forecasting a World That Accelerates"
+  }
+}

@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: If you use the framework, paper, protocol, or software, cite the preferred
+  citation and identify the version.
+title: 'Forecasting a World That Accelerates: An Evidence-Grounded, Constraint-Limited,
+  Regime-Switching Framework for AI-Era Decisions'
+type: software
+version: 2.0.0
+date-released: '2026-07-28'
+repository-code: https://github.com/MontrealAI/forecasting-a-world-that-accelerates
+url: https://github.com/MontrealAI/forecasting-a-world-that-accelerates
+license: AGPL-3.0-or-later
+authors:
+- family-names: Boucher
+  given-names: Vincent
+  affiliation: MONTREAL.AI & QUEBEC.AI
+  email: info@quebec.ai
+abstract: A formal paper, executable protocol, complete probabilistic engine, strict
+  schemas, prospective registry, source-linked demonstrations, and reproducibility
+  package for forecasting realized outcomes when technical capability, cost, task
+  time, automation, reliability, adoption, constraints, and the governing growth regime
+  may change.
+keywords:
+- forecasting
+- artificial intelligence
+- acceleration
+- regime switching
+- probabilistic forecasting
+- hindcasting
+- prospective validation
+- decision science
+- reproducible research
+preferred-citation:
+  type: article
+  title: 'Forecasting a World That Accelerates: An Evidence-Grounded, Constraint-Limited,
+    Regime-Switching Framework for AI-Era Decisions'
+  authors:
+  - family-names: Boucher
+    given-names: Vincent
+    affiliation: MONTREAL.AI & QUEBEC.AI
+  year: 2026
+  publisher:
+    name: MONTREAL.AI & QUEBEC.AI
+  version: 2.0.0
+  url: https://github.com/MontrealAI/forecasting-a-world-that-accelerates

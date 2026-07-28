@@ -1,0 +1,25 @@
+{
+  "schema_version": "2.0.0",
+  "package_version": "2.0.0",
+  "assembled_on": "2026-07-28",
+  "canonical_repository": "https://github.com/MontrealAI/forecasting-a-world-that-accelerates",
+  "repository_published": false,
+  "signed_tag_verified": false,
+  "github_release_published": false,
+  "doi": null,
+  "preprint_identifier": null,
+  "peer_reviewed": false,
+  "independent_replication": false,
+  "prospective_validation_complete": false,
+  "counsel_approval_record": null,
+  "allowed_public_claim": "Versioned research artifact with mechanical verification, controlled mechanism tests, source-linked historical demonstrations, and prospective-validation infrastructure.",
+  "prohibited_unless_later_verified": [
+    "empirically proven forecasting superiority",
+    "calibrated discontinuity probability",
+    "independent replication",
+    "peer-review acceptance",
+    "patentability or freedom to operate",
+    "legal or regulatory approval",
+    "guaranteed forecast or commercial outcome"
+  ]
+}

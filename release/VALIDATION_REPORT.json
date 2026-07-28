@@ -1,0 +1,96 @@
+{
+  "claim_boundary": "Ceiling release against the declared artifact and verification rubric; not a claim of prospective scientific validation, peer review, legal approval, or commercial outcome.",
+  "evaluation": {
+    "controlled_regime_families": 5,
+    "controlled_workflow_critical_path_hours": 13.261512,
+    "measurement_audits": [
+      "U.S. Census BTOS AI-use construct break"
+    ],
+    "metr_accelerating_only_rmse_log": 0.2846005820456008,
+    "metr_full_model_average_mean_crps": 45.81204406682758,
+    "metr_full_model_average_mean_wis": 138.09879658685452,
+    "metr_probabilistic_origins": 6,
+    "public_evidence_demonstrations": [
+      "METR Time Horizon",
+      "SWE-bench Verified frontier"
+    ],
+    "validation_ladder": {
+      "L1_mechanical": "supplied",
+      "L2_controlled_mechanism": "supplied",
+      "L3_source_linked_historical": "supplied with limitations",
+      "L4_preregistered_prospective": "infrastructure supplied; outcomes pending",
+      "L5_independent_replication": "protocol supplied; external report pending",
+      "L6_decision_validation": "research program"
+    }
+  },
+  "generated_at": "2026-07-28T16:00:00+00:00",
+  "known_limits": [
+    "The public demonstrations are small and retrospective.",
+    "The bundled live prospective registry is intentionally empty.",
+    "Independent replication, peer review, DOI issuance, and preprint acceptance remain external gates.",
+    "No legal notice guarantees patentability, freedom to operate, regulatory compliance, or immunity from claims."
+  ],
+  "mechanical_verification": {
+    "branch_condition_coverage_percent": 80.46,
+    "branch_coverage_percent": 90.54,
+    "coverage_scope": "Combined line-plus-branch coverage of the declared scientific core; pure line and branch-condition rates are reported separately. Trivial __main__ dispatch and deterministic artifact orchestration are excluded.",
+    "line_coverage_percent": 93.41,
+    "live_registry_empty": true,
+    "paper_pages": 53,
+    "paper_sha256": "9b12e4369c723e0ef23c533ad8dd462b0aeb5acdeb4146a2e8a65e5987283dc9",
+    "prompt_byte_identical": true,
+    "reference_forecast_sha256": "e69ac453cfd32413d098926bd2c8133eca0025475bbe46ba6e63f9d0c545bae3",
+    "registry_chain_verified": true,
+    "schemas_passed": true,
+    "sdist_smoke_passed": true,
+    "tests_collected": 56,
+    "tests_passed": true,
+    "wheel_smoke_passed": true
+  },
+  "package_version": "2.0.0",
+  "publication_status": {
+    "allowed_public_claim": "Versioned research artifact with mechanical verification, controlled mechanism tests, source-linked historical demonstrations, and prospective-validation infrastructure.",
+    "assembled_on": "2026-07-28",
+    "canonical_repository": "https://github.com/MontrealAI/forecasting-a-world-that-accelerates",
+    "counsel_approval_record": null,
+    "doi": null,
+    "github_release_published": false,
+    "independent_replication": false,
+    "package_version": "2.0.0",
+    "peer_reviewed": false,
+    "preprint_identifier": null,
+    "prohibited_unless_later_verified": [
+      "empirically proven forecasting superiority",
+      "calibrated discontinuity probability",
+      "independent replication",
+      "peer-review acceptance",
+      "patentability or freedom to operate",
+      "legal or regulatory approval",
+      "guaranteed forecast or commercial outcome"
+    ],
+    "prospective_validation_complete": false,
+    "repository_published": false,
+    "schema_version": "2.0.0",
+    "signed_tag_verified": false
+  },
+  "quality_controls": {
+    "codeql_configured": true,
+    "cross_platform_ci": [
+      "Ubuntu/Python 3.11 and 3.13",
+      "macOS/Python 3.11 and 3.13",
+      "Windows/Python 3.11 and 3.13"
+    ],
+    "cyclonedx_sbom": true,
+    "dependency_audit_configured": true,
+    "deterministic_source_date_epoch": true,
+    "mypy": {
+      "configured_in_ci": true,
+      "local_execution": false
+    },
+    "ruff": {
+      "configured_in_ci": true,
+      "local_execution": false
+    }
+  },
+  "schema_version": "1.0.0"
+}

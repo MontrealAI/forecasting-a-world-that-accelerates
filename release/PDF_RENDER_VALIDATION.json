@@ -1,0 +1,277 @@
+{
+  "schema_version": "1.0.0",
+  "package_version": "2.0.0",
+  "pdfium_pages_rendered": 53,
+  "poppler_pages_rendered": 53,
+  "blank_pages_detected": 0,
+  "blank_page_candidates": [],
+  "contact_sheets_created": 4,
+  "minimum_nonwhite_fraction": 0.011976,
+  "page_metrics": [
+    {
+      "page": 1,
+      "nonwhite_fraction": 0.993348,
+      "bytes": 106550
+    },
+    {
+      "page": 2,
+      "nonwhite_fraction": 0.244412,
+      "bytes": 345438
+    },
+    {
+      "page": 3,
+      "nonwhite_fraction": 0.040948,
+      "bytes": 172539
+    },
+    {
+      "page": 4,
+      "nonwhite_fraction": 0.048477,
+      "bytes": 201943
+    },
+    {
+      "page": 5,
+      "nonwhite_fraction": 0.040683,
+      "bytes": 176085
+    },
+    {
+      "page": 6,
+      "nonwhite_fraction": 0.011976,
+      "bytes": 54710
+    },
+    {
+      "page": 7,
+      "nonwhite_fraction": 0.093897,
+      "bytes": 301790
+    },
+    {
+      "page": 8,
+      "nonwhite_fraction": 0.086534,
+      "bytes": 285889
+    },
+    {
+      "page": 9,
+      "nonwhite_fraction": 0.101572,
+      "bytes": 335347
+    },
+    {
+      "page": 10,
+      "nonwhite_fraction": 0.065039,
+      "bytes": 212849
+    },
+    {
+      "page": 11,
+      "nonwhite_fraction": 0.110074,
+      "bytes": 194142
+    },
+    {
+      "page": 12,
+      "nonwhite_fraction": 0.061014,
+      "bytes": 194245
+    },
+    {
+      "page": 13,
+      "nonwhite_fraction": 0.070575,
+      "bytes": 226434
+    },
+    {
+      "page": 14,
+      "nonwhite_fraction": 0.129367,
+      "bytes": 217984
+    },
+    {
+      "page": 15,
+      "nonwhite_fraction": 0.048753,
+      "bytes": 167976
+    },
+    {
+      "page": 16,
+      "nonwhite_fraction": 0.046294,
+      "bytes": 151072
+    },
+    {
+      "page": 17,
+      "nonwhite_fraction": 0.052539,
+      "bytes": 192406
+    },
+    {
+      "page": 18,
+      "nonwhite_fraction": 0.046148,
+      "bytes": 155307
+    },
+    {
+      "page": 19,
+      "nonwhite_fraction": 0.083734,
+      "bytes": 263902
+    },
+    {
+      "page": 20,
+      "nonwhite_fraction": 0.065992,
+      "bytes": 216610
+    },
+    {
+      "page": 21,
+      "nonwhite_fraction": 0.086016,
+      "bytes": 269400
+    },
+    {
+      "page": 22,
+      "nonwhite_fraction": 0.153025,
+      "bytes": 139528
+    },
+    {
+      "page": 23,
+      "nonwhite_fraction": 0.087744,
+      "bytes": 169537
+    },
+    {
+      "page": 24,
+      "nonwhite_fraction": 0.070525,
+      "bytes": 210676
+    },
+    {
+      "page": 25,
+      "nonwhite_fraction": 0.094284,
+      "bytes": 182396
+    },
+    {
+      "page": 26,
+      "nonwhite_fraction": 0.082024,
+      "bytes": 256310
+    },
+    {
+      "page": 27,
+      "nonwhite_fraction": 0.061676,
+      "bytes": 217526
+    },
+    {
+      "page": 28,
+      "nonwhite_fraction": 0.07363,
+      "bytes": 236297
+    },
+    {
+      "page": 29,
+      "nonwhite_fraction": 0.08342,
+      "bytes": 260299
+    },
+    {
+      "page": 30,
+      "nonwhite_fraction": 0.090745,
+      "bytes": 278710
+    },
+    {
+      "page": 31,
+      "nonwhite_fraction": 0.113997,
+      "bytes": 217121
+    },
+    {
+      "page": 32,
+      "nonwhite_fraction": 0.110088,
+      "bytes": 187701
+    },
+    {
+      "page": 33,
+      "nonwhite_fraction": 0.045154,
+      "bytes": 175800
+    },
+    {
+      "page": 34,
+      "nonwhite_fraction": 0.032192,
+      "bytes": 126011
+    },
+    {
+      "page": 35,
+      "nonwhite_fraction": 0.04608,
+      "bytes": 166781
+    },
+    {
+      "page": 36,
+      "nonwhite_fraction": 0.026192,
+      "bytes": 107519
+    },
+    {
+      "page": 37,
+      "nonwhite_fraction": 0.034253,
+      "bytes": 135801
+    },
+    {
+      "page": 38,
+      "nonwhite_fraction": 0.024323,
+      "bytes": 106689
+    },
+    {
+      "page": 39,
+      "nonwhite_fraction": 0.03602,
+      "bytes": 136167
+    },
+    {
+      "page": 40,
+      "nonwhite_fraction": 0.027059,
+      "bytes": 113936
+    },
+    {
+      "page": 41,
+      "nonwhite_fraction": 0.028688,
+      "bytes": 126322
+    },
+    {
+      "page": 42,
+      "nonwhite_fraction": 0.026863,
+      "bytes": 111881
+    },
+    {
+      "page": 43,
+      "nonwhite_fraction": 0.043223,
+      "bytes": 164691
+    },
+    {
+      "page": 44,
+      "nonwhite_fraction": 0.039275,
+      "bytes": 159063
+    },
+    {
+      "page": 45,
+      "nonwhite_fraction": 0.033973,
+      "bytes": 136799
+    },
+    {
+      "page": 46,
+      "nonwhite_fraction": 0.038115,
+      "bytes": 149567
+    },
+    {
+      "page": 47,
+      "nonwhite_fraction": 0.066004,
+      "bytes": 256036
+    },
+    {
+      "page": 48,
+      "nonwhite_fraction": 0.063902,
+      "bytes": 225974
+    },
+    {
+      "page": 49,
+      "nonwhite_fraction": 0.065716,
+      "bytes": 214215
+    },
+    {
+      "page": 50,
+      "nonwhite_fraction": 0.036179,
+      "bytes": 116353
+    },
+    {
+      "page": 51,
+      "nonwhite_fraction": 0.098382,
+      "bytes": 365080
+    },
+    {
+      "page": 52,
+      "nonwhite_fraction": 0.098434,
+      "bytes": 371459
+    },
+    {
+      "page": 53,
+      "nonwhite_fraction": 0.0433,
+      "bytes": 166648
+    }
+  ]
+}

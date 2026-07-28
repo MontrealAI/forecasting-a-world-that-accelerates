@@ -1,0 +1,37 @@
+{
+  "claim_boundary": "Clean-install smoke verification of the packaged CLI and deterministic reference forecast; not an external security audit or prospective forecast validation.",
+  "deterministic_equivalence": {
+    "forecast_html_byte_identical": true,
+    "forecast_json_byte_identical": true,
+    "sdist_forecast_id": "fwaa-wheel-smoke-2026-07-28",
+    "wheel_forecast_id": "fwaa-wheel-smoke-2026-07-28"
+  },
+  "environment": {
+    "implementation": "CPython",
+    "platform": "Linux-6.12.13-x86_64-with-glibc2.41",
+    "python": "3.13.5"
+  },
+  "generated_at": "2026-07-28T16:00:00+00:00",
+  "package_version": "2.0.0",
+  "schema_version": "1.0.0",
+  "source_distribution": {
+    "artifact": "forecasting_a_world_that_accelerates-2.0.0.tar.gz",
+    "bytes": 56533,
+    "cli_help": "passed",
+    "forecast": "passed",
+    "forecast_html_sha256": "4e81380deff4262c882b91641186b754115e759e769410e57db992cb98c5cf2f",
+    "forecast_json_sha256": "fe1a1a016d7840b2099ea05f99dfd8b3896c89c47b6bf21bfbf979e29e0a00e7",
+    "install": "passed",
+    "sha256": "77af04168889b87992b030eec4aafe88402edf1a89a3e7773ad241199cf49c66"
+  },
+  "wheel": {
+    "artifact": "forecasting_a_world_that_accelerates-2.0.0-py3-none-any.whl",
+    "bytes": 65732,
+    "cli_help": "passed",
+    "forecast": "passed",
+    "forecast_html_sha256": "4e81380deff4262c882b91641186b754115e759e769410e57db992cb98c5cf2f",
+    "forecast_json_sha256": "fe1a1a016d7840b2099ea05f99dfd8b3896c89c47b6bf21bfbf979e29e0a00e7",
+    "install": "passed",
+    "sha256": "c98d68c1e4789bd1156689c8f80d8de85a682aa9563a6f4f25de400d6284e16a"
+  }
+}

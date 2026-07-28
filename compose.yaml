@@ -1,0 +1,8 @@
+services:
+  verify:
+    build: .
+    working_dir: /work
+    command: make verify
+    volumes:
+      - ./dist:/work/dist
+      - ./results:/work/results

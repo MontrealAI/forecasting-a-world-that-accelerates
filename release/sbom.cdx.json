@@ -1,0 +1,135 @@
+{
+  "bomFormat": "CycloneDX",
+  "components": [
+    {
+      "bom-ref": "pkg:pypi/jsonschema@4.26.0",
+      "name": "jsonschema",
+      "purl": "pkg:pypi/jsonschema@4.26.0",
+      "scope": "required",
+      "type": "library",
+      "version": "4.26.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/matplotlib@3.10.8",
+      "name": "matplotlib",
+      "purl": "pkg:pypi/matplotlib@3.10.8",
+      "scope": "required",
+      "type": "library",
+      "version": "3.10.8"
+    },
+    {
+      "bom-ref": "pkg:pypi/networkx@3.6.1",
+      "name": "networkx",
+      "purl": "pkg:pypi/networkx@3.6.1",
+      "scope": "required",
+      "type": "library",
+      "version": "3.6.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/numpy@2.3.5",
+      "name": "numpy",
+      "purl": "pkg:pypi/numpy@2.3.5",
+      "scope": "required",
+      "type": "library",
+      "version": "2.3.5"
+    },
+    {
+      "bom-ref": "pkg:pypi/pandas@2.2.3",
+      "name": "pandas",
+      "purl": "pkg:pypi/pandas@2.2.3",
+      "scope": "required",
+      "type": "library",
+      "version": "2.2.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyyaml@6.0.3",
+      "name": "PyYAML",
+      "purl": "pkg:pypi/pyyaml@6.0.3",
+      "scope": "required",
+      "type": "library",
+      "version": "6.0.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/scipy@1.17.0",
+      "name": "scipy",
+      "purl": "pkg:pypi/scipy@1.17.0",
+      "scope": "required",
+      "type": "library",
+      "version": "1.17.0"
+    }
+  ],
+  "dependencies": [
+    {
+      "dependsOn": [
+        "pkg:pypi/jsonschema@4.26.0",
+        "pkg:pypi/matplotlib@3.10.8",
+        "pkg:pypi/networkx@3.6.1",
+        "pkg:pypi/numpy@2.3.5",
+        "pkg:pypi/pandas@2.2.3",
+        "pkg:pypi/pyyaml@6.0.3",
+        "pkg:pypi/scipy@1.17.0"
+      ],
+      "ref": "pkg:pypi/forecasting-a-world-that-accelerates@2.0.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/jsonschema@4.26.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/matplotlib@3.10.8"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/networkx@3.6.1"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/numpy@2.3.5"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/pandas@2.2.3"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/pyyaml@6.0.3"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/scipy@1.17.0"
+    }
+  ],
+  "metadata": {
+    "component": {
+      "bom-ref": "pkg:pypi/forecasting-a-world-that-accelerates@2.0.0",
+      "name": "forecasting-a-world-that-accelerates",
+      "purl": "pkg:pypi/forecasting-a-world-that-accelerates@2.0.0",
+      "type": "application",
+      "version": "2.0.0"
+    },
+    "properties": [
+      {
+        "name": "fwta:dependency-source",
+        "value": "requirements-lock.txt"
+      },
+      {
+        "name": "fwta:scope",
+        "value": "direct locked runtime dependencies"
+      }
+    ],
+    "timestamp": "2026-07-28T16:00:00+00:00",
+    "tools": {
+      "components": [
+        {
+          "name": "Forecasting a World That Accelerates SBOM generator",
+          "type": "application",
+          "version": "2.0.0"
+        }
+      ]
+    }
+  },
+  "serialNumber": "urn:uuid:76305fb2-1b92-f3ce-8116-fbbe0d461f78",
+  "specVersion": "1.5",
+  "version": 1
+}
