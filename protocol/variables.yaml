@@ -1,0 +1,55 @@
+protocol_version: 2.0.0
+variables:
+  Y_s:
+    meaning: Realized target outcome under scenario s
+    domain: nonnegative
+  Q_0:
+    meaning: Baseline technically deliverable output
+    domain: positive
+  g_Q_s:
+    meaning: Technical-output growth rate under scenario s
+    unit: inverse time
+  M_s:
+    meaning: Addressable market, mission volume, or demand pool
+    domain: nonnegative
+  D_s:
+    meaning: Adoption or penetration fraction
+    domain: "[0, 1]"
+  U_s:
+    meaning: Utilization or realized value per adopter
+    domain: nonnegative
+  B_s:
+    meaning: Residual bottleneck factor after double-counting audit
+    domain: "(0, 1]"
+  theta:
+    meaning: Latent capability level
+  c:
+    meaning: Cost per attempt or unit of work
+    domain: positive
+  tau:
+    meaning: Task-completion time
+    domain: positive
+  A:
+    meaning: Automatable workflow share
+    domain: "[0, 1]"
+  P:
+    meaning: Effective parallelism
+    domain: positive
+  R:
+    meaning: Verified reliability
+    domain: "(0, 1]"
+  beta_j:
+    meaning: Target-specific elasticity for component j
+  epsilon:
+    meaning: Positive stabilizing constant
+  rho:
+    meaning: Bottleneck sharpness parameter
+    domain: positive
+  A_R:
+    meaning: Independently verified and authorized autonomous share of the improvement loop
+    domain: "[0, 1]"
+  tau_transition:
+    meaning: Regime-transition time
+  q:
+    meaning: Growth-rate compounding coefficient after transition
+    domain: scenario-dependent

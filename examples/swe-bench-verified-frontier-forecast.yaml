@@ -1,0 +1,222 @@
+protocol_version: 2.0.0
+forecast_id: swe-bench-verified-frontier-demonstration-2026-07-28
+research_cutoff: '2026-07-28T14:00:00-04:00'
+target:
+  question: What bounded trajectory is implied by the selected public SWE-bench Verified
+    frontier records through December 2026?
+  metric: SWE-bench Verified frontier resolved rate
+  unit: percent resolved
+  scope: Selected official leaderboard frontier excerpt
+  horizon_end: '2026-12-31'
+  target_kind: probability
+  success_definition: Percent of the 500 human-filtered SWE-bench Verified instances
+    resolved under the recorded system configuration.
+  direction: higher_is_better
+  lower_bound: 0
+  upper_bound: 100
+decision_implication: Use the case to test bounded forecasting and saturation; do
+  not treat system leaderboard gains as isolated model capability or verified organizational
+  value.
+observations:
+- date: '2024-06-20'
+  value: 33.6
+  evidence_ids:
+  - swe-bench-official-leaderboard
+  - swe-bench-frontier-excerpt
+  comparable: true
+  note: Official leaderboard record; system-level result
+- date: '2024-10-22'
+  value: 49.0
+  evidence_ids:
+  - swe-bench-official-leaderboard
+  - swe-bench-frontier-excerpt
+  comparable: true
+  note: Official leaderboard record; checked flag false
+- date: '2025-01-10'
+  value: 60.2
+  evidence_ids:
+  - swe-bench-official-leaderboard
+  - swe-bench-frontier-excerpt
+  comparable: true
+  note: Official leaderboard record; multiple attempts
+- date: '2025-02-03'
+  value: 60.8
+  evidence_ids:
+  - swe-bench-official-leaderboard
+  - swe-bench-frontier-excerpt
+  comparable: true
+  note: Official leaderboard record; multiple attempts
+- date: '2025-07-31'
+  value: 74.8
+  evidence_ids:
+  - swe-bench-official-leaderboard
+  - swe-bench-frontier-excerpt
+  comparable: true
+  note: Official leaderboard record
+- date: '2025-09-28'
+  value: 78.8
+  evidence_ids:
+  - swe-bench-official-leaderboard
+  - swe-bench-frontier-excerpt
+  comparable: true
+  note: Official leaderboard record; multiple attempts
+- date: '2025-12-05'
+  value: 79.2
+  evidence_ids:
+  - swe-bench-official-leaderboard
+  - swe-bench-frontier-excerpt
+  comparable: true
+  note: Official leaderboard record
+evidence:
+- id: swe-bench-official-leaderboard
+  title: SWE-bench official leaderboard data — Verified track
+  publisher: SWE-bench
+  source_url: https://github.com/SWE-bench/swe-bench.github.io/blob/master/data/leaderboards.json
+  quality_grade: A
+  measurement_date: '2025-12-05'
+  publication_date: '2025-12-05'
+  accessed_at: '2026-07-28T14:00:00-04:00'
+  primary: true
+  claim: Official leaderboard records for system-level percent resolved on SWE-bench
+    Verified.
+  license: null
+  sha256: null
+  notes: The hash is the observed Git blob identifier, not a SHA-256 digest.
+- id: swe-bench-frontier-excerpt
+  title: FWAA selected SWE-bench Verified frontier excerpt
+  publisher: MONTREAL.AI
+  source_url: https://github.com/MontrealAI/forecasting-a-world-that-accelerates
+  quality_grade: B
+  measurement_date: '2025-12-05'
+  publication_date: '2026-07-28'
+  accessed_at: '2026-07-28T14:00:00-04:00'
+  primary: false
+  claim: Selected source-linked public frontier records for bounded-model demonstration.
+  license: null
+  sha256: null
+  notes: Not a complete leaderboard mirror.
+modeling:
+  candidate_models:
+  - linear
+  - exponential
+  - accelerating
+  - decaying_acceleration
+  - logistic
+  - change_point
+  bootstrap_samples: 100
+  random_seed: 20260729
+  interval_levels:
+  - 0.5
+  - 0.8
+  - 0.95
+  forecast_frequency: monthly
+  include_process_noise: true
+  hindcast_min_train: 4
+scenarios:
+- id: base
+  label: Base
+  kind: base
+  probability: 0.58
+  parameters: {}
+  assumptions:
+  - Model-averaged historical dynamics continue within the benchmark definition.
+  invalidation_conditions:
+  - A benchmark version change breaks comparability.
+- id: accelerated
+  label: Accelerated
+  kind: accelerated
+  probability: 0.2
+  parameters:
+    annual_growth_shift: 0.08
+    annual_acceleration_shift: 0.05
+  assumptions:
+  - Recent acceleration persists.
+  invalidation_conditions:
+  - Recent-window growth falls materially below the prior window.
+- id: downside
+  label: Saturation / measurement stress
+  kind: downside
+  probability: 0.17
+  parameters:
+    annual_drag: 0.18
+    immediate_multiplier: 0.98
+    floor_multiplier: 0.6
+  assumptions:
+  - Benchmark saturation or measurement limitations dominate.
+  invalidation_conditions:
+  - Fresh harder tasks preserve comparable headroom.
+- id: discontinuous
+  label: Discontinuous
+  kind: discontinuous
+  probability: 0.05
+  parameters:
+    annual_transition_hazard: 0.15
+    jump_multiplier: 1.15
+    growth_rate_compounding: 0.25
+    initial_growth_bonus: 0.12
+  assumptions:
+  - A structural improvement loop materially changes the trajectory.
+  invalidation_conditions:
+  - No verified regime-change signal appears.
+canonical_model:
+  mode: reduced_form
+  input_series_semantics: realized_outcome
+milestones:
+- id: p80
+  label: 80% resolved
+  threshold: 80
+  direction: at_least
+  prerequisites:
+  - Benchmark definition and system configuration remain comparable.
+- id: p90
+  label: 90% resolved
+  threshold: 90
+  direction: at_least
+  prerequisites:
+  - Fresh unsaturated tasks preserve meaning.
+bottlenecks:
+- name: Benchmark saturation and configuration drift
+  severity: high
+  mechanism: As scores rise, remaining tasks and changes in scaffolds, tools, attempts,
+    and model versions limit comparability.
+  release_condition: A harder fresh benchmark with controlled configuration is available.
+  mitigation: Track system metadata and use a bounded model with explicit version
+    breaks.
+  evidence_ids:
+  - swe-bench-official-leaderboard
+triggers:
+- name: Official leaderboard or benchmark revision
+  direction: event
+  threshold: New verified record or benchmark version
+  forecast_effect: May change both the level and the measurement regime.
+  action: Freeze the upstream file and rerun the bounded hindcast.
+  evidence_ids:
+  - swe-bench-official-leaderboard
+optimal_plan:
+  no_regret_actions:
+  - Freeze source snapshots and record benchmark/configuration changes.
+  - Use rolling-origin scores rather than in-sample fit alone.
+  option_preserving_actions:
+  - Maintain multiple model classes and trigger-based recalibration.
+  next_experiment:
+  - Add the complete upstream dataset and rerun the preregistered hindcast.
+  delay_pending_evidence:
+  - Do not translate benchmark movement directly into revenue or deployment.
+  stop_expand_pivot:
+  - Expand confidence only after independent replication and prospective calibration.
+assumptions:
+- The selected records approximate a cumulative public system frontier.
+limitations:
+- Only seven selected records.
+- Records combine model and scaffold effects and may differ in attempts.
+- Checked status varies across entries.
+- Submission date is not model release date.
+recalculation:
+  scheduled_date: '2026-08-27'
+  early_triggers:
+  - New official leaderboard record
+  - Benchmark version change
+  required_evidence:
+  - Complete leaderboard snapshot
+  - Configuration metadata
+  - Checked or independently reproduced status

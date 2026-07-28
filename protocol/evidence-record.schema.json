@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MontrealAI/forecasting-a-world-that-accelerates/blob/v2.0.0/protocol/evidence-record.schema.json",
+  "title": "Evidence Ledger Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["claim_id", "title", "issuer", "locator", "retrieved_at", "grade", "status"],
+  "properties": {
+    "claim_id": {"type": "string", "pattern": "^[A-Za-z0-9._-]+$"},
+    "title": {"type": "string", "minLength": 1},
+    "issuer": {"type": "string", "minLength": 1},
+    "locator": {"type": "string", "minLength": 1},
+    "persistent_identifier": {"type": ["string", "null"]},
+    "publication_date": {"type": ["string", "null"], "format": "date"},
+    "measurement_start": {"type": ["string", "null"], "format": "date"},
+    "measurement_end": {"type": ["string", "null"], "format": "date"},
+    "data_freeze_date": {"type": ["string", "null"], "format": "date"},
+    "retrieved_at": {"type": "string", "format": "date-time"},
+    "grade": {"enum": ["A", "B", "C", "D"]},
+    "status": {"enum": ["observed", "derived", "estimated", "assumed", "scenario-conditional"]},
+    "measurement": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["value", "unit"],
+      "properties": {
+        "value": {"type": ["number", "string"]},
+        "unit": {"type": "string"},
+        "lower": {"type": ["number", "null"]},
+        "upper": {"type": ["number", "null"]}
+      }
+    },
+    "comparability": {"enum": ["direct", "bridged", "not-comparable", "not-applicable"]},
+    "caveats": {"type": "array", "items": {"type": "string"}},
+    "sha256": {"type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$"}
+  }
+}

@@ -1,0 +1,8 @@
+date,system,resolved_percent,checked_status,use_for_hindcast,source_blob_sha,notes
+2024-06-20,SWE-agent + Claude 3.5 Sonnet,33.6,true,true,919477b488398c98c197cfd41f7717962dc826b1,Official leaderboard record; system-level result
+2024-10-22,Tools + Claude 3.5 Sonnet (2024-10-22),49.0,false,true,919477b488398c98c197cfd41f7717962dc826b1,Official leaderboard record; checked flag false
+2025-01-10,Learn-by-interact,60.2,false,true,919477b488398c98c197cfd41f7717962dc826b1,Official leaderboard record; multiple attempts
+2025-02-03,OpenHands + 4x Scaled,60.8,true,true,919477b488398c98c197cfd41f7717962dc826b1,Official leaderboard record; multiple attempts
+2025-07-31,Harness AI,74.8,false,true,919477b488398c98c197cfd41f7717962dc826b1,Official leaderboard record
+2025-09-28,TRAE + Doubao-Seed-Code,78.8,false,true,919477b488398c98c197cfd41f7717962dc826b1,Official leaderboard record; multiple attempts
+2025-12-05,Sonar Foundation Agent + Claude 4.5 Opus,79.2,false,true,919477b488398c98c197cfd41f7717962dc826b1,Official leaderboard record

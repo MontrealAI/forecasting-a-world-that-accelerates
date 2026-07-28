@@ -1,0 +1,52 @@
+time_unit: hours
+cost_unit: normalized
+parallel_workers: 4
+parallel_efficiency: 0.82
+coordination_coefficient: 0.18
+correlated_failure_penalty: 0.035
+tasks:
+  - task_id: scope
+    success_probability: 0.96
+    max_attempts: 2
+    ai_time: 0.35
+    verification_time: 0.20
+    human_fallback_time: 2.0
+    authority_latency: 0.35
+  - task_id: research-a
+    success_probability: 0.90
+    max_attempts: 3
+    ai_time: 1.10
+    verification_time: 0.35
+    human_fallback_time: 4.0
+    dependencies: [scope]
+  - task_id: research-b
+    success_probability: 0.88
+    max_attempts: 3
+    ai_time: 1.25
+    verification_time: 0.40
+    human_fallback_time: 4.5
+    dependencies: [scope]
+  - task_id: model
+    success_probability: 0.84
+    max_attempts: 3
+    ai_time: 1.60
+    verification_time: 0.65
+    human_fallback_time: 6.0
+    dependencies: [research-a, research-b]
+  - task_id: review
+    success_probability: 0.94
+    max_attempts: 2
+    ai_time: 0.70
+    verification_time: 0.80
+    human_fallback_time: 3.0
+    authority_latency: 1.5
+    dependencies: [model]
+  - task_id: release
+    success_probability: 0.98
+    max_attempts: 2
+    ai_time: 0.30
+    verification_time: 0.35
+    human_fallback_time: 2.0
+    authority_latency: 3.0
+    external_latency: 1.0
+    dependencies: [review]

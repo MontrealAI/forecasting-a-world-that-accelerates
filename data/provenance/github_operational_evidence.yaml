@@ -1,0 +1,16 @@
+dataset_id: github-operational-evidence-2026-07-28
+status: official-operational-evidence-excerpt
+retrieved_at: 2026-07-28T13:45:00-04:00
+purpose: evidence-clock example for adoption, automation, and operational throughput
+primary_sources:
+  - title: Octoverse 2025
+    publisher: GitHub
+    uri: https://github.blog/news-insights/octoverse/octoverse-2025/
+  - title: GitHub Copilot coding agent starts work faster
+    publisher: GitHub
+    uri: https://github.blog/changelog/2026-03-19-github-copilot-coding-agent-starts-work-faster/
+limitations:
+  - Metrics are not a single homogeneous time series.
+  - Pull-request volume is not equivalent to verified economic output.
+  - The reported speed improvement concerns work-start latency, not total task duration.
+license_note: Factual research excerpt with attribution; no upstream content is relicensed.

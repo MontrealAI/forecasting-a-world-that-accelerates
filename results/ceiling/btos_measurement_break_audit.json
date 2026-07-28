@@ -1,0 +1,63 @@
+{
+  "audit": "U.S. Census BTOS AI-use measurement break",
+  "break_date": "2025-11-17",
+  "break_description": "The core question changed from AI use in producing goods or services to AI use in any business function.",
+  "decision": "Do not splice goods_services_v1 and any_business_function_v2 into one adoption-growth series without a validated bridge study.",
+  "groups": {
+    "any_business_function_v2": {
+      "first_anchor": {
+        "comparability_group": "any_business_function_v2",
+        "exactness": "reference-period average",
+        "measure": "AI used in any business function",
+        "note": "2026 AI supplement reference period November 2025-January 2026.",
+        "reference_end": "2026-01-31",
+        "source_url": "https://www.census.gov/library/working-papers/2026/adrm/CES-WP-26-25.html",
+        "value_percent": 18.0
+      },
+      "fit_permitted_within_group": false,
+      "last_anchor": {
+        "comparability_group": "any_business_function_v2",
+        "exactness": "exact",
+        "measure": "AI used in any business function",
+        "note": "BTOS collection period ending May 3, 2026.",
+        "reference_end": "2026-05-03",
+        "source_url": "https://www.census.gov/library/stories/2026/05/ai-use-businesses.html",
+        "value_percent": 19.8
+      },
+      "measure": "AI used in any business function",
+      "n_anchors": 2
+    },
+    "goods_services_v1": {
+      "first_anchor": {
+        "comparability_group": "goods_services_v1",
+        "exactness": "exact",
+        "measure": "AI used to produce goods or services",
+        "note": "BTOS reference period October 23-November 5, 2023.",
+        "reference_end": "2023-11-05",
+        "source_url": "https://www.census.gov/library/stories/2023/11/businesses-use-ai.html",
+        "value_percent": 3.9
+      },
+      "fit_permitted_within_group": false,
+      "last_anchor": {
+        "comparability_group": "goods_services_v1",
+        "exactness": "rounded approximation",
+        "measure": "AI used to produce goods or services",
+        "note": "Census history page describes the May 2025 overall estimate as close to 10%.",
+        "reference_end": "2025-05-31",
+        "source_url": "https://www.census.gov/about/history/stories/monthly/2025/july-2025.html",
+        "value_percent": 10.0
+      },
+      "measure": "AI used to produce goods or services",
+      "n_anchors": 3
+    }
+  },
+  "primary_sources": [
+    "https://www.census.gov/library/stories/2023/11/businesses-use-ai.html",
+    "https://www.census.gov/library/working-papers/2024/adrm/CES-WP-24-16.html",
+    "https://www.census.gov/about/history/stories/monthly/2025/july-2025.html",
+    "https://www.census.gov/library/working-papers/2026/adrm/CES-WP-26-25.html",
+    "https://www.census.gov/library/stories/2026/05/ai-use-businesses.html"
+  ],
+  "status": "Comparability audit, not a forecast fit.",
+  "why_it_matters": "A naive concatenation would attribute a material part of the level jump to adoption rather than to a broader measurement construct."
+}

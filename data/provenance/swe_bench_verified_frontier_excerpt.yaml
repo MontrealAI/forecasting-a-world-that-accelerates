@@ -1,0 +1,22 @@
+dataset_id: swe-bench-verified-frontier-excerpt-2026-07-28
+status: transcribed-official-leaderboard-evidence
+retrieved_at: 2026-07-28T13:30:00-04:00
+purpose: bounded-score rolling-origin demonstration and saturation stress test
+primary_source:
+  title: SWE-bench official leaderboard data
+  repository: https://github.com/SWE-bench/swe-bench.github.io
+  file: data/leaderboards.json
+  repository_commit_observed: 15491f17ea8274f55686338291d7da27df4d1bd7
+  blob_sha: 919477b488398c98c197cfd41f7717962dc826b1
+  benchmark_track: Verified
+method:
+  - Selected dated records that establish a cumulative public frontier over the excerpt period.
+  - Retained the leaderboard checked flag rather than treating all entries as independently reproduced.
+  - Preserved the bounded 0–100 percent scale in the forecasting example.
+limitations:
+  - The excerpt is selective and is not a complete mirror of the official leaderboard.
+  - Results combine model, scaffold, tools, attempt count, and evaluation configuration.
+  - Submission date is not necessarily model release date.
+  - Leaderboard revisions can alter records; the upstream source is authoritative.
+  - A seven-point excerpt is too small for strong statistical conclusions.
+license_note: Factual research excerpt with attribution. Upstream rights and restrictions remain with their owners.

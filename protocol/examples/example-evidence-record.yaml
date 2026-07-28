@@ -1,0 +1,20 @@
+claim_id: METR-TH-2026-05-08
+title: Task-completion time-horizon measurements, version 1.1
+issuer: METR
+locator: https://metr.org/time-horizons/
+persistent_identifier: null
+publication_date: '2026-05-08'
+measurement_start: null
+measurement_end: null
+data_freeze_date: '2026-05-08'
+retrieved_at: '2026-07-28T14:00:00-04:00'
+grade: A
+status: observed
+measurement:
+  value: 719
+  unit: p50 human-expert minutes
+comparability: direct
+caveats:
+- Measurements above the suite's approximately 16-hour reliability range are excluded
+  from the reference hindcast.
+sha256: null

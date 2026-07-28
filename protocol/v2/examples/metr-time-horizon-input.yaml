@@ -1,0 +1,271 @@
+protocol_version: 2.0.0
+forecast_id: metr-time-horizon-public-demonstration-v2
+research_cutoff: '2026-07-28T12:00:00-04:00'
+target:
+  question: How may the measured METR p50 task-completion horizon evolve through February 2027 under the candidate
+    regimes?
+  metric: METR Time Horizon 1.1 p50 task-completion horizon
+  unit: human-expert minutes
+  scope: Frozen public excerpt below the published 16-hour reliability boundary
+  horizon_end: '2027-02-05'
+  target_kind: technical_capability
+  success_definition: Human-expert task duration at which the evaluated agent is predicted to succeed with probability
+    0.5 under the referenced benchmark methodology.
+  direction: higher_is_better
+  lower_bound: 0
+decision_implication: Treat the output as a benchmark-trajectory demonstration only; never convert it directly into
+  economy-wide autonomy or realized economic output.
+observations:
+- date: '2019-02-14'
+  value: 0.05
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2020-05-28'
+  value: 0.14
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2022-03-15'
+  value: 0.6
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2023-03-14'
+  value: 4.0
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2024-05-13'
+  value: 7.0
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2024-10-22'
+  value: 20.5
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2024-12-05'
+  value: 38.8
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2025-02-24'
+  value: 60.4
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2025-04-16'
+  value: 119.7
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2025-08-07'
+  value: 203.0
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2025-11-24'
+  value: 293.0
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2025-12-11'
+  value: 352.0
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2026-02-05'
+  value: 719.0
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: true
+  note: TH 1.1 public chart/table transcription
+- date: '2026-05-08'
+  value: 1045.0
+  evidence_ids:
+  - metr-th11-2026-05-08
+  comparable: false
+  note: Publication/update date used; release date not asserted; METR warns above 16 hours is unreliable
+evidence:
+- id: metr-th11-2026-05-08
+  title: Task-Completion Time Horizons of Frontier AI Models
+  publisher: METR
+  source_url: https://metr.org/time-horizons/
+  quality_grade: A
+  measurement_date: '2026-05-08'
+  publication_date: '2026-05-08'
+  accessed_at: '2026-07-28T12:00:00-04:00'
+  primary: true
+  claim: Public Time Horizon 1.1 measurements and methodology; values above 16 hours are reported as unreliable
+    with the current task suite.
+  license: null
+  sha256: null
+  notes: The local excerpt is a limited hand transcription; the upstream source is authoritative.
+- id: metr-paper-2503.14499
+  title: Measuring AI Ability to Complete Long Tasks
+  publisher: METR / arXiv
+  source_url: https://arxiv.org/abs/2503.14499
+  quality_grade: A
+  measurement_date: '2025-03-19'
+  publication_date: '2025-03-19'
+  accessed_at: '2026-07-28T12:00:00-04:00'
+  primary: true
+  claim: Defines and studies task-completion time horizons for frontier language-model agents.
+  license: null
+  sha256: null
+  notes: Benchmark-specific evidence; not a direct measure of economy-wide automation.
+modeling:
+  candidate_models:
+  - linear
+  - exponential
+  - accelerating
+  - decaying_acceleration
+  - logistic
+  - change_point
+  bootstrap_samples: 500
+  random_seed: 20260728
+  interval_levels:
+  - 0.5
+  - 0.8
+  - 0.95
+  forecast_frequency: monthly
+  include_process_noise: true
+  hindcast_min_train: 7
+scenarios:
+- id: base
+  label: Base
+  kind: base
+  probability: 0.55
+  parameters: {}
+  assumptions:
+  - Model-averaged continuation over the frozen comparable series.
+  invalidation_conditions:
+  - Official methodology or historical measurements are revised.
+- id: accelerated
+  label: Accelerated
+  kind: accelerated
+  probability: 0.2
+  parameters:
+    annual_growth_shift: 0.08
+    annual_acceleration_shift: 0.04
+  assumptions:
+  - Recent progress persists more strongly than the base case.
+  invalidation_conditions:
+  - Recent log-growth decelerates materially on comparable measurements.
+- id: downside
+  label: Constraint stress
+  kind: downside
+  probability: 0.2
+  parameters:
+    annual_drag: 0.18
+    immediate_multiplier: 0.95
+    floor_multiplier: 0.25
+  assumptions:
+  - Measurement, scaffolding, or reliability progress slows.
+  invalidation_conditions:
+  - New within-range measurements exceed the base p80 path.
+- id: discontinuous
+  label: Discontinuous
+  kind: discontinuous
+  probability: 0.05
+  parameters:
+    annual_transition_hazard: 0.2
+    jump_multiplier: 1.2
+    growth_rate_compounding: 0.35
+    initial_growth_bonus: 0.15
+  assumptions:
+  - A verified structural transition affects the measured task horizon.
+  invalidation_conditions:
+  - No independently reproduced transition signal appears.
+canonical_model:
+  mode: reduced_form
+  input_series_semantics: technical_capacity
+  operator: hard_min
+milestones:
+- id: m960
+  label: Published 16-hour measurement boundary
+  threshold: 960
+  direction: at_least
+  prerequisites:
+  - A successor evaluation suite validates measurements at or above the threshold.
+- id: m1440
+  label: 24-hour benchmark horizon
+  threshold: 1440
+  direction: at_least
+  prerequisites:
+  - Measurement reliability is extended beyond 16 hours.
+bottlenecks:
+- name: Measurement range
+  severity: high
+  mechanism: The current task suite is reported as unreliable above 16 hours.
+  release_condition: A validated successor suite measures above 16 hours.
+  mitigation: Treat beyond-range values as scenario extrapolations and rerun when official data arrive.
+  evidence_ids:
+  - metr-th11-2026-05-08
+- name: External validity
+  severity: high
+  mechanism: The suite is dominated by well-specified software, ML, and cybersecurity tasks.
+  release_condition: Independent domain-diverse evaluations reproduce the trend.
+  mitigation: Do not equate the benchmark with all economically valuable work.
+  evidence_ids:
+  - metr-th11-2026-05-08
+  - metr-paper-2503.14499
+triggers:
+- name: Official METR measurement update
+  direction: event
+  threshold: Any new or revised Time Horizon 1.1 result
+  forecast_effect: Replace the frozen excerpt and rerun every fit and hindcast.
+  action: Recalculate immediately and preserve the prior registered forecast.
+  evidence_ids:
+  - metr-th11-2026-05-08
+- name: Validated range extension
+  direction: above
+  threshold: Official suite reliable beyond 960 minutes
+  forecast_effect: Permit empirical evaluation of currently extrapolated milestones.
+  action: Remove the measurement-boundary caveat only after source verification.
+  evidence_ids:
+  - metr-th11-2026-05-08
+optimal_plan:
+  no_regret_actions:
+  - Preserve the complete official data snapshot and evaluation metadata.
+  - Separate benchmark capability from verified real-world execution.
+  option_preserving_actions:
+  - Maintain a rerunnable forecast specification and source ledger.
+  next_experiment:
+  - Run the same frozen protocol on a domain-diverse, independently reproduced task-horizon series.
+  delay_pending_evidence:
+  - Any economic claim inferred solely from the benchmark trend.
+  stop_expand_pivot:
+  - Expand empirical confidence only after more origins and validated measurement range; stop direct extrapolation
+    after a methodology break.
+assumptions:
+- The included below-range records are sufficiently comparable for a limited methodological demonstration.
+- Scenario probabilities are judgmental rather than empirically estimated.
+limitations:
+- Small hand-transcribed excerpt with six one-step hindcast origins.
+- Task horizon is not agent runtime, job automation, revenue, or realized output.
+- Forecast values above 960 minutes are outside the stated reliable measurement range.
+recalculation:
+  scheduled_date: '2026-08-27'
+  early_triggers:
+  - New official METR data
+  - Methodology revision
+  - Independent replication or contradiction
+  required_evidence:
+  - Official data freeze
+  - Updated methodology notes
+  - Any range-extension evidence

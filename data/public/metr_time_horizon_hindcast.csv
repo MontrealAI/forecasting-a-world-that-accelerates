@@ -1,0 +1,14 @@
+release_date,model,p50_minutes,source_status,notes
+2019-02-14,GPT-2,0.05,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2020-05-28,davinci-002,0.14,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2022-03-15,gpt-3.5-turbo-instruct,0.6,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2023-03-14,GPT-4,4.0,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2024-05-13,GPT-4o,7.0,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2024-10-22,Claude 3.5 Sonnet (New),20.5,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2024-12-05,o1,38.8,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2025-02-24,Claude 3.7 Sonnet,60.4,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2025-04-16,o3,119.7,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2025-08-07,GPT-5,203.0,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2025-11-24,Claude Opus 4.5,293.0,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2025-12-11,GPT-5.2,352.0,transcribed-public-measurement,TH 1.1 public chart/table transcription
+2026-02-05,Claude Opus 4.6,719.0,transcribed-public-measurement,TH 1.1 public chart/table transcription

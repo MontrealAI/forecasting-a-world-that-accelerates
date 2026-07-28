@@ -1,0 +1,19 @@
+dataset_id: metr-time-horizon-excerpt-2026-05-08
+status: transcribed-public-evidence
+retrieved_at: 2026-07-28T11:47:00-04:00
+purpose: illustrative rolling-origin hindcast and model-comparison example
+primary_sources:
+  - title: Task-Completion Time Horizons of Frontier AI Models
+    uri: https://metr.org/time-horizons/
+    last_updated: 2026-05-08
+  - title: Measuring AI Ability to Complete Long Software Tasks
+    uri: https://doi.org/10.48550/arXiv.2503.14499
+    version_date: 2026-07-10
+  - title: METR eval-analysis-public
+    uri: https://github.com/METR/eval-analysis-public
+limitations:
+  - Hand transcription can contain errors; upstream sources are authoritative.
+  - The excerpt is neither complete nor necessarily frontier-only at every date.
+  - Values are task-suite-specific and do not measure runtime or economy-wide automation.
+  - The record above 16 hours is excluded from fitting because METR flags it as unreliable.
+license_note: Upstream rights and restrictions remain with their respective owners; inclusion is factual research data with attribution, not relicensing.

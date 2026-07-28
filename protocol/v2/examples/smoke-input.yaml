@@ -1,0 +1,305 @@
+protocol_version: 2.0.0
+forecast_id: fwaa-wheel-smoke-2026-07-28
+research_cutoff: '2026-07-28T12:00:00-04:00'
+target:
+  question: How many verified missions per month can this controlled system realize through July 2028 under changing technical capacity, adoption, and bottlenecks?
+  metric: Realized verified missions per month
+  unit: verified missions/month
+  scope: Controlled reference system
+  horizon_end: '2027-01-31'
+  target_kind: flow
+  success_definition: A mission is counted only after execution, verification, authorization, and acceptance.
+  direction: higher_is_better
+decision_implication: Expand reversible capacity and verification now; delay irreversible commitments until the demand and authority triggers confirm the accelerated regime.
+observations:
+- date: '2022-01-28'
+  value: 10.0
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2022-04-28'
+  value: 11.1291
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2022-07-28'
+  value: 11.7629
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2022-10-28'
+  value: 12.6686
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2023-01-28'
+  value: 14.4391
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2023-04-28'
+  value: 16.0745
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2023-07-28'
+  value: 17.1816
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2023-10-28'
+  value: 19.1887
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2024-01-28'
+  value: 22.2884
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2024-04-28'
+  value: 24.7714
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2024-07-28'
+  value: 27.0395
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2024-10-28'
+  value: 31.2978
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2025-01-28'
+  value: 36.6928
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2025-04-28'
+  value: 40.8357
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2025-07-28'
+  value: 45.9264
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2025-10-28'
+  value: 54.8032
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2026-01-28'
+  value: 64.3648
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2026-04-28'
+  value: 72.25
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+- date: '2026-07-28'
+  value: 84.1942
+  evidence_ids:
+  - controlled-reference-series
+  comparable: true
+  note: Deterministic controlled capacity series for the end-to-end reference run.
+evidence:
+- id: controlled-reference-series
+  title: FWAA deterministic controlled capacity series v2.0.0
+  publisher: MONTREAL.AI
+  source_url: https://github.com/MontrealAI/forecasting-a-world-that-accelerates
+  quality_grade: A
+  measurement_date: '2026-07-28'
+  publication_date: '2026-07-28'
+  accessed_at: '2026-07-28T12:00:00-04:00'
+  primary: true
+  claim: Controlled mechanism data used to verify the complete forecast pipeline; not evidence about future real-world AI progress.
+  license: CC BY-NC-SA 4.0
+  sha256: null
+  notes: Synthetic and deterministic by design.
+modeling:
+  candidate_models:
+  - linear
+  - exponential
+  - accelerating
+  bootstrap_samples: 50
+  random_seed: 20260728
+  interval_levels:
+  - 0.5
+  - 0.8
+  - 0.95
+  forecast_frequency: monthly
+  include_process_noise: true
+  hindcast_min_train: 8
+scenarios:
+- id: base
+  label: Base
+  kind: base
+  probability: 0.55
+  parameters: {}
+  assumptions:
+  - Recent progress continues with model uncertainty and current constraints.
+  invalidation_conditions:
+  - Observed output leaves the 80% interval for two consecutive measurement periods.
+- id: accelerated
+  label: Accelerated
+  kind: accelerated
+  probability: 0.22
+  parameters:
+    annual_growth_shift: 0.1
+    annual_acceleration_shift: 0.07
+  assumptions:
+  - Task-time compression and parallelism continue improving faster than the base case.
+  invalidation_conditions:
+  - Acceleration falls below zero across both six-month windows.
+- id: downside
+  label: Constraint stress
+  kind: downside
+  probability: 0.13
+  parameters:
+    annual_drag: 0.18
+    immediate_multiplier: 0.93
+    floor_multiplier: 0.25
+  assumptions:
+  - Trust, authority, or infrastructure releases more slowly than expected.
+  invalidation_conditions:
+  - Bottleneck indicators improve above the release thresholds.
+- id: discontinuous
+  label: Discontinuous
+  kind: discontinuous
+  probability: 0.1
+  parameters:
+    annual_transition_hazard: 0.3
+    jump_multiplier: 1.25
+    growth_rate_compounding: 0.42
+    initial_growth_bonus: 0.2
+  assumptions:
+  - A material share of the improvement loop becomes verified and authorized for autonomous execution.
+  invalidation_conditions:
+  - No independently reproduced recursive-improvement signal appears by the trigger date.
+canonical_model:
+  mode: technical_to_realized
+  input_series_semantics: technical_capacity
+  operator: generalized
+  alpha: 0.5
+  rho: 10.0
+  absorptive_demand:
+    market_baseline: 145.0
+    market_annual_growth: 0.1
+    adoption_baseline: 0.22
+    adoption_annual_logit_change: 0.72
+    utilization_baseline: 1.0
+    utilization_annual_growth: 0.05
+  branch_constraints:
+    technical_baseline: 0.88
+    technical_annual_logit_change: 0.18
+    demand_baseline: 0.84
+    demand_annual_logit_change: 0.22
+    transfer_baseline: 0.74
+    transfer_annual_logit_change: 0.3
+milestones:
+- id: m30
+  label: 30 realized verified missions/month
+  threshold: 30
+  direction: at_least
+  prerequisites:
+  - Verification and authority thresholds remain satisfied.
+- id: m50
+  label: 50 realized verified missions/month
+  threshold: 50
+  direction: at_least
+  prerequisites:
+  - Absorptive demand and transfer bottlenecks release.
+bottlenecks:
+- name: Transfer trust and authorization
+  severity: high
+  mechanism: Technically completed work cannot be counted until it is verified, authorized, and accepted.
+  release_condition: Transfer factor exceeds 0.85 with no material control failure.
+  mitigation: Use proof-carrying outputs, bounded permissions, and pre-agreed acceptance tests.
+  evidence_ids:
+  - controlled-reference-series
+- name: Absorptive demand
+  severity: moderate
+  mechanism: Usable capacity can exceed the number of missions institutions are ready to assign and absorb.
+  release_condition: Adoption and utilization grow without a corresponding increase in rejection or rework.
+  mitigation: Prioritize high-value bounded workflows and shorten procurement and onboarding.
+  evidence_ids:
+  - controlled-reference-series
+triggers:
+- name: Verified recursive-improvement reproduction
+  direction: event
+  threshold: Independent reproduction on fresh tasks
+  forecast_effect: Increase discontinuous-regime hazard and shorten milestone dates.
+  action: Recalculate immediately; expand reversible compute and experiment capacity.
+  evidence_ids:
+  - controlled-reference-series
+- name: Transfer bottleneck
+  direction: above
+  threshold: 0.85
+  forecast_effect: Raise realized output toward technical capacity.
+  action: Expand deployment while preserving proof and rollback controls.
+  evidence_ids:
+  - controlled-reference-series
+- name: Observed output versus base interval
+  direction: crosses
+  threshold: Two consecutive periods outside p80
+  forecast_effect: Invalidate current calibration.
+  action: Freeze irreversible decisions and rerun the complete evidence clock.
+  evidence_ids:
+  - controlled-reference-series
+optimal_plan:
+  no_regret_actions:
+  - Instrument every forecast variable and preserve source snapshots.
+  - Increase verification throughput and reusable evidence production.
+  option_preserving_actions:
+  - Reserve scalable compute and parallel execution capacity without long lock-ins.
+  - Pre-authorize bounded experiments with explicit stop conditions.
+  next_experiment:
+  - Run a fresh-task, equal-constraint transfer test with independent replay.
+  delay_pending_evidence:
+  - Irreversible physical expansion unsupported by current demand.
+  stop_expand_pivot:
+  - Expand when verified outcomes exceed base p80 and bottlenecks improve; stop on control failure; pivot when demand becomes the active branch.
+assumptions:
+- The controlled capacity series is positive and comparable.
+- Scenario probabilities are judgmental and must be revised as evidence arrives.
+- The realization-family parameters are structural sensitivity assumptions, not empirically identified causal estimates.
+limitations:
+- This reference run uses controlled data and demonstrates mechanics rather than real-world predictive validity.
+- Discontinuity timing is deeply uncertain and constrained by the stated hazard model.
+recalculation:
+  scheduled_date: '2026-08-27'
+  early_triggers:
+  - Any material source revision
+  - Two observations outside the base 80% interval
+  - A verified recursive-improvement event
+  - A major authority, regulation, compute, energy, or supply shock
+  required_evidence:
+  - Latest target observation
+  - Updated bottleneck factors
+  - Verification failure and rework rates
+  - Adoption and utilization measurements
+  - Fresh model and task-horizon evidence

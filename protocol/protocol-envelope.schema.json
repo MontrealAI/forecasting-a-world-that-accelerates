@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://montreal.ai/schemas/fwaa/v2/protocol-envelope.schema.json",
+  "title": "FWTA Protocol Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "input"
+  ],
+  "properties": {
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "canonical_model"
+      ],
+      "properties": {
+        "id": {
+          "const": "FWTA-\u03a9"
+        },
+        "version": {
+          "const": "2.0.0"
+        },
+        "canonical_model": {
+          "const": "FWAA-CM-2"
+        }
+      }
+    },
+    "input": {
+      "$ref": "https://montreal.ai/schemas/fwaa/v2/input.schema.json"
+    },
+    "output": {
+      "$ref": "https://montreal.ai/schemas/fwaa/v2/output.schema.json"
+    }
+  }
+}

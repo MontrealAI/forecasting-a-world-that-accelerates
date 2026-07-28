@@ -1,0 +1,1004 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://montreal.ai/schemas/fwaa/v2/output.schema.json",
+  "title": "FWAA v2 forecast output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol_version",
+    "engine_version",
+    "forecast_id",
+    "generated_at",
+    "research_cutoff",
+    "target",
+    "executive_forecast",
+    "observations",
+    "evidence",
+    "current_pace",
+    "compact_canonical_model",
+    "model_fit",
+    "forecast_dates",
+    "scenarios",
+    "milestones",
+    "bottlenecks",
+    "triggers",
+    "optimal_plan",
+    "confidence",
+    "recalculation",
+    "reproducibility",
+    "legal_notice"
+  ],
+  "properties": {
+    "protocol_version": {
+      "const": "2.0.0"
+    },
+    "engine_version": {
+      "type": "string"
+    },
+    "forecast_id": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+    },
+    "research_cutoff": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question",
+        "metric",
+        "unit",
+        "scope",
+        "horizon_end",
+        "target_kind"
+      ],
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 8
+        },
+        "metric": {
+          "type": "string",
+          "minLength": 2
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 2
+        },
+        "horizon_end": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+        },
+        "target_kind": {
+          "enum": [
+            "stock",
+            "flow",
+            "probability",
+            "threshold",
+            "completion_date",
+            "adoption_fraction",
+            "revenue",
+            "technical_capability",
+            "other"
+          ]
+        },
+        "success_definition": {
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "higher_is_better",
+            "lower_is_better"
+          ]
+        },
+        "lower_bound": {
+          "type": "number"
+        },
+        "upper_bound": {
+          "type": "number"
+        }
+      }
+    },
+    "executive_forecast": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_horizon_median",
+        "base_horizon_p80",
+        "decision_implication",
+        "validation_status"
+      ],
+      "properties": {
+        "base_horizon_median": {
+          "type": "number",
+          "minimum": 0
+        },
+        "base_horizon_p80": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "level",
+            "lower",
+            "upper"
+          ],
+          "properties": {
+            "level": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1
+            },
+            "lower": {
+              "type": "number",
+              "minimum": 0
+            },
+            "upper": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "decision_implication": {
+          "type": "string"
+        },
+        "validation_status": {
+          "type": "string"
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "value",
+          "evidence_ids"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+          },
+          "value": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "comparable": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "publisher",
+          "source_url",
+          "quality_grade",
+          "measurement_date",
+          "publication_date",
+          "accessed_at",
+          "primary",
+          "claim"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 3
+          },
+          "publisher": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "quality_grade": {
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "measurement_date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+          },
+          "publication_date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+          },
+          "accessed_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+          },
+          "primary": {
+            "type": "boolean"
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 3
+          },
+          "license": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "current_pace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "anchor_dates",
+        "anchor_values",
+        "recent_continuous_growth",
+        "prior_continuous_growth",
+        "annualized_recent_change",
+        "annualized_prior_change",
+        "log_growth_acceleration",
+        "recent_doubling_time_years",
+        "note"
+      ],
+      "properties": {
+        "anchor_dates": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+          }
+        },
+        "anchor_values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "recent_continuous_growth": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "prior_continuous_growth": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "annualized_recent_change": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "annualized_prior_change": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "log_growth_acceleration": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "recent_doubling_time_years": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "compact_canonical_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "equation",
+        "technical_growth_equation",
+        "generalized_family",
+        "configuration",
+        "diagnostics",
+        "plain_language"
+      ],
+      "properties": {
+        "equation": {
+          "type": "string"
+        },
+        "technical_growth_equation": {
+          "type": "string"
+        },
+        "generalized_family": {
+          "type": "string"
+        },
+        "configuration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode"
+          ],
+          "properties": {
+            "mode": {
+              "enum": [
+                "reduced_form",
+                "technical_to_realized"
+              ]
+            },
+            "operator": {
+              "enum": [
+                "hard_min",
+                "generalized"
+              ]
+            },
+            "alpha": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1
+            },
+            "rho": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "absorptive_demand": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "market_baseline",
+                "adoption_baseline"
+              ],
+              "properties": {
+                "market_baseline": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "market_annual_growth": {
+                  "type": "number"
+                },
+                "adoption_baseline": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "exclusiveMaximum": 1
+                },
+                "adoption_annual_logit_change": {
+                  "type": "number"
+                },
+                "utilization_baseline": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "utilization_annual_growth": {
+                  "type": "number"
+                }
+              }
+            },
+            "branch_constraints": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "technical_baseline": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "exclusiveMaximum": 1
+                },
+                "technical_annual_logit_change": {
+                  "type": "number"
+                },
+                "demand_baseline": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "exclusiveMaximum": 1
+                },
+                "demand_annual_logit_change": {
+                  "type": "number"
+                },
+                "transfer_baseline": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "exclusiveMaximum": 1
+                },
+                "transfer_annual_logit_change": {
+                  "type": "number"
+                }
+              }
+            },
+            "input_series_semantics": {
+              "enum": [
+                "realized_outcome",
+                "technical_capacity"
+              ]
+            },
+            "uncertainty": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "market_baseline_log_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "market_annual_growth_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "adoption_baseline_logit_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "adoption_annual_logit_change_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "utilization_baseline_log_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "utilization_annual_growth_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "technical_baseline_logit_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "technical_annual_logit_change_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "demand_baseline_logit_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "demand_annual_logit_change_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "transfer_baseline_logit_sd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "transfer_annual_logit_change_sd": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "mode": {
+                    "const": "technical_to_realized"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "absorptive_demand",
+                  "operator"
+                ]
+              }
+            }
+          ]
+        },
+        "diagnostics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "median",
+                "p10",
+                "p90"
+              ],
+              "properties": {
+                "median": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "p10": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "p90": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "plain_language": {
+          "type": "string"
+        }
+      }
+    },
+    "model_fit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_models",
+        "fits",
+        "base_model_weights",
+        "horizon_log_disagreement",
+        "rolling_origin_hindcast"
+      ],
+      "properties": {
+        "candidate_models": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "model",
+              "converged",
+              "parameters",
+              "n_observations",
+              "n_parameters",
+              "log_likelihood",
+              "aicc",
+              "bic",
+              "rmse_log",
+              "mae_log",
+              "horizon_prediction",
+              "message"
+            ],
+            "properties": {
+              "model": {
+                "type": "string"
+              },
+              "converged": {
+                "type": "boolean"
+              },
+              "parameters": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number"
+                }
+              },
+              "n_observations": {
+                "type": "integer"
+              },
+              "n_parameters": {
+                "type": "integer"
+              },
+              "log_likelihood": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "aicc": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "bic": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "rmse_log": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "mae_log": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "horizon_prediction": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "base_model_weights": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "horizon_log_disagreement": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rolling_origin_hindcast": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "model",
+              "n",
+              "rmse_log",
+              "mae_log",
+              "smape"
+            ],
+            "properties": {
+              "model": {
+                "type": "string"
+              },
+              "n": {
+                "type": "integer"
+              },
+              "rmse_log": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "mae_log": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "smape": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "forecast_dates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "kind",
+          "probability",
+          "assumptions",
+          "parameters",
+          "forecast_points",
+          "horizon_summary",
+          "invalidation_conditions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "probability": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "forecast_points": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "date",
+                "median",
+                "mean",
+                "intervals"
+              ],
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+                },
+                "median": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "mean": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "intervals": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "level",
+                      "lower",
+                      "upper"
+                    ],
+                    "properties": {
+                      "level": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "exclusiveMaximum": 1
+                      },
+                      "lower": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "upper": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "horizon_summary": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "date",
+              "median",
+              "mean",
+              "intervals"
+            ],
+            "properties": {
+              "date": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+              },
+              "median": {
+                "type": "number",
+                "minimum": 0
+              },
+              "mean": {
+                "type": "number",
+                "minimum": 0
+              },
+              "intervals": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "level",
+                    "lower",
+                    "upper"
+                  ],
+                  "properties": {
+                    "level": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "exclusiveMaximum": 1
+                    },
+                    "lower": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "upper": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "invalidation_conditions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "bottlenecks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "triggers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "optimal_plan": {
+      "type": "object"
+    },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_quality_score",
+        "horizon_log_model_disagreement",
+        "base_horizon_p80_relative_width",
+        "limitations",
+        "assumptions"
+      ],
+      "properties": {
+        "evidence_quality_score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "horizon_log_model_disagreement": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "base_horizon_p80_relative_width": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "recalculation": {
+      "type": "object"
+    },
+    "reproducibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_sha256",
+        "random_seed",
+        "bootstrap_samples_requested",
+        "bootstrap_samples_successful",
+        "models",
+        "code_version"
+      ],
+      "properties": {
+        "input_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "random_seed": {
+          "type": "integer"
+        },
+        "bootstrap_samples_requested": {
+          "type": "integer"
+        },
+        "bootstrap_samples_successful": {
+          "type": "integer"
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "code_version": {
+          "type": "string"
+        }
+      }
+    },
+    "legal_notice": {
+      "type": "string"
+    }
+  }
+}

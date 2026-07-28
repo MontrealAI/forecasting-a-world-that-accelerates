@@ -1,0 +1,1321 @@
+{
+  "bottlenecks": [
+    {
+      "evidence_ids": [
+        "metr-time-horizon-1-1"
+      ],
+      "mechanism": "The published task suite becomes unreliable above approximately 16 hours.",
+      "mitigation": "Treat 960 minutes as a measurement boundary, not a capability ceiling.",
+      "name": "Benchmark measurement range",
+      "release_condition": "A validated harder task suite extends the measurable range.",
+      "severity": "critical"
+    }
+  ],
+  "compact_canonical_model": {
+    "configuration": {
+      "input_series_semantics": "realized_outcome",
+      "mode": "reduced_form"
+    },
+    "diagnostics": {
+      "accelerated": {},
+      "base": {},
+      "discontinuous": {},
+      "downside": {}
+    },
+    "equation": "Y_s(t)=B_s(t) min{Q_0 exp[int_0^t g_Q,s(u) du], M_s(t)D_s(t)U_s(t)}",
+    "generalized_family": "Y=B_X[alpha(B_Q Q)^(-rho)+(1-alpha)(B_Z Z)^(-rho)]^(-1/rho); rho->infinity yields the hard minimum.",
+    "plain_language": "Realized output is limited by technical capacity and absorptive demand, with branch-specific and transfer constraints applied exactly once.",
+    "technical_growth_equation": "g_Q,s=beta_theta theta_dot-beta_c c_dot/c-beta_tau tau_dot/tau+beta_A A_dot/(A+epsilon)+beta_P P_dot/P+beta_R R_dot/R"
+  },
+  "confidence": {
+    "assumptions": [
+      "The selected within-range observations are sufficiently comparable for an illustrative reduced-form fit."
+    ],
+    "base_horizon_p80_relative_width": 0.0,
+    "evidence_quality_score": 0.9,
+    "horizon_log_model_disagreement": 1.694071192586217,
+    "limitations": [
+      "Small, incomplete, hand-transcribed excerpt.",
+      "Benchmark horizon is not runtime, autonomy duration, or economy-wide automation.",
+      "The 960-minute cap represents a measurement boundary."
+    ]
+  },
+  "current_pace": {
+    "anchor_dates": {
+      "current": "2026-02-05",
+      "six_months_ago": "2025-08-05",
+      "twelve_months_ago": "2025-02-05"
+    },
+    "anchor_values": {
+      "current": 719.0000000000002,
+      "six_months_ago": 201.11100093854776,
+      "twelve_months_ago": 54.44421811535221
+    },
+    "annualized_prior_change": 12.96800047273713,
+    "annualized_recent_change": 11.539905028564826,
+    "log_growth_acceleration": -0.2158494541054668,
+    "note": "Rates use log interpolation at six- and twelve-month anchors.",
+    "prior_continuous_growth": 2.636769032941542,
+    "recent_continuous_growth": 2.5289159616964167,
+    "recent_doubling_time_years": 0.274088657376727
+  },
+  "engine_version": "2.0.0",
+  "evidence": [
+    {
+      "accessed_at": "2026-07-28T14:00:00-04:00",
+      "claim": "Official methodology and public measurements; values above approximately 16 hours are flagged as unreliable.",
+      "id": "metr-time-horizon-1-1",
+      "license": null,
+      "measurement_date": "2026-05-08",
+      "notes": "Official upstream source is authoritative.",
+      "primary": true,
+      "publication_date": "2026-05-08",
+      "publisher": "METR",
+      "quality_grade": "A",
+      "sha256": null,
+      "source_url": "https://metr.org/time-horizons/",
+      "title": "Task-Completion Time Horizons of Frontier AI Models, version 1.1"
+    },
+    {
+      "accessed_at": "2026-07-28T14:00:00-04:00",
+      "claim": "Hand-transcribed, source-linked excerpt for reproducible demonstration.",
+      "id": "metr-transcribed-excerpt",
+      "license": null,
+      "measurement_date": "2026-05-08",
+      "notes": "May contain transcription error; upstream source controls.",
+      "primary": false,
+      "publication_date": "2026-07-28",
+      "publisher": "MONTREAL.AI",
+      "quality_grade": "B",
+      "sha256": null,
+      "source_url": "https://github.com/MontrealAI/forecasting-a-world-that-accelerates",
+      "title": "FWAA METR public excerpt"
+    }
+  ],
+  "executive_forecast": {
+    "base_horizon_median": 960.0,
+    "base_horizon_p80": {
+      "level": 0.8,
+      "lower": 960.0,
+      "upper": 960.0
+    },
+    "decision_implication": "Use the result as a benchmark-trajectory demonstration only; do not convert it directly into autonomous economic output.",
+    "validation_status": "Probabilistic reference forecast; not a guarantee or assurance engagement."
+  },
+  "forecast_dates": [
+    "2026-07-28",
+    "2026-08-01",
+    "2026-09-01",
+    "2026-10-01",
+    "2026-11-01",
+    "2026-12-01",
+    "2026-12-31"
+  ],
+  "forecast_id": "metr-time-horizon-demonstration-2026-07-28",
+  "generated_at": "2026-07-28T16:00:00+00:00",
+  "legal_notice": "Research and decision-support output only. No warranty, assurance, legal, investment, tax, medical, or regulatory advice is provided.",
+  "milestones": [
+    {
+      "direction": "at_least",
+      "id": "suite-limit",
+      "label": "Published approximate 16-hour reliability boundary",
+      "prerequisites": [
+        "Measurement remains within a valid benchmark range."
+      ],
+      "scenario_results": {
+        "accelerated": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 1.0
+        },
+        "base": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 1.0
+        },
+        "discontinuous": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 1.0
+        },
+        "downside": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 1.0
+        }
+      },
+      "threshold": 960
+    }
+  ],
+  "model_fit": {
+    "base_model_weights": {
+      "accelerating": 0.1916256442207405,
+      "change_point": 0.7962138757442313,
+      "decaying_acceleration": 0.011788148927944646,
+      "exponential": 0.0003340613728869144,
+      "linear": 1.2753553415246092e-10,
+      "logistic": 3.8269606661125736e-05
+    },
+    "candidate_models": [
+      "linear",
+      "exponential",
+      "accelerating",
+      "decaying_acceleration",
+      "logistic",
+      "change_point"
+    ],
+    "fits": [
+      {
+        "aicc": 64.21704260828892,
+        "bic": 63.245224014006865,
+        "converged": true,
+        "horizon_prediction": 44.12595787757797,
+        "log_likelihood": -27.77518797081113,
+        "mae_log": 1.6806988468802815,
+        "message": "Gaussian log-residual maximum likelihood: `ftol` termination condition is satisfied.",
+        "model": "linear",
+        "n_observations": 13,
+        "n_parameters": 3,
+        "parameters": {
+          "intercept": 0.04859559120559816,
+          "slope": 5.595733748654974,
+          "time_origin": 0.0
+        },
+        "rmse_log": 2.049537970751032
+      },
+      {
+        "aicc": 34.66016208785857,
+        "bic": 33.68834349357652,
+        "converged": true,
+        "horizon_prediction": 888.7176304743526,
+        "log_likelihood": -12.996747710595953,
+        "mae_log": 0.5635503562853404,
+        "message": "Gaussian log-residual maximum likelihood (closed form)",
+        "model": "exponential",
+        "n_observations": 13,
+        "n_parameters": 3,
+        "parameters": {
+          "growth": 1.3538360591421965,
+          "log_x0": -3.874330839255792,
+          "time_origin": 0.0
+        },
+        "rmse_log": 0.6575800920712663
+      },
+      {
+        "aicc": 21.95621358626648,
+        "bic": 19.216011016112624,
+        "converged": true,
+        "horizon_prediction": 4574.898693195818,
+        "log_likelihood": -4.478106793133239,
+        "mae_log": 0.263294166221984,
+        "message": "Gaussian log-residual maximum likelihood (closed form quadratic)",
+        "model": "accelerating",
+        "n_observations": 13,
+        "n_parameters": 4,
+        "parameters": {
+          "acceleration": 0.28929672018383035,
+          "growth": 0.2851735695171762,
+          "log_x0": -2.7928813223472013,
+          "time_origin": 0.0
+        },
+        "rmse_log": 0.34147910769797873
+      },
+      {
+        "aicc": 27.533111587092414,
+        "bic": 21.786429802971526,
+        "converged": true,
+        "horizon_prediction": 4570.769812424963,
+        "log_likelihood": -4.480841507831921,
+        "mae_log": 0.2633646646631087,
+        "message": "`ftol` termination condition is satisfied.",
+        "model": "decaying_acceleration",
+        "n_observations": 13,
+        "n_parameters": 5,
+        "parameters": {
+          "growth": 0.28464323393080604,
+          "initial_acceleration": 0.2897122692896824,
+          "kappa": 0.00041334397881332124,
+          "log_x0": -2.7927519662464446,
+          "time_origin": 0.0
+        },
+        "rmse_log": 0.3415509497106999
+      },
+      {
+        "aicc": 38.993499499589184,
+        "bic": 36.25329692943533,
+        "converged": true,
+        "horizon_prediction": 888.7161752729681,
+        "log_likelihood": -12.996749749794592,
+        "mae_log": 0.5635504590610234,
+        "message": "`ftol` termination condition is satisfied.",
+        "model": "logistic",
+        "n_observations": 13,
+        "n_parameters": 4,
+        "parameters": {
+          "capacity": 485165902.8038244,
+          "growth": 1.3538360896907973,
+          "time_origin": 0.0,
+          "x0": 0.020768229547750348
+        },
+        "rmse_log": 0.6575801952202305
+      },
+      {
+        "aicc": 19.107565308654024,
+        "bic": 13.360883524533135,
+        "converged": true,
+        "horizon_prediction": 5967.7977835229985,
+        "log_likelihood": -0.2680683686127258,
+        "mae_log": 0.2119010353871396,
+        "message": "Gaussian log-residual maximum likelihood with grid-searched continuous change point",
+        "model": "change_point",
+        "n_observations": 13,
+        "n_parameters": 5,
+        "parameters": {
+          "change_time": 5.2430919183829925,
+          "growth_delta": 1.4935407465277113,
+          "growth_pre": 1.0051577953256194,
+          "log_x0": -3.15723994026052,
+          "time_origin": 0.0
+        },
+        "rmse_log": 0.24701211636073392
+      }
+    ],
+    "horizon_log_disagreement": 1.694071192586217,
+    "rolling_origin_hindcast": [
+      {
+        "mae_log": 2.772793153918768,
+        "model": "linear",
+        "n": 6,
+        "rmse_log": 2.783150846467033,
+        "smape": 1.7590990021412296
+      },
+      {
+        "mae_log": 0.9493991679490773,
+        "model": "exponential",
+        "n": 6,
+        "rmse_log": 0.9629048070323969,
+        "smape": 0.8793802735073744
+      },
+      {
+        "mae_log": 0.37633197072446783,
+        "model": "accelerating",
+        "n": 6,
+        "rmse_log": 0.44436229362027585,
+        "smape": 0.3671075322364046
+      },
+      {
+        "mae_log": 0.37654533359071474,
+        "model": "decaying_acceleration",
+        "n": 6,
+        "rmse_log": 0.4445135872187149,
+        "smape": 0.36731319180072636
+      },
+      {
+        "mae_log": 0.949399320270817,
+        "model": "logistic",
+        "n": 6,
+        "rmse_log": 0.9629049608746948,
+        "smape": 0.8793803944609125
+      },
+      {
+        "mae_log": 0.24157709285058418,
+        "model": "change_point",
+        "n": 6,
+        "rmse_log": 0.29153211270568336,
+        "smape": 0.23868403922610804
+      },
+      {
+        "mae_log": 0.5065978780103396,
+        "model": "model_average",
+        "n": 6,
+        "rmse_log": 0.6246605665433914,
+        "smape": 0.48054888189451167
+      }
+    ]
+  },
+  "observations": [
+    {
+      "comparable": true,
+      "date": "2019-02-14",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 0.05
+    },
+    {
+      "comparable": true,
+      "date": "2020-05-28",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 0.14
+    },
+    {
+      "comparable": true,
+      "date": "2022-03-15",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 0.6
+    },
+    {
+      "comparable": true,
+      "date": "2023-03-14",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 4.0
+    },
+    {
+      "comparable": true,
+      "date": "2024-05-13",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 7.0
+    },
+    {
+      "comparable": true,
+      "date": "2024-10-22",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 20.5
+    },
+    {
+      "comparable": true,
+      "date": "2024-12-05",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 38.8
+    },
+    {
+      "comparable": true,
+      "date": "2025-02-24",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 60.4
+    },
+    {
+      "comparable": true,
+      "date": "2025-04-16",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 119.7
+    },
+    {
+      "comparable": true,
+      "date": "2025-08-07",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 203.0
+    },
+    {
+      "comparable": true,
+      "date": "2025-11-24",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 293.0
+    },
+    {
+      "comparable": true,
+      "date": "2025-12-11",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 352.0
+    },
+    {
+      "comparable": true,
+      "date": "2026-02-05",
+      "evidence_ids": [
+        "metr-time-horizon-1-1",
+        "metr-transcribed-excerpt"
+      ],
+      "note": "TH 1.1 public chart/table transcription",
+      "value": 719.0
+    }
+  ],
+  "optimal_plan": {
+    "delay_pending_evidence": [
+      "Do not translate benchmark movement directly into revenue or deployment."
+    ],
+    "next_experiment": [
+      "Add the complete upstream dataset and rerun the preregistered hindcast."
+    ],
+    "no_regret_actions": [
+      "Freeze source snapshots and record benchmark/configuration changes.",
+      "Use rolling-origin scores rather than in-sample fit alone."
+    ],
+    "option_preserving_actions": [
+      "Maintain multiple model classes and trigger-based recalibration."
+    ],
+    "stop_expand_pivot": [
+      "Expand confidence only after independent replication and prospective calibration."
+    ]
+  },
+  "protocol_version": "2.0.0",
+  "recalculation": {
+    "early_triggers": [
+      "New official METR measurement",
+      "Benchmark methodology revision"
+    ],
+    "required_evidence": [
+      "Complete official data freeze",
+      "Updated benchmark version notes",
+      "Independent reproduction where available"
+    ],
+    "scheduled_date": "2026-08-27"
+  },
+  "reproducibility": {
+    "bootstrap_samples_requested": 100,
+    "bootstrap_samples_successful": 100,
+    "code_version": "2.0.0",
+    "input_sha256": "66d5512cf0a512703783ec08df4d22e1123b7570b1f64ef4cbac1d288ade86ea",
+    "models": [
+      "linear",
+      "exponential",
+      "accelerating",
+      "decaying_acceleration",
+      "logistic",
+      "change_point"
+    ],
+    "random_seed": 20260728
+  },
+  "research_cutoff": "2026-07-28T18:00:00+00:00",
+  "scenarios": [
+    {
+      "assumptions": [
+        "Model-averaged historical dynamics continue within the benchmark definition."
+      ],
+      "forecast_points": [
+        {
+          "date": "2026-07-28",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 956.817374883271,
+          "median": 960.0
+        },
+        {
+          "date": "2026-08-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 958.8711856933139,
+          "median": 960.0
+        },
+        {
+          "date": "2026-09-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 956.4286289391003,
+          "median": 960.0
+        },
+        {
+          "date": "2026-10-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-11-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-12-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-12-31",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        }
+      ],
+      "horizon_summary": {
+        "date": "2026-12-31",
+        "intervals": {
+          "p50": {
+            "level": 0.5,
+            "lower": 960.0,
+            "upper": 960.0
+          },
+          "p80": {
+            "level": 0.8,
+            "lower": 960.0,
+            "upper": 960.0
+          },
+          "p95": {
+            "level": 0.95,
+            "lower": 960.0,
+            "upper": 960.0
+          }
+        },
+        "mean": 960.0,
+        "median": 960.0
+      },
+      "id": "base",
+      "invalidation_conditions": [
+        "A benchmark version change breaks comparability."
+      ],
+      "kind": "base",
+      "label": "Base",
+      "parameters": {},
+      "probability": 0.58
+    },
+    {
+      "assumptions": [
+        "Recent acceleration persists."
+      ],
+      "forecast_points": [
+        {
+          "date": "2026-07-28",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 956.817374883271,
+          "median": 960.0
+        },
+        {
+          "date": "2026-08-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 958.8786362302579,
+          "median": 960.0
+        },
+        {
+          "date": "2026-09-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 956.4764176519562,
+          "median": 960.0
+        },
+        {
+          "date": "2026-10-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-11-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-12-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-12-31",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        }
+      ],
+      "horizon_summary": {
+        "date": "2026-12-31",
+        "intervals": {
+          "p50": {
+            "level": 0.5,
+            "lower": 960.0,
+            "upper": 960.0
+          },
+          "p80": {
+            "level": 0.8,
+            "lower": 960.0,
+            "upper": 960.0
+          },
+          "p95": {
+            "level": 0.95,
+            "lower": 960.0,
+            "upper": 960.0
+          }
+        },
+        "mean": 960.0,
+        "median": 960.0
+      },
+      "id": "accelerated",
+      "invalidation_conditions": [
+        "Recent-window growth falls materially below the prior window."
+      ],
+      "kind": "accelerated",
+      "label": "Accelerated",
+      "parameters": {
+        "annual_acceleration_shift": 0.05,
+        "annual_growth_shift": 0.08
+      },
+      "probability": 0.2
+    },
+    {
+      "assumptions": [
+        "Benchmark saturation or measurement limitations dominate."
+      ],
+      "forecast_points": [
+        {
+          "date": "2026-07-28",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 952.325392518279,
+              "upper": 960.0
+            }
+          },
+          "mean": 956.3508443859537,
+          "median": 960.0
+        },
+        {
+          "date": "2026-08-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 958.68541289351,
+          "median": 960.0
+        },
+        {
+          "date": "2026-09-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 956.2070232498279,
+          "median": 960.0
+        },
+        {
+          "date": "2026-10-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-11-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-12-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-12-31",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        }
+      ],
+      "horizon_summary": {
+        "date": "2026-12-31",
+        "intervals": {
+          "p50": {
+            "level": 0.5,
+            "lower": 960.0,
+            "upper": 960.0
+          },
+          "p80": {
+            "level": 0.8,
+            "lower": 960.0,
+            "upper": 960.0
+          },
+          "p95": {
+            "level": 0.95,
+            "lower": 960.0,
+            "upper": 960.0
+          }
+        },
+        "mean": 960.0,
+        "median": 960.0
+      },
+      "id": "downside",
+      "invalidation_conditions": [
+        "Fresh harder tasks preserve comparable headroom."
+      ],
+      "kind": "downside",
+      "label": "Saturation / measurement stress",
+      "parameters": {
+        "annual_drag": 0.18,
+        "floor_multiplier": 0.6,
+        "immediate_multiplier": 0.98
+      },
+      "probability": 0.17
+    },
+    {
+      "assumptions": [
+        "A structural improvement loop materially changes the trajectory."
+      ],
+      "forecast_points": [
+        {
+          "date": "2026-07-28",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 956.817374883271,
+          "median": 960.0
+        },
+        {
+          "date": "2026-08-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 958.8711856933139,
+          "median": 960.0
+        },
+        {
+          "date": "2026-09-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 956.4286289391003,
+          "median": 960.0
+        },
+        {
+          "date": "2026-10-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-11-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-12-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        },
+        {
+          "date": "2026-12-31",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 960.0,
+              "upper": 960.0
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 960.0,
+              "upper": 960.0
+            }
+          },
+          "mean": 960.0,
+          "median": 960.0
+        }
+      ],
+      "horizon_summary": {
+        "date": "2026-12-31",
+        "intervals": {
+          "p50": {
+            "level": 0.5,
+            "lower": 960.0,
+            "upper": 960.0
+          },
+          "p80": {
+            "level": 0.8,
+            "lower": 960.0,
+            "upper": 960.0
+          },
+          "p95": {
+            "level": 0.95,
+            "lower": 960.0,
+            "upper": 960.0
+          }
+        },
+        "mean": 960.0,
+        "median": 960.0
+      },
+      "id": "discontinuous",
+      "invalidation_conditions": [
+        "No verified regime-change signal appears."
+      ],
+      "kind": "discontinuous",
+      "label": "Discontinuous",
+      "parameters": {
+        "annual_transition_hazard": 0.15,
+        "growth_rate_compounding": 0.25,
+        "initial_growth_bonus": 0.12,
+        "jump_multiplier": 1.15
+      },
+      "probability": 0.05
+    }
+  ],
+  "target": {
+    "direction": "higher_is_better",
+    "horizon_end": "2026-12-31",
+    "lower_bound": 0,
+    "metric": "METR p50 task-completion horizon",
+    "question": "What trajectory is implied for the measurable p50 task-completion horizon within the published METR Time Horizon 1.1 reliability range?",
+    "scope": "METR Time Horizon 1.1 excerpt",
+    "success_definition": "The p50 horizon is the task duration at which the evaluated system succeeds with 50% probability under the specified benchmark methodology.",
+    "target_kind": "technical_capability",
+    "unit": "human-expert minutes",
+    "upper_bound": 960
+  },
+  "triggers": [
+    {
+      "action": "Recalculate immediately with frozen upstream data.",
+      "direction": "event",
+      "evidence_ids": [
+        "metr-time-horizon-1-1"
+      ],
+      "forecast_effect": "Changes the evidence clock and possibly the measurement regime.",
+      "name": "New official METR release",
+      "threshold": "New version or measurement"
+    }
+  ]
+}

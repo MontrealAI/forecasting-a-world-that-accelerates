@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MontrealAI/forecasting-a-world-that-accelerates/blob/v2.0.0/protocol/hindcast-case.schema.json",
+  "title": "FWTA Rolling-Origin Hindcast Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "data_path",
+    "time_column",
+    "value_column",
+    "minimum_training_points",
+    "horizon_steps",
+    "models"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "data_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "time_column": {
+      "type": "string",
+      "minLength": 1
+    },
+    "value_column": {
+      "type": "string",
+      "minLength": 1
+    },
+    "include_column": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "minimum_training_points": {
+      "type": "integer",
+      "minimum": 3
+    },
+    "horizon_steps": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "models": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "linear",
+          "exponential",
+          "accelerating",
+          "decaying_acceleration",
+          "logistic",
+          "change_point",
+          "model_average"
+        ]
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "provenance_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "random_seed": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
+  }
+}

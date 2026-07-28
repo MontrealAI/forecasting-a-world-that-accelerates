@@ -1,0 +1,80 @@
+protocol:
+  id: FWAA-Ω
+  name: Acceleration-Aware Forecasting Protocol Ω
+  version: 2.0.0
+  release_date: '2026-07-28'
+  canonical_repository: https://github.com/MontrealAI/forecasting-a-world-that-accelerates
+  canonical_model: FWAA-CM-2
+licenses:
+  software: AGPL-3.0-or-later
+  paper_prompt_documentation: CC-BY-NC-SA-4.0
+  trademarks: reserved
+states:
+- observed
+- derived
+- estimated
+- assumed
+- scenario-conditional
+evidence_grades:
+  A: Primary, directly measured, audited, or independently reproducible
+  B: Strong independent analysis with transparent data and methods
+  C: Indirect, self-reported, survey-based, or incompletely reproducible
+  D: Speculative, anecdotal, promotional, or unverifiable
+  SYNTHETIC: Generated under declared code, seed, and parameters
+scenarios:
+- downside
+- base
+- accelerated
+- discontinuous
+validation_levels:
+  L1: mechanical verification
+  L2: controlled mechanism and ablation tests
+  L3: source-linked historical demonstrations
+  L4: preregistered prospective forecasts
+  L5: independent replication
+  L6: decision validation
+required_output_sections:
+- executive_forecast
+- scope_definitions_research_cutoff
+- newest_evidence
+- current_pace_calculations
+- compact_canonical_model
+- mathematical_model_fit
+- first_principles_capacity
+- forecast_scenarios
+- milestones_dates
+- bottlenecks
+- trigger_dashboard
+- optimal_plan
+- confidence_sensitivities_assumptions
+- dated_recalculation_point
+- sources_provenance
+- machine_readable_record
+canonical_equations:
+  realized_outcome: Y_s(t)=B_s(t)\min\{Q_0\exp[\int_0^t g_{Q,s}(u)\,du],M_s(t)D_s(t)U_s(t)\}
+  technical_growth: g_{Q,s}=\beta_\theta\dot\theta_s-\beta_c\dot c_s/c_s-\beta_\tau\dot\tau_s/\tau_s+\beta_A\dot
+    A_s/(A_s+\varepsilon)+\beta_P\dot P_s/P_s+\beta_R\dot R_s/R_s
+  generalized_realization: Y_s=B_s^X[\alpha_s(B_s^QQ_s)^{-\rho_s}+(1-\alpha_s)(B_s^ZZ_s)^{-\rho_s}]^{-1/\rho_s}
+quality_gates:
+- fresh_evidence
+- date_disambiguation
+- comparability_audit
+- double_counting_audit
+- realization_parameter_uncertainty
+- backtest_or_declared_data_limit
+- probabilistic_scoring
+- workflow_critical_path
+- correlated_failure_check
+- scenario_invalidation_conditions
+- exact_recalculation_date
+- source_ledger
+- prospective_registry_status
+schemas:
+  input: v2/input.schema.json
+  output: v2/output.schema.json
+  registry_record: v2/registry-record.schema.json
+  evidence_record: evidence-record.schema.json
+  task_graph: task-graph.schema.json
+  hindcast_case: hindcast-case.schema.json
+  protocol_envelope: protocol-envelope.schema.json
+reference_prompt: prompt.md

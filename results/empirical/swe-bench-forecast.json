@@ -1,0 +1,1297 @@
+{
+  "bottlenecks": [
+    {
+      "evidence_ids": [
+        "swe-bench-official-leaderboard"
+      ],
+      "mechanism": "As scores rise, remaining tasks and changes in scaffolds, tools, attempts, and model versions limit comparability.",
+      "mitigation": "Track system metadata and use a bounded model with explicit version breaks.",
+      "name": "Benchmark saturation and configuration drift",
+      "release_condition": "A harder fresh benchmark with controlled configuration is available.",
+      "severity": "high"
+    }
+  ],
+  "compact_canonical_model": {
+    "configuration": {
+      "input_series_semantics": "realized_outcome",
+      "mode": "reduced_form"
+    },
+    "diagnostics": {
+      "accelerated": {},
+      "base": {},
+      "discontinuous": {},
+      "downside": {}
+    },
+    "equation": "Y_s(t)=B_s(t) min{Q_0 exp[int_0^t g_Q,s(u) du], M_s(t)D_s(t)U_s(t)}",
+    "generalized_family": "Y=B_X[alpha(B_Q Q)^(-rho)+(1-alpha)(B_Z Z)^(-rho)]^(-1/rho); rho->infinity yields the hard minimum.",
+    "plain_language": "Realized output is limited by technical capacity and absorptive demand, with branch-specific and transfer constraints applied exactly once.",
+    "technical_growth_equation": "g_Q,s=beta_theta theta_dot-beta_c c_dot/c-beta_tau tau_dot/tau+beta_A A_dot/(A+epsilon)+beta_P P_dot/P+beta_R R_dot/R"
+  },
+  "confidence": {
+    "assumptions": [
+      "The selected records approximate a cumulative public system frontier."
+    ],
+    "base_horizon_p80_relative_width": 0.5090026161283402,
+    "evidence_quality_score": 0.9,
+    "horizon_log_model_disagreement": 0.4369289092632095,
+    "limitations": [
+      "Only seven selected records.",
+      "Records combine model and scaffold effects and may differ in attempts.",
+      "Checked status varies across entries.",
+      "Submission date is not model release date."
+    ]
+  },
+  "current_pace": {
+    "anchor_dates": {
+      "current": "2025-12-05",
+      "six_months_ago": "2025-06-05",
+      "twelve_months_ago": "2024-12-05"
+    },
+    "anchor_values": {
+      "current": 79.19999999999999,
+      "six_months_ago": 70.07895457571365,
+      "twelve_months_ago": 54.873960486796626
+    },
+    "annualized_prior_change": 0.6336829677853701,
+    "annualized_recent_change": 0.2766009977396815,
+    "log_growth_acceleration": -0.49359948174931456,
+    "note": "Rates use log interpolation at six- and twelve-month anchors.",
+    "prior_continuous_growth": 0.4908369554499001,
+    "recent_continuous_growth": 0.24420107539965977,
+    "recent_doubling_time_years": 2.8384280430605795
+  },
+  "engine_version": "2.0.0",
+  "evidence": [
+    {
+      "accessed_at": "2026-07-28T14:00:00-04:00",
+      "claim": "Official leaderboard records for system-level percent resolved on SWE-bench Verified.",
+      "id": "swe-bench-official-leaderboard",
+      "license": null,
+      "measurement_date": "2025-12-05",
+      "notes": "The hash is the observed Git blob identifier, not a SHA-256 digest.",
+      "primary": true,
+      "publication_date": "2025-12-05",
+      "publisher": "SWE-bench",
+      "quality_grade": "A",
+      "sha256": null,
+      "source_url": "https://github.com/SWE-bench/swe-bench.github.io/blob/master/data/leaderboards.json",
+      "title": "SWE-bench official leaderboard data — Verified track"
+    },
+    {
+      "accessed_at": "2026-07-28T14:00:00-04:00",
+      "claim": "Selected source-linked public frontier records for bounded-model demonstration.",
+      "id": "swe-bench-frontier-excerpt",
+      "license": null,
+      "measurement_date": "2025-12-05",
+      "notes": "Not a complete leaderboard mirror.",
+      "primary": false,
+      "publication_date": "2026-07-28",
+      "publisher": "MONTREAL.AI",
+      "quality_grade": "B",
+      "sha256": null,
+      "source_url": "https://github.com/MontrealAI/forecasting-a-world-that-accelerates",
+      "title": "FWAA selected SWE-bench Verified frontier excerpt"
+    }
+  ],
+  "executive_forecast": {
+    "base_horizon_median": 83.49337905229243,
+    "base_horizon_p80": {
+      "level": 0.8,
+      "lower": 43.59097247237149,
+      "upper": 86.08932083938349
+    },
+    "decision_implication": "Use the case to test bounded forecasting and saturation; do not treat system leaderboard gains as isolated model capability or verified organizational value.",
+    "validation_status": "Probabilistic reference forecast; not a guarantee or assurance engagement."
+  },
+  "forecast_dates": [
+    "2026-07-28",
+    "2026-08-01",
+    "2026-09-01",
+    "2026-10-01",
+    "2026-11-01",
+    "2026-12-01",
+    "2026-12-31"
+  ],
+  "forecast_id": "swe-bench-verified-frontier-demonstration-2026-07-28",
+  "generated_at": "2026-07-28T16:00:00+00:00",
+  "legal_notice": "Research and decision-support output only. No warranty, assurance, legal, investment, tax, medical, or regulatory advice is provided.",
+  "milestones": [
+    {
+      "direction": "at_least",
+      "id": "p80",
+      "label": "80% resolved",
+      "prerequisites": [
+        "Benchmark definition and system configuration remain comparable."
+      ],
+      "scenario_results": {
+        "accelerated": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 0.75
+        },
+        "base": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 0.75
+        },
+        "discontinuous": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 0.75
+        },
+        "downside": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 0.74
+        }
+      },
+      "threshold": 80
+    },
+    {
+      "direction": "at_least",
+      "id": "p90",
+      "label": "90% resolved",
+      "prerequisites": [
+        "Fresh unsaturated tasks preserve meaning."
+      ],
+      "scenario_results": {
+        "accelerated": {
+          "median_crossing_date": "2026-12-31",
+          "p10_crossing_date": "2026-12-01",
+          "p90_crossing_date": "2026-12-31",
+          "probability_by_horizon": 0.08
+        },
+        "base": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 0.01
+        },
+        "discontinuous": {
+          "median_crossing_date": "2026-09-01",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-11-01",
+          "probability_by_horizon": 0.03
+        },
+        "downside": {
+          "median_crossing_date": "2026-07-28",
+          "p10_crossing_date": "2026-07-28",
+          "p90_crossing_date": "2026-07-28",
+          "probability_by_horizon": 0.01
+        }
+      },
+      "threshold": 90
+    }
+  ],
+  "model_fit": {
+    "base_model_weights": {
+      "accelerating": 0.17672054886047744,
+      "change_point": 1.0134255276295329e-11,
+      "decaying_acceleration": 7.292463393021532e-10,
+      "exponential": 0.00042897113871246144,
+      "linear": 0.011363030820837288,
+      "logistic": 0.8114874484405923
+    },
+    "candidate_models": [
+      "linear",
+      "exponential",
+      "accelerating",
+      "decaying_acceleration",
+      "logistic",
+      "change_point"
+    ],
+    "fits": [
+      {
+        "aicc": -6.0082706759336695,
+        "bic": -14.170540228767731,
+        "converged": true,
+        "horizon_prediction": 123.43912612103078,
+        "log_likelihood": 10.004135337966835,
+        "mae_log": 0.048903546173661806,
+        "message": "Gaussian log-residual maximum likelihood: `ftol` termination condition is satisfied.",
+        "model": "linear",
+        "n_observations": 7,
+        "n_parameters": 3,
+        "parameters": {
+          "intercept": 35.98861631630591,
+          "slope": 34.567795267697214,
+          "time_origin": 0.0
+        },
+        "rmse_log": 0.05795428758087129
+      },
+      {
+        "aicc": 0.5451909507933905,
+        "bic": -7.61707860204067,
+        "converged": true,
+        "horizon_prediction": 159.3221317343053,
+        "log_likelihood": 6.727404524603305,
+        "mae_log": 0.07746990081473452,
+        "message": "Gaussian log-residual maximum likelihood (closed form)",
+        "model": "exponential",
+        "n_observations": 7,
+        "n_parameters": 3,
+        "parameters": {
+          "growth": 0.5534688840685618,
+          "log_x0": 3.670748124111733,
+          "time_origin": 0.0
+        },
+        "rmse_log": 0.09255091787185253
+      },
+      {
+        "aicc": -11.496679655151837,
+        "bic": -31.713039058930583,
+        "converged": true,
+        "horizon_prediction": 42.47915892634431,
+        "log_likelihood": 19.74833982757592,
+        "mae_log": 0.011500791320644157,
+        "message": "Gaussian log-residual maximum likelihood (closed form quadratic)",
+        "model": "accelerating",
+        "n_observations": 7,
+        "n_parameters": 4,
+        "parameters": {
+          "acceleration": -0.9097134828941327,
+          "growth": 1.2409099945969437,
+          "log_x0": 3.52081934445368,
+          "time_origin": 0.0
+        },
+        "rmse_log": 0.014405719883396234
+      },
+      {
+        "aicc": 27.114968170748078,
+        "bic": -33.15548108397536,
+        "converged": true,
+        "horizon_prediction": 67.54737629867208,
+        "log_likelihood": 21.44251591462596,
+        "mae_log": 0.009469615776569336,
+        "message": "`gtol` termination condition is satisfied.",
+        "model": "decaying_acceleration",
+        "n_observations": 7,
+        "n_parameters": 5,
+        "parameters": {
+          "growth": 1.3783510831224535,
+          "initial_acceleration": -1.5278552235403084,
+          "kappa": 0.7833665654644537,
+          "log_x0": 3.513353390202257,
+          "time_origin": 0.0
+        },
+        "rmse_log": 0.011309014901381455
+      },
+      {
+        "aicc": -14.545278164749071,
+        "bic": -34.76163756852782,
+        "converged": true,
+        "horizon_prediction": 84.00879271901786,
+        "log_likelihood": 21.272639082374535,
+        "mae_log": 0.010198676522977759,
+        "message": "`ftol` termination condition is satisfied.",
+        "model": "logistic",
+        "n_observations": 7,
+        "n_parameters": 4,
+        "parameters": {
+          "capacity": 84.43367831488982,
+          "growth": 2.2549045495090927,
+          "time_origin": 0.0,
+          "x0": 33.52666670115744
+        },
+        "rmse_log": 0.011586820697467326
+      },
+      {
+        "aicc": 35.667148754956926,
+        "bic": -24.603300499766508,
+        "converged": true,
+        "horizon_prediction": 117.02734982710602,
+        "log_likelihood": 17.166425622521537,
+        "mae_log": 0.01872708609566593,
+        "message": "Gaussian log-residual maximum likelihood with grid-searched continuous change point",
+        "model": "change_point",
+        "n_observations": 7,
+        "n_parameters": 5,
+        "parameters": {
+          "change_time": 0.5585330294256555,
+          "growth_delta": -0.7116139023613091,
+          "growth_pre": 1.0452753625003324,
+          "log_x0": 3.520842336117868,
+          "time_origin": 0.0
+        },
+        "rmse_log": 0.02083158257773722
+      }
+    ],
+    "horizon_log_disagreement": 0.4369289092632095,
+    "rolling_origin_hindcast": [
+      {
+        "mae_log": 0.11031844087659486,
+        "model": "linear",
+        "n": 3,
+        "rmse_log": 0.11181174470191874,
+        "smape": 0.11019782616035574
+      },
+      {
+        "mae_log": 0.21337885643797203,
+        "model": "exponential",
+        "n": 3,
+        "rmse_log": 0.2233591733505312,
+        "smape": 0.212331458257889
+      },
+      {
+        "mae_log": 0.033421015689226806,
+        "model": "accelerating",
+        "n": 3,
+        "rmse_log": 0.03434702722688309,
+        "smape": 0.033417357695598886
+      },
+      {
+        "mae_log": 0.03001238819984664,
+        "model": "decaying_acceleration",
+        "n": 3,
+        "rmse_log": 0.031432016216292956,
+        "smape": 0.0300094807948789
+      },
+      {
+        "mae_log": 0.018545072492091325,
+        "model": "logistic",
+        "n": 3,
+        "rmse_log": 0.018631233272533253,
+        "smape": 0.018544525823927255
+      },
+      {
+        "mae_log": null,
+        "model": "change_point",
+        "n": 0,
+        "rmse_log": null,
+        "smape": null
+      },
+      {
+        "mae_log": 0.1089630291979149,
+        "model": "model_average",
+        "n": 2,
+        "rmse_log": 0.11099865622440387,
+        "smape": 0.10884319947117224
+      }
+    ]
+  },
+  "observations": [
+    {
+      "comparable": true,
+      "date": "2024-06-20",
+      "evidence_ids": [
+        "swe-bench-official-leaderboard",
+        "swe-bench-frontier-excerpt"
+      ],
+      "note": "Official leaderboard record; system-level result",
+      "value": 33.6
+    },
+    {
+      "comparable": true,
+      "date": "2024-10-22",
+      "evidence_ids": [
+        "swe-bench-official-leaderboard",
+        "swe-bench-frontier-excerpt"
+      ],
+      "note": "Official leaderboard record; checked flag false",
+      "value": 49.0
+    },
+    {
+      "comparable": true,
+      "date": "2025-01-10",
+      "evidence_ids": [
+        "swe-bench-official-leaderboard",
+        "swe-bench-frontier-excerpt"
+      ],
+      "note": "Official leaderboard record; multiple attempts",
+      "value": 60.2
+    },
+    {
+      "comparable": true,
+      "date": "2025-02-03",
+      "evidence_ids": [
+        "swe-bench-official-leaderboard",
+        "swe-bench-frontier-excerpt"
+      ],
+      "note": "Official leaderboard record; multiple attempts",
+      "value": 60.8
+    },
+    {
+      "comparable": true,
+      "date": "2025-07-31",
+      "evidence_ids": [
+        "swe-bench-official-leaderboard",
+        "swe-bench-frontier-excerpt"
+      ],
+      "note": "Official leaderboard record",
+      "value": 74.8
+    },
+    {
+      "comparable": true,
+      "date": "2025-09-28",
+      "evidence_ids": [
+        "swe-bench-official-leaderboard",
+        "swe-bench-frontier-excerpt"
+      ],
+      "note": "Official leaderboard record; multiple attempts",
+      "value": 78.8
+    },
+    {
+      "comparable": true,
+      "date": "2025-12-05",
+      "evidence_ids": [
+        "swe-bench-official-leaderboard",
+        "swe-bench-frontier-excerpt"
+      ],
+      "note": "Official leaderboard record",
+      "value": 79.2
+    }
+  ],
+  "optimal_plan": {
+    "delay_pending_evidence": [
+      "Do not translate benchmark movement directly into revenue or deployment."
+    ],
+    "next_experiment": [
+      "Add the complete upstream dataset and rerun the preregistered hindcast."
+    ],
+    "no_regret_actions": [
+      "Freeze source snapshots and record benchmark/configuration changes.",
+      "Use rolling-origin scores rather than in-sample fit alone."
+    ],
+    "option_preserving_actions": [
+      "Maintain multiple model classes and trigger-based recalibration."
+    ],
+    "stop_expand_pivot": [
+      "Expand confidence only after independent replication and prospective calibration."
+    ]
+  },
+  "protocol_version": "2.0.0",
+  "recalculation": {
+    "early_triggers": [
+      "New official leaderboard record",
+      "Benchmark version change"
+    ],
+    "required_evidence": [
+      "Complete leaderboard snapshot",
+      "Configuration metadata",
+      "Checked or independently reproduced status"
+    ],
+    "scheduled_date": "2026-08-27"
+  },
+  "reproducibility": {
+    "bootstrap_samples_requested": 100,
+    "bootstrap_samples_successful": 100,
+    "code_version": "2.0.0",
+    "input_sha256": "6ac8b2c7b01fd1825561c5dfc5eae5a03467b31fd6c2e2f41d28fff50263fc3a",
+    "models": [
+      "linear",
+      "exponential",
+      "accelerating",
+      "decaying_acceleration",
+      "logistic",
+      "change_point"
+    ],
+    "random_seed": 20260729
+  },
+  "research_cutoff": "2026-07-28T18:00:00+00:00",
+  "scenarios": [
+    {
+      "assumptions": [
+        "Model-averaged historical dynamics continue within the benchmark definition."
+      ],
+      "forecast_points": [
+        {
+          "date": "2026-07-28",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.98804403305994,
+              "upper": 84.10296974200655
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 62.07686442641456,
+              "upper": 85.03852692034292
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 59.33587654465264,
+              "upper": 86.42801156695067
+            }
+          },
+          "mean": 78.20630365510132,
+          "median": 82.64115530539158
+        },
+        {
+          "date": "2026-08-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.90227581571293,
+              "upper": 84.0268791653833
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 61.60174667991413,
+              "upper": 85.07767754248341
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 57.64805384772026,
+              "upper": 86.29523667905313
+            }
+          },
+          "mean": 78.04937612740244,
+          "median": 82.69399134955891
+        },
+        {
+          "date": "2026-09-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.72743236106652,
+              "upper": 84.40303457193247
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 58.14241826806199,
+              "upper": 85.77401299575554
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 53.23279643842675,
+              "upper": 87.03700268445489
+            }
+          },
+          "mean": 77.4201177336932,
+          "median": 82.83158557106208
+        },
+        {
+          "date": "2026-10-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 75.33771649163958,
+              "upper": 84.49024381430394
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 54.23186745356457,
+              "upper": 85.5103478018902
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 49.873242511014304,
+              "upper": 86.98695271946536
+            }
+          },
+          "mean": 76.60300655245697,
+          "median": 83.10425004622321
+        },
+        {
+          "date": "2026-11-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 74.65680393250105,
+              "upper": 84.38792622537783
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 50.26942413115365,
+              "upper": 85.62157340673843
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 46.44754059868329,
+              "upper": 86.70434048934098
+            }
+          },
+          "mean": 75.73532086122195,
+          "median": 83.27456073296344
+        },
+        {
+          "date": "2026-12-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 73.8932996672624,
+              "upper": 84.47301864303414
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 46.68442054977941,
+              "upper": 85.36986494876373
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 42.72111605479972,
+              "upper": 87.25408721458174
+            }
+          },
+          "mean": 74.8143705486035,
+          "median": 83.44903376276758
+        },
+        {
+          "date": "2026-12-31",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 73.02811066669372,
+              "upper": 85.04026119358808
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 43.59097247237149,
+              "upper": 86.08932083938349
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 38.74834906028304,
+              "upper": 87.25200780844143
+            }
+          },
+          "mean": 74.17875081225493,
+          "median": 83.49337905229243
+        }
+      ],
+      "horizon_summary": {
+        "date": "2026-12-31",
+        "intervals": {
+          "p50": {
+            "level": 0.5,
+            "lower": 73.02811066669372,
+            "upper": 85.04026119358808
+          },
+          "p80": {
+            "level": 0.8,
+            "lower": 43.59097247237149,
+            "upper": 86.08932083938349
+          },
+          "p95": {
+            "level": 0.95,
+            "lower": 38.74834906028304,
+            "upper": 87.25200780844143
+          }
+        },
+        "mean": 74.17875081225496,
+        "median": 83.49337905229243
+      },
+      "id": "base",
+      "invalidation_conditions": [
+        "A benchmark version change breaks comparability."
+      ],
+      "kind": "base",
+      "label": "Base",
+      "parameters": {},
+      "probability": 0.58
+    },
+    {
+      "assumptions": [
+        "Recent acceleration persists."
+      ],
+      "forecast_points": [
+        {
+          "date": "2026-07-28",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.98804403305994,
+              "upper": 84.10296974200655
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 62.07686442641456,
+              "upper": 85.03852692034292
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 59.33587654465264,
+              "upper": 86.42801156695067
+            }
+          },
+          "mean": 78.20630365510132,
+          "median": 82.64115530539158
+        },
+        {
+          "date": "2026-08-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.96991253951781,
+              "upper": 84.10078208643489
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 61.6559263551174,
+              "upper": 85.15250465672503
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 57.6987561898113,
+              "upper": 86.37113465511467
+            }
+          },
+          "mean": 78.11802174341682,
+          "median": 82.7667219754592
+        },
+        {
+          "date": "2026-09-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 77.3356478061244,
+              "upper": 85.07209422448057
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 58.60331101157565,
+              "upper": 86.45394034225026
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 53.654770795982635,
+              "upper": 87.72694170229033
+            }
+          },
+          "mean": 78.02589710736031,
+          "median": 83.48818840700577
+        },
+        {
+          "date": "2026-10-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.4785101350222,
+              "upper": 85.76962866374919
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 55.05306794305194,
+              "upper": 86.80517947131914
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 50.628442969442844,
+              "upper": 88.30414372737975
+            }
+          },
+          "mean": 77.74781732337054,
+          "median": 84.36264762721882
+        },
+        {
+          "date": "2026-11-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.3750368163874,
+              "upper": 86.33012174146924
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 51.426379332105874,
+              "upper": 87.59216142080022
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 47.51653481526481,
+              "upper": 88.6998484826802
+            }
+          },
+          "mean": 77.45536081910244,
+          "median": 85.19113204469458
+        },
+        {
+          "date": "2026-12-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.18735277279524,
+              "upper": 87.0955242237078
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 48.133760888138546,
+              "upper": 88.02021355528831
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 44.047413694756955,
+              "upper": 89.96293240956398
+            }
+          },
+          "mean": 77.10597326160294,
+          "median": 86.03974923926167
+        },
+        {
+          "date": "2026-12-31",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 75.8961646195607,
+              "upper": 88.38007178217487
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 45.30293324702864,
+              "upper": 89.47033144857123
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 40.27012409560651,
+              "upper": 90.67868095671324
+            }
+          },
+          "mean": 77.05272089879969,
+          "median": 86.77243849451298
+        }
+      ],
+      "horizon_summary": {
+        "date": "2026-12-31",
+        "intervals": {
+          "p50": {
+            "level": 0.5,
+            "lower": 75.8961646195607,
+            "upper": 88.38007178217487
+          },
+          "p80": {
+            "level": 0.8,
+            "lower": 45.30293324702864,
+            "upper": 89.47033144857123
+          },
+          "p95": {
+            "level": 0.95,
+            "lower": 40.27012409560651,
+            "upper": 90.67868095671324
+          }
+        },
+        "mean": 77.05272089879969,
+        "median": 86.77243849451298
+      },
+      "id": "accelerated",
+      "invalidation_conditions": [
+        "Recent-window growth falls materially below the prior window."
+      ],
+      "kind": "accelerated",
+      "label": "Accelerated",
+      "parameters": {
+        "annual_acceleration_shift": 0.05,
+        "annual_growth_shift": 0.08
+      },
+      "probability": 0.2
+    },
+    {
+      "assumptions": [
+        "Benchmark saturation or measurement limitations dominate."
+      ],
+      "forecast_points": [
+        {
+          "date": "2026-07-28",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 75.44828315239873,
+              "upper": 82.42091034716643
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 60.83532713788627,
+              "upper": 83.33775638193606
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 58.149159013759586,
+              "upper": 84.69945133561166
+            }
+          },
+          "mean": 76.66217758199927,
+          "median": 80.98833219928375
+        },
+        {
+          "date": "2026-08-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 75.21581165275109,
+              "upper": 82.18417270533614
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 60.250822574618645,
+              "upper": 83.21192711154357
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 56.383834085074305,
+              "upper": 84.40278521971936
+            }
+          },
+          "mean": 76.33775609556069,
+          "median": 80.88051507172406
+        },
+        {
+          "date": "2026-09-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 73.90701735356835,
+              "upper": 81.30047297095467
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 56.00516769145219,
+              "upper": 82.62105575396821
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 51.276018095323764,
+              "upper": 83.83761934755779
+            }
+          },
+          "mean": 74.61099926982217,
+          "median": 79.78678868616021
+        },
+        {
+          "date": "2026-10-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 71.5033765549473,
+              "upper": 80.19008273689717
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 51.4717172273272,
+              "upper": 81.15826816839585
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 47.33492605495948,
+              "upper": 82.55972075232148
+            }
+          },
+          "mean": 72.75516458355074,
+          "median": 78.87462961571205
+        },
+        {
+          "date": "2026-11-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 69.78282531790387,
+              "upper": 78.8786500966466
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 46.98757860231372,
+              "upper": 80.03175847024703
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 43.4152072056908,
+              "upper": 81.04383697086894
+            }
+          },
+          "mean": 70.85621625928925,
+          "median": 77.83797080715571
+        },
+        {
+          "date": "2026-12-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 68.05551152118879,
+              "upper": 77.79940156113469
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 42.99621393133062,
+              "upper": 78.6253943692398
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 39.34602215569433,
+              "upper": 80.36075753068042
+            }
+          },
+          "mean": 68.9828180351971,
+          "median": 76.85631450005735
+        },
+        {
+          "date": "2026-12-31",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 66.29609032679807,
+              "upper": 77.2009132652516
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 39.57258406493767,
+              "upper": 78.15326643995273
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 35.17637284961857,
+              "upper": 79.20877232143805
+            }
+          },
+          "mean": 67.43284386739766,
+          "median": 75.79662884343074
+        }
+      ],
+      "horizon_summary": {
+        "date": "2026-12-31",
+        "intervals": {
+          "p50": {
+            "level": 0.5,
+            "lower": 66.29609032679807,
+            "upper": 77.2009132652516
+          },
+          "p80": {
+            "level": 0.8,
+            "lower": 39.57258406493767,
+            "upper": 78.15326643995273
+          },
+          "p95": {
+            "level": 0.95,
+            "lower": 35.17637284961857,
+            "upper": 79.20877232143805
+          }
+        },
+        "mean": 67.43284386739768,
+        "median": 75.79662884343074
+      },
+      "id": "downside",
+      "invalidation_conditions": [
+        "Fresh harder tasks preserve comparable headroom."
+      ],
+      "kind": "downside",
+      "label": "Saturation / measurement stress",
+      "parameters": {
+        "annual_drag": 0.18,
+        "floor_multiplier": 0.6,
+        "immediate_multiplier": 0.98
+      },
+      "probability": 0.17
+    },
+    {
+      "assumptions": [
+        "A structural improvement loop materially changes the trajectory."
+      ],
+      "forecast_points": [
+        {
+          "date": "2026-07-28",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.98804403305994,
+              "upper": 84.10296974200655
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 62.07686442641456,
+              "upper": 85.03852692034292
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 59.33587654465264,
+              "upper": 86.42801156695067
+            }
+          },
+          "mean": 78.20630365510132,
+          "median": 82.64115530539158
+        },
+        {
+          "date": "2026-08-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.90227581571293,
+              "upper": 84.0268791653833
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 61.60174667991413,
+              "upper": 85.07767754248341
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 57.64805384772026,
+              "upper": 86.29523667905313
+            }
+          },
+          "mean": 78.04937612740244,
+          "median": 82.69399134955891
+        },
+        {
+          "date": "2026-09-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.72743236106652,
+              "upper": 84.5885317592421
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 58.14241826806199,
+              "upper": 85.84142951748707
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 53.23279643842675,
+              "upper": 87.1679534811499
+            }
+          },
+          "mean": 77.54519334022154,
+          "median": 82.85863970435628
+        },
+        {
+          "date": "2026-10-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 75.33771649163958,
+              "upper": 84.51176780642044
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 54.23186745356457,
+              "upper": 85.57073199630294
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 49.873242511014304,
+              "upper": 87.22371764235763
+            }
+          },
+          "mean": 76.73780732544755,
+          "median": 83.13352612034947
+        },
+        {
+          "date": "2026-11-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 76.04217174389623,
+              "upper": 84.48750812514179
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 50.26942413115365,
+              "upper": 85.71999534199522
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 46.44754059868329,
+              "upper": 93.04762312251346
+            }
+          },
+          "mean": 76.09537920515271,
+          "median": 83.27456073296344
+        },
+        {
+          "date": "2026-12-01",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 75.19145525172532,
+              "upper": 84.53461336586133
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 46.68442054977941,
+              "upper": 85.82011750331972
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 42.72111605479972,
+              "upper": 93.44026762005541
+            }
+          },
+          "mean": 75.19101976811227,
+          "median": 83.49102123688385
+        },
+        {
+          "date": "2026-12-31",
+          "intervals": {
+            "p50": {
+              "level": 0.5,
+              "lower": 74.0865524640868,
+              "upper": 85.20402398600389
+            },
+            "p80": {
+              "level": 0.8,
+              "lower": 43.59097247237149,
+              "upper": 86.18395164307869
+            },
+            "p95": {
+              "level": 0.95,
+              "lower": 38.74834906028304,
+              "upper": 94.12810582371333
+            }
+          },
+          "mean": 74.56431080741778,
+          "median": 83.49337905229243
+        }
+      ],
+      "horizon_summary": {
+        "date": "2026-12-31",
+        "intervals": {
+          "p50": {
+            "level": 0.5,
+            "lower": 74.0865524640868,
+            "upper": 85.20402398600389
+          },
+          "p80": {
+            "level": 0.8,
+            "lower": 43.59097247237149,
+            "upper": 86.18395164307869
+          },
+          "p95": {
+            "level": 0.95,
+            "lower": 38.74834906028304,
+            "upper": 94.12810582371333
+          }
+        },
+        "mean": 74.5643108074178,
+        "median": 83.49337905229243
+      },
+      "id": "discontinuous",
+      "invalidation_conditions": [
+        "No verified regime-change signal appears."
+      ],
+      "kind": "discontinuous",
+      "label": "Discontinuous",
+      "parameters": {
+        "annual_transition_hazard": 0.15,
+        "growth_rate_compounding": 0.25,
+        "initial_growth_bonus": 0.12,
+        "jump_multiplier": 1.15
+      },
+      "probability": 0.05
+    }
+  ],
+  "target": {
+    "direction": "higher_is_better",
+    "horizon_end": "2026-12-31",
+    "lower_bound": 0,
+    "metric": "SWE-bench Verified frontier resolved rate",
+    "question": "What bounded trajectory is implied by the selected public SWE-bench Verified frontier records through December 2026?",
+    "scope": "Selected official leaderboard frontier excerpt",
+    "success_definition": "Percent of the 500 human-filtered SWE-bench Verified instances resolved under the recorded system configuration.",
+    "target_kind": "probability",
+    "unit": "percent resolved",
+    "upper_bound": 100
+  },
+  "triggers": [
+    {
+      "action": "Freeze the upstream file and rerun the bounded hindcast.",
+      "direction": "event",
+      "evidence_ids": [
+        "swe-bench-official-leaderboard"
+      ],
+      "forecast_effect": "May change both the level and the measurement regime.",
+      "name": "Official leaderboard or benchmark revision",
+      "threshold": "New verified record or benchmark version"
+    }
+  ]
+}

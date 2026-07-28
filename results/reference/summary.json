@@ -1,0 +1,14 @@
+{
+  "ablation_rows": 7,
+  "best_ablation": "full_canonical",
+  "best_hindcast_models": {
+    "accelerating": "model_average",
+    "change_point": "model_average",
+    "exponential": "exponential",
+    "linear": "linear",
+    "logistic": "accelerating"
+  },
+  "hindcast_rows": 35,
+  "seed": 20260728,
+  "workflow_rows": 7
+}

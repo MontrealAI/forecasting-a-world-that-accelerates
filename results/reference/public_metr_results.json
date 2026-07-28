@@ -1,0 +1,381 @@
+{
+  "data_points": 13,
+  "fits": {
+    "accelerating": {
+      "aicc": 21.95621358626648,
+      "bic": 19.216011016112624,
+      "converged": true,
+      "log_likelihood": -4.478106793133239,
+      "mae_log": 0.263294166221984,
+      "message": "Gaussian log-residual maximum likelihood (closed form quadratic)",
+      "model": "accelerating",
+      "n_observations": 13,
+      "n_parameters": 4,
+      "parameters": {
+        "acceleration": 0.28929672018383035,
+        "growth": 0.2851735695171762,
+        "log_x0": -2.7928813223472013,
+        "time_origin": 0.0
+      },
+      "rmse_log": 0.34147910769797873
+    },
+    "change_point": {
+      "aicc": 19.107565308654024,
+      "bic": 13.360883524533135,
+      "converged": true,
+      "log_likelihood": -0.2680683686127258,
+      "mae_log": 0.2119010353871396,
+      "message": "Gaussian log-residual maximum likelihood with grid-searched continuous change point",
+      "model": "change_point",
+      "n_observations": 13,
+      "n_parameters": 5,
+      "parameters": {
+        "change_time": 5.2430919183829925,
+        "growth_delta": 1.4935407465277113,
+        "growth_pre": 1.0051577953256194,
+        "log_x0": -3.15723994026052,
+        "time_origin": 0.0
+      },
+      "rmse_log": 0.24701211636073392
+    },
+    "decaying_acceleration": {
+      "aicc": 27.533111587092414,
+      "bic": 21.786429802971526,
+      "converged": true,
+      "log_likelihood": -4.480841507831921,
+      "mae_log": 0.2633646646631087,
+      "message": "`ftol` termination condition is satisfied.",
+      "model": "decaying_acceleration",
+      "n_observations": 13,
+      "n_parameters": 5,
+      "parameters": {
+        "growth": 0.28464323393080604,
+        "initial_acceleration": 0.2897122692896824,
+        "kappa": 0.00041334397881332124,
+        "log_x0": -2.7927519662464446,
+        "time_origin": 0.0
+      },
+      "rmse_log": 0.3415509497106999
+    },
+    "exponential": {
+      "aicc": 34.66016208785857,
+      "bic": 33.68834349357652,
+      "converged": true,
+      "log_likelihood": -12.996747710595953,
+      "mae_log": 0.5635503562853404,
+      "message": "Gaussian log-residual maximum likelihood (closed form)",
+      "model": "exponential",
+      "n_observations": 13,
+      "n_parameters": 3,
+      "parameters": {
+        "growth": 1.3538360591421965,
+        "log_x0": -3.874330839255792,
+        "time_origin": 0.0
+      },
+      "rmse_log": 0.6575800920712663
+    },
+    "linear": {
+      "aicc": 64.21704260828892,
+      "bic": 63.245224014006865,
+      "converged": true,
+      "log_likelihood": -27.77518797081113,
+      "mae_log": 1.6806988468802815,
+      "message": "Gaussian log-residual maximum likelihood: `ftol` termination condition is satisfied.",
+      "model": "linear",
+      "n_observations": 13,
+      "n_parameters": 3,
+      "parameters": {
+        "intercept": 0.04859559120559816,
+        "slope": 5.595733748654974,
+        "time_origin": 0.0
+      },
+      "rmse_log": 2.049537970751032
+    },
+    "logistic": {
+      "aicc": 38.993499499589184,
+      "bic": 36.25329692943533,
+      "converged": true,
+      "log_likelihood": -12.996749749794592,
+      "mae_log": 0.5635504590610234,
+      "message": "`ftol` termination condition is satisfied.",
+      "model": "logistic",
+      "n_observations": 13,
+      "n_parameters": 4,
+      "parameters": {
+        "capacity": 485165902.8038244,
+        "growth": 1.3538360896907973,
+        "time_origin": 0.0,
+        "x0": 0.020768229547750348
+      },
+      "rmse_log": 0.6575801952202305
+    }
+  },
+  "hindcast": {
+    "accelerating": {
+      "mae_log": 0.37633197072446783,
+      "n": 6,
+      "records": [
+        {
+          "actual": 60.4,
+          "predicted": 38.09032483819928,
+          "time": 6.0288712293886935
+        },
+        {
+          "actual": 119.7,
+          "predicted": 57.096702851990905,
+          "time": 6.168504486745108
+        },
+        {
+          "actual": 203.0,
+          "predicted": 129.66196172124816,
+          "time": 6.477887978534809
+        },
+        {
+          "actual": 293.0,
+          "predicted": 281.33296779856784,
+          "time": 6.776319842296556
+        },
+        {
+          "actual": 352.0,
+          "predicted": 315.30980680507224,
+          "time": 6.822864261415361
+        },
+        {
+          "actual": 719.0,
+          "predicted": 454.9215512045661,
+          "time": 6.976187053806718
+        }
+      ],
+      "rmse_log": 0.44436229362027585,
+      "smape": 0.3671075322364046
+    },
+    "change_point": {
+      "mae_log": 0.24157709285058418,
+      "n": 6,
+      "records": [
+        {
+          "actual": 60.4,
+          "predicted": 60.430238023884996,
+          "time": 6.0288712293886935
+        },
+        {
+          "actual": 119.7,
+          "predicted": 87.26784497220406,
+          "time": 6.168504486745108
+        },
+        {
+          "actual": 203.0,
+          "predicted": 242.98804322943187,
+          "time": 6.477887978534809
+        },
+        {
+          "actual": 293.0,
+          "predicted": 503.13801949439124,
+          "time": 6.776319842296556
+        },
+        {
+          "actual": 352.0,
+          "predicted": 438.3552234384281,
+          "time": 6.822864261415361
+        },
+        {
+          "actual": 719.0,
+          "predicted": 592.7676157694882,
+          "time": 6.976187053806718
+        }
+      ],
+      "rmse_log": 0.29153211270568336,
+      "smape": 0.23868403922610804
+    },
+    "decaying_acceleration": {
+      "mae_log": 0.37654533359071474,
+      "n": 6,
+      "records": [
+        {
+          "actual": 60.4,
+          "predicted": 38.086222998282175,
+          "time": 6.0288712293886935
+        },
+        {
+          "actual": 119.7,
+          "predicted": 57.08956700173111,
+          "time": 6.168504486745108
+        },
+        {
+          "actual": 203.0,
+          "predicted": 129.6269329006628,
+          "time": 6.477887978534809
+        },
+        {
+          "actual": 293.0,
+          "predicted": 281.24844420555326,
+          "time": 6.776319842296556
+        },
+        {
+          "actual": 352.0,
+          "predicted": 315.22776867928434,
+          "time": 6.822864261415361
+        },
+        {
+          "actual": 719.0,
+          "predicted": 454.8230234419055,
+          "time": 6.976187053806718
+        }
+      ],
+      "rmse_log": 0.4445135872187149,
+      "smape": 0.36731319180072636
+    },
+    "exponential": {
+      "mae_log": 0.9493991679490773,
+      "n": 6,
+      "records": [
+        {
+          "actual": 60.4,
+          "predicted": 27.831331699950987,
+          "time": 6.0288712293886935
+        },
+        {
+          "actual": 119.7,
+          "predicted": 39.68011814112331,
+          "time": 6.168504486745108
+        },
+        {
+          "actual": 203.0,
+          "predicted": 72.68817707493686,
+          "time": 6.477887978534809
+        },
+        {
+          "actual": 293.0,
+          "predicted": 129.1357815094711,
+          "time": 6.776319842296556
+        },
+        {
+          "actual": 352.0,
+          "predicted": 159.44598030958363,
+          "time": 6.822864261415361
+        },
+        {
+          "actual": 719.0,
+          "predicted": 221.117182076821,
+          "time": 6.976187053806718
+        }
+      ],
+      "rmse_log": 0.9629048070323969,
+      "smape": 0.8793802735073744
+    },
+    "linear": {
+      "mae_log": 2.772793153918768,
+      "n": 6,
+      "records": [
+        {
+          "actual": 60.4,
+          "predicted": 5.668983960867621,
+          "time": 6.0288712293886935
+        },
+        {
+          "actual": 119.7,
+          "predicted": 8.13401508333903,
+          "time": 6.168504486745108
+        },
+        {
+          "actual": 203.0,
+          "predicted": 11.950650305720504,
+          "time": 6.477887978534809
+        },
+        {
+          "actual": 293.0,
+          "predicted": 17.11912457927912,
+          "time": 6.776319842296556
+        },
+        {
+          "actual": 352.0,
+          "predicted": 22.89254913643074,
+          "time": 6.822864261415361
+        },
+        {
+          "actual": 719.0,
+          "predicted": 30.001036295889246,
+          "time": 6.976187053806718
+        }
+      ],
+      "rmse_log": 2.783150846467033,
+      "smape": 1.7590990021412296
+    },
+    "logistic": {
+      "mae_log": 0.949399320270817,
+      "n": 6,
+      "records": [
+        {
+          "actual": 60.4,
+          "predicted": 27.831330847866038,
+          "time": 6.0288712293886935
+        },
+        {
+          "actual": 119.7,
+          "predicted": 39.6801165620757,
+          "time": 6.168504486745108
+        },
+        {
+          "actual": 203.0,
+          "predicted": 72.68816997573603,
+          "time": 6.477887978534809
+        },
+        {
+          "actual": 293.0,
+          "predicted": 129.1357557763393,
+          "time": 6.776319842296556
+        },
+        {
+          "actual": 352.0,
+          "predicted": 159.4459445160739,
+          "time": 6.822864261415361
+        },
+        {
+          "actual": 719.0,
+          "predicted": 221.11711085614445,
+          "time": 6.976187053806718
+        }
+      ],
+      "rmse_log": 0.9629049608746948,
+      "smape": 0.8793803944609125
+    },
+    "model_average": {
+      "mae_log": 0.5065978780103396,
+      "n": 6,
+      "records": [
+        {
+          "actual": 60.4,
+          "predicted": 27.8715727905606,
+          "time": 6.0288712293886935
+        },
+        {
+          "actual": 119.7,
+          "predicted": 41.381721064062965,
+          "time": 6.168504486745108
+        },
+        {
+          "actual": 203.0,
+          "predicted": 100.6327647433124,
+          "time": 6.477887978534809
+        },
+        {
+          "actual": 293.0,
+          "predicted": 348.4486635811065,
+          "time": 6.776319842296556
+        },
+        {
+          "actual": 352.0,
+          "predicted": 361.2903883278675,
+          "time": 6.822864261415361
+        },
+        {
+          "actual": 719.0,
+          "predicted": 531.0746073533203,
+          "time": 6.976187053806718
+        }
+      ],
+      "rmse_log": 0.6246605665433914,
+      "smape": 0.48054888189451167
+    }
+  }
+}

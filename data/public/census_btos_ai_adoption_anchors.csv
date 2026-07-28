@@ -1,0 +1,6 @@
+reference_end,value_percent,measure,comparability_group,exactness,source_url,note
+2023-11-05,3.9,AI used to produce goods or services,goods_services_v1,exact,https://www.census.gov/library/stories/2023/11/businesses-use-ai.html,"BTOS reference period October 23-November 5, 2023."
+2024-02-29,5.4,AI used to produce goods or services,goods_services_v1,period-end approximation,https://www.census.gov/library/working-papers/2024/adrm/CES-WP-24-16.html,"Working paper reports that the biweekly estimate rose to 5.4% by February 2024; date is a month-end marker, not an asserted exact survey endpoint."
+2025-05-31,10.0,AI used to produce goods or services,goods_services_v1,rounded approximation,https://www.census.gov/about/history/stories/monthly/2025/july-2025.html,"Census history page describes the May 2025 overall estimate as close to 10%."
+2026-01-31,18.0,AI used in any business function,any_business_function_v2,reference-period average,https://www.census.gov/library/working-papers/2026/adrm/CES-WP-26-25.html,"2026 AI supplement reference period November 2025-January 2026."
+2026-05-03,19.8,AI used in any business function,any_business_function_v2,exact,https://www.census.gov/library/stories/2026/05/ai-use-businesses.html,"BTOS collection period ending May 3, 2026."

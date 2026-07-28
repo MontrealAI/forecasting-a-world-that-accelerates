@@ -1,0 +1,690 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://montreal.ai/schemas/fwaa/v2/input.schema.json",
+  "title": "FWAA v2 forecast input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol_version",
+    "forecast_id",
+    "research_cutoff",
+    "target",
+    "observations",
+    "scenarios",
+    "canonical_model",
+    "recalculation"
+  ],
+  "properties": {
+    "protocol_version": {
+      "const": "2.0.0"
+    },
+    "forecast_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "research_cutoff": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question",
+        "metric",
+        "unit",
+        "scope",
+        "horizon_end",
+        "target_kind"
+      ],
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 8
+        },
+        "metric": {
+          "type": "string",
+          "minLength": 2
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 2
+        },
+        "horizon_end": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+        },
+        "target_kind": {
+          "enum": [
+            "stock",
+            "flow",
+            "probability",
+            "threshold",
+            "completion_date",
+            "adoption_fraction",
+            "revenue",
+            "technical_capability",
+            "other"
+          ]
+        },
+        "success_definition": {
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "higher_is_better",
+            "lower_is_better"
+          ]
+        },
+        "lower_bound": {
+          "type": "number"
+        },
+        "upper_bound": {
+          "type": "number"
+        }
+      }
+    },
+    "decision_implication": {
+      "type": "string"
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "value",
+          "evidence_ids"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+          },
+          "value": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "comparable": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "publisher",
+          "source_url",
+          "quality_grade",
+          "measurement_date",
+          "publication_date",
+          "accessed_at",
+          "primary",
+          "claim"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 3
+          },
+          "publisher": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "quality_grade": {
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "measurement_date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+          },
+          "publication_date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+          },
+          "accessed_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+          },
+          "primary": {
+            "type": "boolean"
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 3
+          },
+          "license": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "modeling": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "candidate_models": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "linear",
+              "exponential",
+              "accelerating",
+              "decaying_acceleration",
+              "logistic",
+              "change_point"
+            ]
+          }
+        },
+        "bootstrap_samples": {
+          "type": "integer",
+          "minimum": 50,
+          "maximum": 20000
+        },
+        "random_seed": {
+          "type": "integer"
+        },
+        "interval_levels": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "exclusiveMaximum": 1
+          }
+        },
+        "forecast_frequency": {
+          "enum": [
+            "weekly",
+            "monthly",
+            "quarterly"
+          ]
+        },
+        "include_process_noise": {
+          "type": "boolean"
+        },
+        "hindcast_min_train": {
+          "type": "integer",
+          "minimum": 4
+        }
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "kind",
+          "probability"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]*$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "base",
+              "accelerated",
+              "downside",
+              "discontinuous"
+            ]
+          },
+          "probability": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "invalidation_conditions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "canonical_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "reduced_form",
+            "technical_to_realized"
+          ]
+        },
+        "operator": {
+          "enum": [
+            "hard_min",
+            "generalized"
+          ]
+        },
+        "alpha": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
+        },
+        "rho": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "absorptive_demand": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "market_baseline",
+            "adoption_baseline"
+          ],
+          "properties": {
+            "market_baseline": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "market_annual_growth": {
+              "type": "number"
+            },
+            "adoption_baseline": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1
+            },
+            "adoption_annual_logit_change": {
+              "type": "number"
+            },
+            "utilization_baseline": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "utilization_annual_growth": {
+              "type": "number"
+            }
+          }
+        },
+        "branch_constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "technical_baseline": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1
+            },
+            "technical_annual_logit_change": {
+              "type": "number"
+            },
+            "demand_baseline": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1
+            },
+            "demand_annual_logit_change": {
+              "type": "number"
+            },
+            "transfer_baseline": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1
+            },
+            "transfer_annual_logit_change": {
+              "type": "number"
+            }
+          }
+        },
+        "input_series_semantics": {
+          "enum": [
+            "realized_outcome",
+            "technical_capacity"
+          ]
+        },
+        "uncertainty": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "market_baseline_log_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "market_annual_growth_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "adoption_baseline_logit_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "adoption_annual_logit_change_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "utilization_baseline_log_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "utilization_annual_growth_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "technical_baseline_logit_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "technical_annual_logit_change_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "demand_baseline_logit_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "demand_annual_logit_change_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "transfer_baseline_logit_sd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "transfer_annual_logit_change_sd": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "technical_to_realized"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "absorptive_demand",
+              "operator"
+            ]
+          }
+        }
+      ]
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "threshold"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "number"
+          },
+          "direction": {
+            "enum": [
+              "at_least",
+              "at_most"
+            ]
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "bottlenecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "severity",
+          "mechanism",
+          "release_condition",
+          "mitigation"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "low",
+              "moderate",
+              "high",
+              "critical"
+            ]
+          },
+          "mechanism": {
+            "type": "string"
+          },
+          "release_condition": {
+            "type": "string"
+          },
+          "mitigation": {
+            "type": "string"
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "triggers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "direction",
+          "threshold",
+          "forecast_effect",
+          "action"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "above",
+              "below",
+              "crosses",
+              "event"
+            ]
+          },
+          "threshold": {
+            "type": [
+              "number",
+              "string"
+            ]
+          },
+          "forecast_effect": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "optimal_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "no_regret_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "option_preserving_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "next_experiment": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "delay_pending_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stop_expand_pivot": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recalculation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scheduled_date",
+        "early_triggers",
+        "required_evidence"
+      ],
+      "properties": {
+        "scheduled_date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}(T.*)?$"
+        },
+        "early_triggers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

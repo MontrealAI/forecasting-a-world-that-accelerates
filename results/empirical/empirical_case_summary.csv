@@ -1,0 +1,3 @@
+case,observations,best_hindcast_model,best_hindcast_log_rmse,recent_annualized_change,base_horizon_median,base_horizon_p80_lower,base_horizon_p80_upper,unit
+METR Time Horizon 1.1 excerpt,13,change_point,0.29153211270568336,11.539905028564826,960.0,960.0,960.0,human-expert minutes
+SWE-bench Verified frontier excerpt,7,logistic,0.018631233272533253,0.2766009977396815,83.49337905229243,43.59097247237149,86.08932083938349,percent resolved

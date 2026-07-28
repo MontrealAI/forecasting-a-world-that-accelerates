@@ -1,0 +1,31 @@
+dataset_id: census-btos-ai-adoption-anchors-2026-07-28
+status: transcribed-official-evidence-with-measurement-break
+retrieved_at: 2026-07-28T14:20:00-04:00
+purpose: demonstrate adoption forecasting, evidence dating, and refusal to splice non-comparable definitions
+primary_sources:
+  - title: How Many U.S. Businesses Use Artificial Intelligence?
+    publisher: U.S. Census Bureau
+    uri: https://www.census.gov/library/stories/2023/11/businesses-use-ai.html
+  - title: "Tracking Firm Use of AI in Real Time: A Snapshot from the Business Trends and Outlook Survey"
+    publisher: U.S. Census Bureau
+    uri: https://www.census.gov/library/working-papers/2024/adrm/CES-WP-24-16.html
+  - title: July 2025 Census History
+    publisher: U.S. Census Bureau
+    uri: https://www.census.gov/about/history/stories/monthly/2025/july-2025.html
+  - title: 2026 AI Supplement research paper
+    publisher: U.S. Census Bureau
+    uri: https://www.census.gov/library/working-papers/2026/adrm/CES-WP-26-25.html
+  - title: Nearly 1 in 5 U.S. Businesses Use Artificial Intelligence
+    publisher: U.S. Census Bureau
+    uri: https://www.census.gov/library/stories/2026/05/ai-use-businesses.html
+method:
+  - Transcribed selected published national anchors and their stated reference periods.
+  - Assigned comparability groups from the published measure definitions.
+  - Marked approximated dates and rounded values rather than presenting them as exact observations.
+  - Treated the change from goods-or-services use to any-business-function use as a structural measurement break.
+limitations:
+  - This is a selective excerpt rather than the full BTOS microdata or time series.
+  - Survey estimates carry sampling and non-sampling uncertainty not reproduced in this excerpt.
+  - Dates marked as approximations must not be interpreted as exact survey endpoints.
+  - The two comparability groups must not be concatenated without an explicit bridge or sensitivity analysis.
+license_note: Factual U.S. government research excerpt with attribution; no endorsement is implied.

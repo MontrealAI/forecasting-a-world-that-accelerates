@@ -1,0 +1,54 @@
+{
+  "coordination_overhead": 0.36,
+  "cost_per_verified_success": 0.0,
+  "critical_path": 13.261512,
+  "escalation_probability_upper_bound": 0.012424000000000011,
+  "estimated_duration": 13.621512,
+  "expected_cost": 0.0,
+  "task_metrics": {
+    "model": {
+      "achieved_reliability": 0.995904,
+      "escalation_probability": 0.004096000000000002,
+      "expected_attempts": 1.1856,
+      "expected_cost": 0.0,
+      "expected_duration": 2.6921760000000003
+    },
+    "release": {
+      "achieved_reliability": 0.9996,
+      "escalation_probability": 0.0004000000000000007,
+      "expected_attempts": 1.02,
+      "expected_cost": 0.0,
+      "expected_duration": 4.6638
+    },
+    "research-a": {
+      "achieved_reliability": 0.999,
+      "escalation_probability": 0.0009999999999999994,
+      "expected_attempts": 1.1099999999999999,
+      "expected_cost": 0.0,
+      "expected_duration": 1.6135
+    },
+    "research-b": {
+      "achieved_reliability": 0.998272,
+      "escalation_probability": 0.0017279999999999997,
+      "expected_attempts": 1.1344,
+      "expected_cost": 0.0,
+      "expected_duration": 1.879536
+    },
+    "review": {
+      "achieved_reliability": 0.9964,
+      "escalation_probability": 0.0036000000000000064,
+      "expected_attempts": 1.06,
+      "expected_cost": 0.0,
+      "expected_duration": 3.1008
+    },
+    "scope": {
+      "achieved_reliability": 0.9984,
+      "escalation_probability": 0.001600000000000003,
+      "expected_attempts": 1.04,
+      "expected_cost": 0.0,
+      "expected_duration": 0.9252
+    }
+  },
+  "total_work": 14.875012,
+  "workflow_reliability": 0.9536655327432513
+}

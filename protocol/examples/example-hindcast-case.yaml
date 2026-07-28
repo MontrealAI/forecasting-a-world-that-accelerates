@@ -1,0 +1,21 @@
+case_id: metr-time-horizon-v1.1-excerpt
+description: Illustrative rolling-origin hindcast over the frozen public excerpt;
+  not a general AI forecast.
+data_path: data/public/metr_time_horizon_hindcast.csv
+time_column: release_date
+value_column: p50_minutes
+include_column: null
+minimum_training_points: 7
+horizon_steps: 1
+models:
+- linear
+- exponential
+- accelerating
+- decaying_acceleration
+- logistic
+- change_point
+- model_average
+exclusions:
+- Exclude observations above the source suite's stated reliable measurement range.
+provenance_path: data/provenance/metr_time_horizon_excerpt.yaml
+random_seed: null
