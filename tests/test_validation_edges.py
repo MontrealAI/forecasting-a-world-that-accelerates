@@ -29,7 +29,6 @@ from fwta.metrics import (
 )
 from fwta.provenance import write_manifest
 
-
 ELASTICITIES = {"theta": 1.0, "cost": 1.0, "duration": 1.0, "automation": 1.0, "parallelism": 1.0, "reliability": 1.0}
 
 
@@ -103,7 +102,9 @@ def test_io_manifest_and_ablation_errors(tmp_path: Path) -> None:
 
     schema = tmp_path / "schema.json"
     instance = tmp_path / "instance.json"
-    schema.write_text('{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["x"]}', encoding="utf-8")
+    schema.write_text(
+        '{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["x"]}', encoding="utf-8"
+    )
     instance.write_text("{}", encoding="utf-8")
     assert validate_instance(instance, schema)
 

@@ -17,7 +17,19 @@ PATTERNS = {
     "OpenAI-style secret": re.compile(r"\bsk-[A-Za-z0-9_-]{24,}\b"),
     "generic bearer token": re.compile(r"Authorization:\s*Bearer\s+[A-Za-z0-9._~-]{20,}", re.I),
 }
-EXCLUDED_PARTS = {".git", ".venv", ".wheel-test", ".cache", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", "build", "dist", "tmp"}
+EXCLUDED_PARTS = {
+    ".git",
+    ".venv",
+    ".wheel-test",
+    ".cache",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "build",
+    "dist",
+    "tmp",
+}
 EXCLUDED_PREFIXES = {"paper/build"}
 REQUIRED_FILES = {
     ".github/CODEOWNERS",
@@ -144,7 +156,9 @@ def main() -> int:
         for finding in sorted(set(findings)):
             print(f"- {finding}")
         return 1
-    print("Release preflight passed: required controls are present, metadata parses, Actions are SHA-pinned, and no obvious secret pattern was detected.")
+    print(
+        "Release preflight passed: required controls are present, metadata parses, Actions are SHA-pinned, and no obvious secret pattern was detected."
+    )
     return 0
 
 

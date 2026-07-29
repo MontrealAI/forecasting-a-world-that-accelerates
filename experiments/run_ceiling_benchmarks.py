@@ -52,7 +52,14 @@ def run_metr(seed: int = 20260728, draws: int = 160) -> dict[str, Any]:
         "exponential_only": ("exponential",),
         "accelerating_only": ("accelerating",),
         "change_point_only": ("change_point",),
-        "full_model_average": ("linear", "exponential", "accelerating", "decaying_acceleration", "logistic", "change_point"),
+        "full_model_average": (
+            "linear",
+            "exponential",
+            "accelerating",
+            "decaying_acceleration",
+            "logistic",
+            "change_point",
+        ),
     }
     results: dict[str, Any] = {
         "benchmark": "METR Time Horizon 1.1 compact public excerpt",
@@ -101,7 +108,8 @@ def run_metr(seed: int = 20260728, draws: int = 160) -> dict[str, Any]:
     ]
     for name, rmse, crps, wis, coverage80, coverage95 in ranking:
         lines.append(
-            f"{_latex_escape(name.replace('_', ' '))} & {rmse:.3f} & {crps:.1f} & {wis:.1f} & {100 * coverage80:.0f}\\% & {100 * coverage95:.0f}\\% " + r"\\"
+            f"{_latex_escape(name.replace('_', ' '))} & {rmse:.3f} & {crps:.1f} & {wis:.1f} & {100 * coverage80:.0f}\\% & {100 * coverage95:.0f}\\% "
+            + r"\\"
         )
     lines.extend([r"\bottomrule", r"\end{tabular}"])
     (ROOT / "paper/tables/metr_probabilistic_hindcast.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -168,7 +176,8 @@ def run_btos_audit() -> dict[str, Any]:
         first = record["first_anchor"]
         last = record["last_anchor"]
         lines.append(
-            f"{_latex_escape(name)} & {_latex_escape(record['measure'])} & {float(first['value_percent']):.1f}\\% & {float(last['value_percent']):.1f}\\% & Do not splice across the 2025 wording break. " + r"\\"
+            f"{_latex_escape(name)} & {_latex_escape(record['measure'])} & {float(first['value_percent']):.1f}\\% & {float(last['value_percent']):.1f}\\% & Do not splice across the 2025 wording break. "
+            + r"\\"
         )
     lines.extend([r"\bottomrule", r"\end{tabular}"])
     (ROOT / "paper/tables/btos_measurement_break.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -178,7 +187,11 @@ def run_btos_audit() -> dict[str, Any]:
 def main() -> int:
     summary = {"metr": run_metr(), "btos": run_btos_audit()}
     _write_json(ROOT / "results/ceiling/benchmark_index.json", summary)
-    print(json.dumps({"metr_pools": list(summary["metr"]["model_pools"]), "btos_decision": summary["btos"]["decision"]}, indent=2))
+    print(
+        json.dumps(
+            {"metr_pools": list(summary["metr"]["model_pools"]), "btos_decision": summary["btos"]["decision"]}, indent=2
+        )
+    )
     return 0
 
 

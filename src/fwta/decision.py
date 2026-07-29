@@ -44,18 +44,20 @@ def evaluate_actions(
     for action, record in actions.items():
         scores = np.array(
             [
-                record[scenario]["npv"]
-                + record[scenario].get("learning", 0.0)
-                + record[scenario].get("option", 0.0)
+                record[scenario]["npv"] + record[scenario].get("learning", 0.0) + record[scenario].get("option", 0.0)
                 for scenario in scenarios
             ],
             dtype=float,
         )
         probs = np.array([scenario_probabilities[scenario] for scenario in scenarios], dtype=float)
         expected = float(np.dot(probs, scores))
-        losses = np.array([record[scenario].get("loss", max(0.0, -score)) for scenario, score in zip(scenarios, scores, strict=True)])
+        losses = np.array(
+            [record[scenario].get("loss", max(0.0, -score)) for scenario, score in zip(scenarios, scores, strict=True)]
+        )
         penalty = cvar(losses, cvar_alpha)
-        regrets = np.array([best_by_scenario[scenario] - score for scenario, score in zip(scenarios, scores, strict=True)])
+        regrets = np.array(
+            [best_by_scenario[scenario] - score for scenario, score in zip(scenarios, scores, strict=True)]
+        )
         evaluations.append(
             ActionEvaluation(
                 action=action,

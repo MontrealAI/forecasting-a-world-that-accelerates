@@ -111,7 +111,18 @@ def main() -> int:
         "> This record proves packaging and deterministic execution in the stated environment. It is not a security audit, peer review, or prospective forecasting validation.",
     ]
     output_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(json.dumps({"ok": True, "wheel_sha256": payload["wheel"]["sha256"], "sdist_sha256": payload["source_distribution"]["sha256"], "forecast_json_sha256": json_hash, "forecast_html_sha256": html_hash}, indent=2))
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "wheel_sha256": payload["wheel"]["sha256"],
+                "sdist_sha256": payload["source_distribution"]["sha256"],
+                "forecast_json_sha256": json_hash,
+                "forecast_html_sha256": html_hash,
+            },
+            indent=2,
+        )
+    )
     return 0
 
 

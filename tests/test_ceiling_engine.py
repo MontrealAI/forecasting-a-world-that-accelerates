@@ -22,7 +22,9 @@ def test_generalized_realization_converges_to_hard_min() -> None:
     soft = generalized_realized_outcome(q, z, rho=120.0)
     assert np.allclose(hard, np.array([10.0, 12.0]))
     assert np.allclose(soft, hard, rtol=0.02)
-    constrained = generalized_realized_outcome(q, z, technical_bottleneck=0.5, demand_bottleneck=1.0, realization_bottleneck=0.8, rho=float("inf"))
+    constrained = generalized_realized_outcome(
+        q, z, technical_bottleneck=0.5, demand_bottleneck=1.0, realization_bottleneck=0.8, rho=float("inf")
+    )
     assert np.allclose(constrained, np.array([4.0, 9.6]))
 
 
@@ -30,17 +32,38 @@ def test_probabilistic_ensemble_and_scenarios() -> None:
     t = np.linspace(0.0, 2.0, 16)
     y = 2.0 * np.exp(0.35 * t + 0.04 * t**2)
     future = np.linspace(2.0, 3.0, 8)
-    ensemble = residual_bootstrap_model_average(t, y, future, models=("exponential", "accelerating"), n_samples=50, seed=7)
+    ensemble = residual_bootstrap_model_average(
+        t, y, future, models=("exponential", "accelerating"), n_samples=50, seed=7
+    )
     assert ensemble.samples.shape == (50, 8)
     assert np.all(ensemble.median > 0)
     horizon = future - future[0]
-    accelerated = transform_scenario_samples(ensemble.samples, horizon, kind="accelerated", parameters={"annual_growth_shift": 0.2}, seed=8)
-    downside = transform_scenario_samples(ensemble.samples, horizon, kind="downside", parameters={"annual_drag": 0.2}, seed=8)
-    discontinuous = transform_scenario_samples(ensemble.samples, horizon, kind="discontinuous", parameters={"annual_transition_hazard": 100.0, "jump_multiplier": 1.2, "growth_rate_compounding": 0.2, "initial_growth_bonus": 0.1}, seed=8)
+    accelerated = transform_scenario_samples(
+        ensemble.samples, horizon, kind="accelerated", parameters={"annual_growth_shift": 0.2}, seed=8
+    )
+    downside = transform_scenario_samples(
+        ensemble.samples, horizon, kind="downside", parameters={"annual_drag": 0.2}, seed=8
+    )
+    discontinuous = transform_scenario_samples(
+        ensemble.samples,
+        horizon,
+        kind="discontinuous",
+        parameters={
+            "annual_transition_hazard": 100.0,
+            "jump_multiplier": 1.2,
+            "growth_rate_compounding": 0.2,
+            "initial_growth_bonus": 0.1,
+        },
+        seed=8,
+    )
     assert np.median(accelerated[:, -1]) > np.median(ensemble.samples[:, -1])
     assert np.median(downside[:, -1]) < np.median(ensemble.samples[:, -1])
     assert np.median(discontinuous[:, -1]) > np.median(ensemble.samples[:, -1])
-    crossing = crossing_distribution(accelerated, [f"2026-{month:02d}-01" for month in range(1, 9)], threshold=float(np.median(accelerated[:, -1]) * 0.9))
+    crossing = crossing_distribution(
+        accelerated,
+        [f"2026-{month:02d}-01" for month in range(1, 9)],
+        threshold=float(np.median(accelerated[:, -1]) * 0.9),
+    )
     assert 0 <= crossing["probability_by_horizon"] <= 1
 
 

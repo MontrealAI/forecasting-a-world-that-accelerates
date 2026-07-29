@@ -4,7 +4,6 @@ import hashlib
 import json
 import math
 from dataclasses import dataclass
-from datetime import date
 from typing import Any
 
 import numpy as np
@@ -13,7 +12,12 @@ import pandas as pd
 from .canonical import generalized_realized_outcome
 from .models import DEFAULT_MODELS, fit_all_models, predict_model, rolling_origin_hindcast
 from .timeutil import reproducible_utc_iso
-from .uncertainty import crossing_distribution, residual_bootstrap_model_average, summarize_samples, transform_scenario_samples
+from .uncertainty import (
+    crossing_distribution,
+    residual_bootstrap_model_average,
+    summarize_samples,
+    transform_scenario_samples,
+)
 
 _ENGINE_VERSION = "2.0.0"
 _SECONDS_PER_YEAR = 365.2425 * 86400.0
@@ -29,15 +33,12 @@ class ForecastRun:
 
 def _parse_date(value: str) -> pd.Timestamp:
     stamp = pd.Timestamp(value)
-    if stamp.tzinfo is None:
-        stamp = stamp.tz_localize("UTC")
-    else:
-        stamp = stamp.tz_convert("UTC")
+    stamp = stamp.tz_localize("UTC") if stamp.tzinfo is None else stamp.tz_convert("UTC")
     return stamp
 
 
 def _year_values(stamps: pd.DatetimeIndex | pd.Series, origin: pd.Timestamp) -> np.ndarray:
-    return ((stamps - origin).total_seconds() / _SECONDS_PER_YEAR).to_numpy(dtype=float)
+    return np.asarray((stamps - origin) / pd.Timedelta(seconds=_SECONDS_PER_YEAR), dtype=float)
 
 
 def _canonical_json(value: Any) -> str:
@@ -93,7 +94,9 @@ def _pace(dates: pd.DatetimeIndex, values: np.ndarray, cutoff: pd.Timestamp) -> 
         output["note"] = "Insufficient comparable history to calculate both six-month windows."
         return output
     recent_years = max((anchors["current"] - anchors["six_months_ago"]).total_seconds() / _SECONDS_PER_YEAR, 1e-9)
-    prior_years = max((anchors["six_months_ago"] - anchors["twelve_months_ago"]).total_seconds() / _SECONDS_PER_YEAR, 1e-9)
+    prior_years = max(
+        (anchors["six_months_ago"] - anchors["twelve_months_ago"]).total_seconds() / _SECONDS_PER_YEAR, 1e-9
+    )
     recent = math.log(current / six) / recent_years
     prior = math.log(six / twelve) / prior_years
     acceleration = (recent - prior) / ((recent_years + prior_years) / 2.0)
@@ -208,10 +211,8 @@ def _apply_realization(
         float(uncertainty.get("adoption_annual_logit_change_sd", 0.0)),
     )
     utilization = _positive_paths(
-        float(demand.get("utilization_baseline", 1.0))
-        * float(shifts.get("utilization_baseline_multiplier", 1.0)),
-        float(demand.get("utilization_annual_growth", 0.0))
-        + float(shifts.get("utilization_annual_growth_shift", 0.0)),
+        float(demand.get("utilization_baseline", 1.0)) * float(shifts.get("utilization_baseline_multiplier", 1.0)),
+        float(demand.get("utilization_annual_growth", 0.0)) + float(shifts.get("utilization_annual_growth_shift", 0.0)),
         horizon,
         count,
         rng,
@@ -309,6 +310,7 @@ def _apply_realization(
     }
     return realized, diagnostics
 
+
 def _points(dates: list[str], samples: np.ndarray, levels: tuple[float, ...]) -> list[dict[str, Any]]:
     median, mean, bands = summarize_samples(samples, levels)
     band_map = {f"p{int(round(band.level * 100))}": band for band in bands}
@@ -330,13 +332,19 @@ def _points(dates: list[str], samples: np.ndarray, levels: tuple[float, ...]) ->
 
 
 def _quality_score(evidence: list[dict[str, Any]]) -> float | None:
-    grades = [record.get("quality_grade") for record in evidence if record.get("quality_grade") in _QUALITY_WEIGHTS]
+    grades = [
+        grade
+        for record in evidence
+        if isinstance((grade := record.get("quality_grade")), str) and grade in _QUALITY_WEIGHTS
+    ]
     if not grades:
         return None
     return float(np.mean([_QUALITY_WEIGHTS[grade] for grade in grades]))
 
 
-def _model_payload(fits: dict[str, Any], time_future: np.ndarray, horizon_index: int) -> tuple[list[dict[str, Any]], float | None]:
+def _model_payload(
+    fits: dict[str, Any], time_future: np.ndarray, horizon_index: int
+) -> tuple[list[dict[str, Any]], float | None]:
     rows = []
     endpoint_values = []
     for name, fit in fits.items():
@@ -382,7 +390,8 @@ def run_forecast(payload: dict[str, Any]) -> ForecastRun:
     observations.sort(key=lambda item: item["date"])
     obs_dates = pd.DatetimeIndex([_parse_date(item["date"]) for item in observations])
     obs_values = np.asarray([float(item["value"]) for item in observations], dtype=float)
-    if np.any(obs_values <= 0) or np.any(np.diff(obs_dates.asi8) <= 0):
+    date_ns = obs_dates.to_numpy(dtype="datetime64[ns]").astype("int64")
+    if np.any(obs_values <= 0) or np.any(np.diff(date_ns) <= 0):
         raise ValueError("comparable observations must have strictly increasing dates and positive values")
     if obs_dates.max() > cutoff:
         raise ValueError("observations may not occur after research_cutoff")
@@ -416,7 +425,13 @@ def run_forecast(payload: dict[str, Any]) -> ForecastRun:
     min_train = int(modeling.get("hindcast_min_train", max(5, min(10, len(obs_values) - 2))))
     hindcast = rolling_origin_hindcast(train_time, obs_values, min_train=min_train, horizon_steps=1, models=models)
     hindcast_summary = [
-        {"model": name, "n": score["n"], "rmse_log": score["rmse_log"] if math.isfinite(score["rmse_log"]) else None, "mae_log": score["mae_log"] if math.isfinite(score["mae_log"]) else None, "smape": score["smape"] if math.isfinite(score["smape"]) else None}
+        {
+            "model": name,
+            "n": score["n"],
+            "rmse_log": score["rmse_log"] if math.isfinite(score["rmse_log"]) else None,
+            "mae_log": score["mae_log"] if math.isfinite(score["mae_log"]) else None,
+            "smape": score["smape"] if math.isfinite(score["smape"]) else None,
+        }
         for name, score in hindcast.items()
     ]
 
@@ -498,7 +513,10 @@ def run_forecast(payload: dict[str, Any]) -> ForecastRun:
         "executive_forecast": {
             "base_horizon_median": primary["horizon_summary"]["median"],
             "base_horizon_p80": primary["horizon_summary"]["intervals"].get("p80"),
-            "decision_implication": payload.get("decision_implication", "Use no-regret actions, preserve option value, and update at the dated recalculation gate."),
+            "decision_implication": payload.get(
+                "decision_implication",
+                "Use no-regret actions, preserve option value, and update at the dated recalculation gate.",
+            ),
             "validation_status": "Probabilistic reference forecast; not a guarantee or assurance engagement.",
         },
         "observations": observations,

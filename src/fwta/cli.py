@@ -95,7 +95,16 @@ def command_forecast(args: argparse.Namespace) -> int:
         errors = validate_instance(args.output, args.output_schema)
         if errors:
             raise ValueError("output schema validation failed: " + "; ".join(errors))
-    print(json.dumps({"forecast": str(args.output), "report": str(args.report) if args.report else None, "forecast_id": run.output["forecast_id"]}, indent=2))
+    print(
+        json.dumps(
+            {
+                "forecast": str(args.output),
+                "report": str(args.report) if args.report else None,
+                "forecast_id": run.output["forecast_id"],
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -123,7 +132,11 @@ def command_validate(args: argparse.Namespace) -> int:
 
 
 def command_synthetic(args: argparse.Namespace) -> int:
-    series = regime_shift_series(args.seed, args.periods) if args.kind == "regime" else canonical_system_series(args.seed, args.periods)
+    series = (
+        regime_shift_series(args.seed, args.periods)
+        if args.kind == "regime"
+        else canonical_system_series(args.seed, args.periods)
+    )
     destination = Path(args.output)
     destination.parent.mkdir(parents=True, exist_ok=True)
     series.frame.to_csv(destination, index=False)
@@ -173,12 +186,16 @@ def _add_series_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("csv", help="CSV file containing the historical series")
     parser.add_argument("--time", default="time_years", help="numeric time or parseable date column")
     parser.add_argument("--value", default="value", help="strictly positive target-value column")
-    parser.add_argument("--include-column", default=None, help="optional boolean/0-1 column used to select comparable, in-scope rows")
+    parser.add_argument(
+        "--include-column", default=None, help="optional boolean/0-1 column used to select comparable, in-scope rows"
+    )
     parser.add_argument("--models", default=None, help=f"comma-separated models; default: {','.join(DEFAULT_MODELS)}")
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="fwta", description="Acceleration-aware forecasting research and production tools")
+    parser = argparse.ArgumentParser(
+        prog="fwta", description="Acceleration-aware forecasting research and production tools"
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     forecast = sub.add_parser("forecast", help="run the complete probabilistic forecasting protocol")
@@ -218,7 +235,9 @@ def build_parser() -> argparse.ArgumentParser:
     synthetic.add_argument("--output", default="data/synthetic/series.csv")
     synthetic.set_defaults(func=command_synthetic)
 
-    run_everything = sub.add_parser("run-all", help="run controlled hindcasts, ablations, workflow analysis, and figures")
+    run_everything = sub.add_parser(
+        "run-all", help="run controlled hindcasts, ablations, workflow analysis, and figures"
+    )
     run_everything.add_argument("--output", default="results/reference")
     run_everything.add_argument("--figures", default="paper/figures")
     run_everything.add_argument("--seed", type=int, default=20260728)
@@ -232,9 +251,17 @@ def build_parser() -> argparse.ArgumentParser:
     register = sub.add_parser("register", help="append a forecast to the local hash-chained prospective registry")
     register.add_argument("forecast")
     register.add_argument("--registry", default="registry/records.json")
-    register.add_argument("--status", choices=("prospective-unscored", "demonstration-unscored", "matured-scored", "superseded"), default="prospective-unscored")
-    register.add_argument("--registered-at", default=None, help="optional ISO timestamp; omit for current time or SOURCE_DATE_EPOCH")
-    register.add_argument("--record", default=None, help="optional path for the appended record as a standalone JSON file")
+    register.add_argument(
+        "--status",
+        choices=("prospective-unscored", "demonstration-unscored", "matured-scored", "superseded"),
+        default="prospective-unscored",
+    )
+    register.add_argument(
+        "--registered-at", default=None, help="optional ISO timestamp; omit for current time or SOURCE_DATE_EPOCH"
+    )
+    register.add_argument(
+        "--record", default=None, help="optional path for the appended record as a standalone JSON file"
+    )
     register.set_defaults(func=command_register)
 
     registry_verify = sub.add_parser("registry-verify", help="verify a local prospective registry hash chain")

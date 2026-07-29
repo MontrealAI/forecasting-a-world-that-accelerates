@@ -38,7 +38,14 @@ def test_technical_growth_and_capacity() -> None:
         parallelism_dot=zeros,
         reliability=ones,
         reliability_dot=zeros,
-        elasticities={"theta": 0.5, "cost": 0.0, "duration": 0.0, "automation": 0.0, "parallelism": 0.0, "reliability": 0.0},
+        elasticities={
+            "theta": 0.5,
+            "cost": 0.0,
+            "duration": 0.0,
+            "automation": 0.0,
+            "parallelism": 0.0,
+            "reliability": 0.0,
+        },
     )
     capacity = technical_capacity(t, 2.0, growth)
     assert capacity[-1] == pytest.approx(2.0 * np.exp(0.5), rel=1e-5)

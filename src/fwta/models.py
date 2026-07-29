@@ -48,9 +48,7 @@ def predict_model(model: str, time: np.ndarray | list[float], parameters: dict[s
     elif model == "exponential":
         result = np.exp(parameters["log_x0"] + parameters["growth"] * t)
     elif model == "accelerating":
-        result = np.exp(
-            parameters["log_x0"] + parameters["growth"] * t + 0.5 * parameters["acceleration"] * t**2
-        )
+        result = np.exp(parameters["log_x0"] + parameters["growth"] * t + 0.5 * parameters["acceleration"] * t**2)
     elif model == "decaying_acceleration":
         kappa = parameters["kappa"]
         exponent = (
@@ -66,15 +64,15 @@ def predict_model(model: str, time: np.ndarray | list[float], parameters: dict[s
         result = capacity / (1.0 + (capacity / x0 - 1.0) * np.exp(-parameters["growth"] * t))
     elif model == "change_point":
         hinge = np.maximum(0.0, t - parameters["change_time"])
-        result = np.exp(
-            parameters["log_x0"] + parameters["growth_pre"] * t + parameters["growth_delta"] * hinge
-        )
+        result = np.exp(parameters["log_x0"] + parameters["growth_pre"] * t + parameters["growth_delta"] * hinge)
     else:
         raise ValueError(f"unknown model {model!r}")
     return np.maximum(np.asarray(result, dtype=float), np.finfo(float).tiny)
 
 
-def _finish(model: str, parameters: dict[str, float], t_abs: np.ndarray, y: np.ndarray, converged: bool, message: str) -> FitResult:
+def _finish(
+    model: str, parameters: dict[str, float], t_abs: np.ndarray, y: np.ndarray, converged: bool, message: str
+) -> FitResult:
     pred = predict_model(model, t_abs, parameters)
     residuals = np.log(y) - np.log(pred)
     ll = gaussian_log_likelihood(residuals)
@@ -121,7 +119,9 @@ def fit_model(model: str, time: np.ndarray | list[float], values: np.ndarray | l
             max_nfev=5000,
         )
         params = {"intercept": float(math.exp(opt.x[0])), "slope": float(opt.x[1]), "time_origin": origin}
-        return _finish(model, params, t_abs, y, opt.success, "Gaussian log-residual maximum likelihood: " + str(opt.message))
+        return _finish(
+            model, params, t_abs, y, opt.success, "Gaussian log-residual maximum likelihood: " + str(opt.message)
+        )
 
     if model == "exponential":
         design = np.column_stack([np.ones_like(t_rel), t_rel])
@@ -138,7 +138,9 @@ def fit_model(model: str, time: np.ndarray | list[float], values: np.ndarray | l
             "acceleration": float(acceleration),
             "time_origin": origin,
         }
-        return _finish(model, params, t_abs, y, True, "Gaussian log-residual maximum likelihood (closed form quadratic)")
+        return _finish(
+            model, params, t_abs, y, True, "Gaussian log-residual maximum likelihood (closed form quadratic)"
+        )
 
     if model == "decaying_acceleration":
         acc_fit = fit_model("accelerating", t_abs, y)
@@ -149,7 +151,9 @@ def fit_model(model: str, time: np.ndarray | list[float], values: np.ndarray | l
             log_x0, growth, initial_acceleration, log_kappa = par
             kappa = math.exp(log_kappa)
             exponent = (
-                log_x0 + growth * t_rel + (initial_acceleration / kappa) * t_rel
+                log_x0
+                + growth * t_rel
+                + (initial_acceleration / kappa) * t_rel
                 - (initial_acceleration / kappa**2) * (1.0 - np.exp(-kappa * t_rel))
             )
             return exponent - log_y
@@ -218,7 +222,14 @@ def fit_model(model: str, time: np.ndarray | list[float], values: np.ndarray | l
             "change_time": change_time,
             "time_origin": origin,
         }
-        return _finish(model, params, t_abs, y, True, "Gaussian log-residual maximum likelihood with grid-searched continuous change point")
+        return _finish(
+            model,
+            params,
+            t_abs,
+            y,
+            True,
+            "Gaussian log-residual maximum likelihood with grid-searched continuous change point",
+        )
 
     raise ValueError(f"unknown model {model!r}")
 
@@ -291,11 +302,13 @@ def rolling_origin_hindcast(
         for model, fit in fits.items():
             if fit.converged and fit.parameters:
                 pred = predict_model(model, test_t, fit.parameters)
-                records[model].extend((float(tt), float(aa), float(pp)) for tt, aa, pp in zip(test_t, test_y, pred))
+                records[model].extend(
+                    (float(tt), float(aa), float(pp)) for tt, aa, pp in zip(test_t, test_y, pred, strict=True)
+                )
         try:
             avg_pred, _ = model_average_prediction(fits, test_t)
             records["model_average"].extend(
-                (float(tt), float(aa), float(pp)) for tt, aa, pp in zip(test_t, test_y, avg_pred)
+                (float(tt), float(aa), float(pp)) for tt, aa, pp in zip(test_t, test_y, avg_pred, strict=True)
             )
         except RuntimeError:
             pass

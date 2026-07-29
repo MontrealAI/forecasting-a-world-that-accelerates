@@ -78,7 +78,7 @@ def main() -> None:
     frame.to_csv(result_dir / "empirical_case_summary.csv", index=False)
     tex_rows = []
     for row in rows:
-        recent = "--" if row["recent_annualized_change"] is None else f"{100*row['recent_annualized_change']:.1f}\\%"
+        recent = "--" if row["recent_annualized_change"] is None else f"{100 * row['recent_annualized_change']:.1f}\\%"
         rmse = "--" if row["best_hindcast_log_rmse"] is None else f"{row['best_hindcast_log_rmse']:.3f}"
         tex_rows.append(
             f"{_escape(row['case'])} & {row['observations']} & {_escape(row['best_hindcast_model'])} & {rmse} & {recent} & {row['base_horizon_median']:.1f} [{row['base_horizon_p80_lower']:.1f}, {row['base_horizon_p80_upper']:.1f}] \\\\"
@@ -88,8 +88,10 @@ def main() -> None:
     github = pd.read_csv(root / "data/public/github_operational_evidence.csv")
     github_rows = []
     for record in github.itertuples():
-        value = f"{record.value:,.0f}" if float(record.value) >= 1 else f"{100*float(record.value):.0f}\\%"
-        github_rows.append(f"{_escape(str(record.measurement_period))} & {_escape(str(record.metric))} & {value} & {_escape(str(record.unit))} \\\\ ")
+        value = f"{record.value:,.0f}" if float(record.value) >= 1 else f"{100 * float(record.value):.0f}\\%"
+        github_rows.append(
+            f"{_escape(str(record.measurement_period))} & {_escape(str(record.metric))} & {value} & {_escape(str(record.unit))} \\\\ "
+        )
     (table_dir / "generated-github-evidence.tex").write_text("\n".join(github_rows) + "\n", encoding="utf-8")
 
     summary = {

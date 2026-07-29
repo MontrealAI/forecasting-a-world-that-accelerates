@@ -35,7 +35,9 @@ def _validate_levels(levels: tuple[float, ...] | list[float]) -> tuple[float, ..
     return clean
 
 
-def summarize_samples(samples: np.ndarray, levels: tuple[float, ...] | list[float]) -> tuple[np.ndarray, np.ndarray, tuple[ForecastBand, ...]]:
+def summarize_samples(
+    samples: np.ndarray, levels: tuple[float, ...] | list[float]
+) -> tuple[np.ndarray, np.ndarray, tuple[ForecastBand, ...]]:
     values = np.asarray(samples, dtype=float)
     if values.ndim != 2 or values.shape[0] < 2 or values.shape[1] < 1:
         raise ValueError("samples must be a two-dimensional array with at least two rows")
@@ -58,7 +60,9 @@ def summarize_samples(samples: np.ndarray, levels: tuple[float, ...] | list[floa
 
 
 def _valid_fits(fits: dict[str, FitResult]) -> tuple[list[str], np.ndarray]:
-    scores = {name: fit.aicc for name, fit in fits.items() if fit.converged and fit.parameters and math.isfinite(fit.aicc)}
+    scores = {
+        name: fit.aicc for name, fit in fits.items() if fit.converged and fit.parameters and math.isfinite(fit.aicc)
+    }
     if not scores:
         raise RuntimeError("no converged finite-AICc models are available")
     weight_map = akaike_weights(scores)
@@ -136,7 +140,7 @@ def residual_bootstrap_model_average(
         mean=mean,
         bands=bands,
         samples=matrix,
-        model_weights={name: float(weight) for name, weight in zip(names, weights)},
+        model_weights={name: float(weight) for name, weight in zip(names, weights, strict=True)},
         successful_samples=int(matrix.shape[0]),
         requested_samples=n_samples,
     )
@@ -218,7 +222,9 @@ def interval_payload(forecast: EnsembleForecast) -> dict[str, Any]:
     }
 
 
-def crossing_distribution(samples: np.ndarray, dates: list[str], threshold: float, direction: str = "at_least") -> dict[str, Any]:
+def crossing_distribution(
+    samples: np.ndarray, dates: list[str], threshold: float, direction: str = "at_least"
+) -> dict[str, Any]:
     values = np.asarray(samples, dtype=float)
     if values.ndim != 2 or values.shape[1] != len(dates):
         raise ValueError("samples and dates have incompatible dimensions")
@@ -232,7 +238,12 @@ def crossing_distribution(samples: np.ndarray, dates: list[str], threshold: floa
     crossed = np.asarray([index >= 0 for index in crossings], dtype=bool)
     probability = float(np.mean(crossed))
     if not np.any(crossed):
-        return {"probability_by_horizon": probability, "median_crossing_date": None, "p10_crossing_date": None, "p90_crossing_date": None}
+        return {
+            "probability_by_horizon": probability,
+            "median_crossing_date": None,
+            "p10_crossing_date": None,
+            "p90_crossing_date": None,
+        }
     valid = np.asarray([index for index in crossings if index >= 0], dtype=int)
     return {
         "probability_by_horizon": probability,

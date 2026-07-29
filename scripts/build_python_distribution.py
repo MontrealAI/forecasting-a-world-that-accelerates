@@ -63,7 +63,9 @@ def copy_sdist_inputs(destination: Path) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build wheel and source distribution with the declared PEP 517 backend.")
+    parser = argparse.ArgumentParser(
+        description="Build wheel and source distribution with the declared PEP 517 backend."
+    )
     parser.add_argument("--outdir", default="dist")
     args = parser.parse_args()
     destination = (ROOT / args.outdir).resolve()
