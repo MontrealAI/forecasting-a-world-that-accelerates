@@ -1,7 +1,7 @@
 # Reference runtime resolution used to generate v2.0.0 artifacts on 2026-07-28.
 # Install the package itself with: python -m pip install -e . --no-deps
 jsonschema==4.26.0
-matplotlib==3.10.8
+matplotlib==3.11.1
 networkx==3.6.1
 numpy==2.3.5
 pandas==2.2.3
