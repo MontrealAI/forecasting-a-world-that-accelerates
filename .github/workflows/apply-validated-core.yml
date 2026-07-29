@@ -56,12 +56,46 @@ jobs:
       - name: Install verification toolchain
         run: python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'
 
-      - name: Finalize Pages safeguards and remove repair machinery
+      - name: Finalize source, Pages, and cleanup repairs
         shell: bash
         run: |
           set -Eeuo pipefail
           python - <<'PY'
           from pathlib import Path
+
+          experiments = Path("src/fwta/experiments.py")
+          text = experiments.read_text(encoding="utf-8")
+          old = (
+              "import matplotlib.pyplot as plt\n\n"
+              "plt.rcParams[\"pdf.fonttype\"] = 42\n"
+              "plt.rcParams[\"ps.fonttype\"] = 42\n"
+              "plt.rcParams[\"svg.fonttype\"] = \"none\"\n"
+              "import numpy as np\n"
+              "import pandas as pd\n\n"
+              "from .canonical import generalized_bottleneck, realized_outcome\n"
+              "from .metrics import rmse, smape\n"
+              "from .models import DEFAULT_MODELS, fit_model, predict_model, rolling_origin_hindcast\n"
+              "from .regimes import accelerated_exponential, double_exponential, exponential_path, logistic_path\n"
+              "from .workflow import Task, analyze_workflow\n"
+          )
+          new = (
+              "import matplotlib.pyplot as plt\n"
+              "import numpy as np\n"
+              "import pandas as pd\n\n"
+              "from .canonical import generalized_bottleneck, realized_outcome\n"
+              "from .metrics import rmse, smape\n"
+              "from .models import DEFAULT_MODELS, fit_model, predict_model, rolling_origin_hindcast\n"
+              "from .regimes import accelerated_exponential, double_exponential, exponential_path, logistic_path\n"
+              "from .workflow import Task, analyze_workflow\n\n"
+              "plt.rcParams[\"pdf.fonttype\"] = 42\n"
+              "plt.rcParams[\"ps.fonttype\"] = 42\n"
+              "plt.rcParams[\"svg.fonttype\"] = \"none\"\n"
+          )
+          if old in text:
+              text = text.replace(old, new)
+          elif new not in text:
+              raise SystemExit("Unexpected src/fwta/experiments.py import block")
+          experiments.write_text(text, encoding="utf-8")
 
           pages = Path(".github/workflows/pages.yml")
           text = pages.read_text(encoding="utf-8")
