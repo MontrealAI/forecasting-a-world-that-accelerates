@@ -44,7 +44,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            latexmk texlive-bibtex-extra texlive-fonts-recommended \
+            latexmk texlive-bibtex-extra texlive-fonts-recommended texlive-fonts-extra \
             texlive-latex-extra texlive-xetex
       - name: Build paper
         run: make paper
