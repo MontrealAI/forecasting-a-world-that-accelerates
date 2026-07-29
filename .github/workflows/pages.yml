@@ -6,8 +6,7 @@ on:
     paths:
       - "site/**"
       - "paper/preprint.pdf"
-      - "protocol/prompt.md"
-      - "protocol/protocol-specification.json"
+      - "protocol/**"
       - "results/ceiling/reference-forecast.html"
       - "results/empirical/metr-forecast.html"
       - "results/empirical/swe-bench-forecast.html"
@@ -23,8 +22,7 @@ on:
     paths:
       - "site/**"
       - "paper/preprint.pdf"
-      - "protocol/prompt.md"
-      - "protocol/protocol-specification.json"
+      - "protocol/**"
       - "results/ceiling/reference-forecast.html"
       - "results/empirical/metr-forecast.html"
       - "results/empirical/swe-bench-forecast.html"
@@ -86,10 +84,18 @@ jobs:
           cp paper/preprint.pdf "_site/downloads/Forecasting_A_World_That_Accelerates_v${VERSION_VALUE}.pdf"
           cp protocol/prompt.md _site/prompt.md
           cp protocol/protocol-specification.json _site/protocol-specification.json
+          cp protocol/*.schema.json _site/
+          cp -R protocol/v2 _site/v2
           cp results/ceiling/reference-forecast.html _site/reports/reference-forecast.html
           cp results/empirical/metr-forecast.html _site/reports/metr-forecast.html
           cp results/empirical/swe-bench-forecast.html _site/reports/swe-bench-forecast.html
-          cp README.md _site/repository-guide.md
+          cat > _site/repository-guide.md <<'EOF'
+          # Repository guide
+
+          The authoritative, version-controlled repository guide is the GitHub README:
+
+          [Open the complete repository guide](https://github.com/MontrealAI/forecasting-a-world-that-accelerates#readme)
+          EOF
           cp CITATION.cff _site/CITATION.cff
           cp LICENSE _site/LICENSE
           cp LICENSE.md _site/LICENSE.md
@@ -129,9 +135,11 @@ jobs:
               LICENSE.md \
               NOTICE \
               > SHA256SUMS.txt
+            find . -type f -name '*.schema.json' -print0 | sort -z | xargs -0 sha256sum >> SHA256SUMS.txt
           )
 
           python - <<'PY'
+          import json
           from html.parser import HTMLParser
           from pathlib import Path
           from urllib.parse import unquote, urlsplit
@@ -168,8 +176,13 @@ jobs:
               parser = LocalLinkChecker(page)
               parser.feed(page.read_text(encoding="utf-8"))
 
+          specification = json.loads((root / "protocol-specification.json").read_text(encoding="utf-8"))
+          for label, relative_path in specification["schemas"].items():
+              if not (root / relative_path).is_file():
+                  missing.append(f"protocol schema {label} -> {relative_path}")
+
           if missing:
-              raise SystemExit("Broken local links:\n" + "\n".join(missing))
+              raise SystemExit("Broken publication references:\n" + "\n".join(missing))
 
           required = [
               "index.html",
@@ -177,6 +190,13 @@ jobs:
               "paper.pdf",
               "prompt.md",
               "protocol-specification.json",
+              "evidence-record.schema.json",
+              "task-graph.schema.json",
+              "hindcast-case.schema.json",
+              "protocol-envelope.schema.json",
+              "v2/input.schema.json",
+              "v2/output.schema.json",
+              "v2/registry-record.schema.json",
               "reports/reference-forecast.html",
               "reports/metr-forecast.html",
               "reports/swe-bench-forecast.html",
@@ -188,7 +208,7 @@ jobs:
           if absent:
               raise SystemExit("Required publication files missing:\n" + "\n".join(absent))
 
-          print(f"Verified {len(list(root.rglob('*')))} publication paths and all local HTML links.")
+          print(f"Verified {len(list(root.rglob('*')))} publication paths, schemas, and local HTML links.")
           PY
 
       - name: Upload GitHub Pages artifact
