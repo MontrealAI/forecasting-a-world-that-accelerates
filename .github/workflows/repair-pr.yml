@@ -5,10 +5,10 @@ on:
     branches: [feat/autonomous-github-pages]
     paths:
       - ".github/workflows/repair-pr.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
-  actions: write
 
 concurrency:
   group: repair-autonomous-pages-pr
@@ -16,9 +16,9 @@ concurrency:
 
 jobs:
   repair:
-    name: Repair uploaded source and workflow gates
+    name: Apply and verify all release-gate repairs
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - name: Check out the pull-request branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -33,83 +33,134 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
-      - name: Install the quality and build toolchain
-        run: python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'
-
-      - name: Patch non-automatic source and workflow issues
+      - name: Apply the locally verified repair patch
         shell: bash
         run: |
+          set -Eeuo pipefail
+          base64 --decode .github/repair/core.patch.gz.b64 | gzip --decompress > /tmp/fwaa-core.patch
+          patch -p1 --forward --batch < /tmp/fwaa-core.patch
+
+          cat > .github/workflows/ci.yml <<'YAML'
+          name: CI
+
+          on:
+            push:
+              branches: [main]
+            pull_request:
+              branches: [main]
+            workflow_dispatch:
+
+          permissions:
+            contents: read
+
+          concurrency:
+            group: ci-${{ github.workflow }}-${{ github.ref }}
+            cancel-in-progress: true
+
+          env:
+            SOURCE_DATE_EPOCH: "1785254400"
+            PYTHONHASHSEED: "0"
+            TZ: "UTC"
+            MPLCONFIGDIR: ".cache/matplotlib"
+            PIP_DISABLE_PIP_VERSION_CHECK: "1"
+            PYTHONUNBUFFERED: "1"
+
+          jobs:
+            quality:
+              name: quality-and-scientific-integrity
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+                - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+                  with:
+                    python-version: "3.12"
+                    cache: pip
+                    cache-dependency-path: pyproject.toml
+                - run: python -m pip install -e '.[dev]'
+                - name: Lint, format, and type-check
+                  run: |
+                    python -m ruff check src tests experiments scripts
+                    python -m ruff format --check src tests experiments scripts
+                    python -m mypy src
+                - name: Tests and branch coverage
+                  run: |
+                    python -m pytest -q
+                    python -m pytest -q -m "not slow" --cov=fwta --cov-branch --cov-report=term-missing --cov-report=xml
+                - name: Validate all protocol examples
+                  run: make schemas
+                - name: End-to-end probabilistic forecast
+                  run: make forecast
+                - name: Controlled and public-evidence experiments
+                  run: make experiments empirical
+                - name: Verify prospective registry and generate SBOM
+                  run: make registry sbom
+                - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+                  with:
+                    name: scientific-artifacts
+                    path: |
+                      coverage.xml
+                      results/ceiling/
+                      results/empirical/
+                      release/sbom.cdx.json
+                    if-no-files-found: error
+                    retention-days: 30
+
+            compatibility:
+              name: compatibility / ${{ matrix.os }} / Python ${{ matrix.python-version }}
+              runs-on: ${{ matrix.os }}
+              strategy:
+                fail-fast: false
+                matrix:
+                  os: [ubuntu-latest, macos-latest, windows-latest]
+                  python-version: ["3.11", "3.13"]
+              steps:
+                - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+                - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+                  with:
+                    python-version: ${{ matrix.python-version }}
+                    cache: pip
+                    cache-dependency-path: pyproject.toml
+                - run: python -m pip install -e '.[dev]'
+                - run: python -m pytest -q
+                - name: Forecast smoke test
+                  shell: bash
+                  run: python -m fwta forecast protocol/v2/examples/smoke-input.yaml --schema protocol/v2/input.schema.json --output tmp/forecast.json --report tmp/forecast.html --output-schema protocol/v2/output.schema.json
+
+            distribution:
+              name: wheel-and-source-distribution-smoke-test
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+                - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+                  with:
+                    python-version: "3.12"
+                    cache: pip
+                    cache-dependency-path: pyproject.toml
+                - name: Install runtime and distribution verification dependencies
+                  run: python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'
+                - run: python scripts/build_python_distribution.py --outdir dist
+                - name: Smoke-test wheel and source distribution
+                  run: make smoke
+          YAML
+
           python - <<'PY'
           from pathlib import Path
+          import re
 
-          def replace(path: str, old: str, new: str, *, required: bool = True) -> None:
-              target = Path(path)
-              text = target.read_text(encoding="utf-8")
-              if old not in text:
-                  if required:
-                      raise SystemExit(f"Expected repair pattern not found in {path}")
-                  return
-              target.write_text(text.replace(old, new), encoding="utf-8")
-
-          # Ruff SIM117: preserve deterministic archives while combining contexts.
-          replace(
-              "scripts/build_python_distribution.py",
-              '''        with temporary.open("wb") as raw:\n            with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=source_epoch(), compresslevel=9) as compressed:\n                with tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as destination:\n                    for member in members:\n                        if member.issym() or member.islnk():\n                            raise RuntimeError(f"refusing to normalize linked sdist member: {member.name}")\n                        stable = copy.copy(member)\n                        stable.uid = 0\n                        stable.gid = 0\n                        stable.uname = "root"\n                        stable.gname = "root"\n                        stable.mtime = source_epoch()\n                        stable.pax_headers = {}\n                        payload = source.extractfile(member) if member.isfile() else None\n                        destination.addfile(stable, payload)\n''',
-              '''        with (\n            temporary.open("wb") as raw,\n            gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=source_epoch(), compresslevel=9) as compressed,\n            tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as destination,\n        ):\n            for member in members:\n                if member.issym() or member.islnk():\n                    raise RuntimeError(f"refusing to normalize linked sdist member: {member.name}")\n                stable = copy.copy(member)\n                stable.uid = 0\n                stable.gid = 0\n                stable.uname = "root"\n                stable.gname = "root"\n                stable.mtime = source_epoch()\n                stable.pax_headers = {}\n                payload = source.extractfile(member) if member.isfile() else None\n                destination.addfile(stable, payload)\n''',
-          )
-          replace(
-              "scripts/create_release_bundle.py",
-              '''        with tar_output.open("wb") as raw:\n            with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=epoch, compresslevel=9) as compressed:\n                with tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as archive:\n                    for path in sorted(stage_root.rglob("*")):\n                        if path.is_file():\n                            add_to_tar(archive, path, path.relative_to(stage_root.parent).as_posix(), epoch)\n''',
-              '''        with (\n            tar_output.open("wb") as raw,\n            gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=epoch, compresslevel=9) as compressed,\n            tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as archive,\n        ):\n            for path in sorted(stage_root.rglob("*")):\n                if path.is_file():\n                    add_to_tar(archive, path, path.relative_to(stage_root.parent).as_posix(), epoch)\n''',
-          )
-
-          # Make setuptools available to the custom distribution builder.
-          pyproject = Path("pyproject.toml")
-          text = pyproject.read_text(encoding="utf-8")
-          text = text.replace('  "ruff>=0.6,<1",\n', '  "ruff==0.16.0",\n')
-          if '  "setuptools>=77,<83",\n' not in text:
-              text = text.replace('  "ruff==0.16.0",\n]', '  "ruff==0.16.0",\n  "setuptools>=77,<83",\n]')
-          pyproject.write_text(text, encoding="utf-8")
-
-          requirements_dev = Path("requirements-dev.txt")
-          text = requirements_dev.read_text(encoding="utf-8").replace("ruff>=0.6,<1", "ruff==0.16.0")
-          if "setuptools>=77,<83" not in text:
-              text = text.rstrip() + "\nsetuptools>=77,<83\n"
-          requirements_dev.write_text(text, encoding="utf-8")
-
-          replace(
-              ".github/workflows/ci.yml",
-              "run: python -m pip install -e '.[dev]'\n      - run: python scripts/build_python_distribution.py --outdir dist",
-              "run: python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'\n      - run: python scripts/build_python_distribution.py --outdir dist",
-          )
-          replace(
-              ".github/workflows/paper.yml",
-              "latexmk texlive-bibtex-extra texlive-fonts-recommended \\\n            texlive-latex-extra texlive-xetex",
-              "latexmk texlive-bibtex-extra texlive-fonts-recommended texlive-fonts-extra \\\n            texlive-latex-extra texlive-xetex",
-          )
-          replace(
-              ".github/workflows/release.yml",
-              "python -m pip install -e '.[dev]'\n",
-              "python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'\n",
-          )
-          replace(
-              ".github/workflows/release.yml",
-              "latexmk poppler-utils texlive-bibtex-extra texlive-fonts-recommended \\\n            texlive-latex-extra texlive-xetex",
-              "latexmk poppler-utils texlive-bibtex-extra texlive-fonts-recommended texlive-fonts-extra \\\n            texlive-latex-extra texlive-xetex",
-          )
-
-          # Resolve both Codex Pages review findings.
-          replace(
-              ".github/workflows/pages.yml",
-              "  group: github-pages-${{ github.event_name }}-${{ github.ref }}\n",
-              "  group: ${{ github.event_name == 'pull_request' && format('github-pages-pr-{0}', github.event.pull_request.number) || 'github-pages' }}\n",
-          )
           pages = Path(".github/workflows/pages.yml")
-          text = pages.read_text(encoding="utf-8").replace(
+          text = pages.read_text(encoding="utf-8")
+          text = re.sub(
+              r"(?m)^  group: .+$",
+              "  group: ${{ github.event_name == 'pull_request' && format('github-pages-pr-{0}', github.event.pull_request.number) || 'github-pages' }}",
+              text,
+              count=1,
+          )
+          text = text.replace(
               "if: github.event_name != 'pull_request'",
               "if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')",
           )
           pages.write_text(text, encoding="utf-8")
+
           page404 = Path("site/404.html")
           text = page404.read_text(encoding="utf-8")
           text = text.replace('href="favicon.svg"', 'href="/forecasting-a-world-that-accelerates/favicon.svg"')
@@ -118,12 +169,17 @@ jobs:
           page404.write_text(text, encoding="utf-8")
           PY
 
-      - name: Apply Ruff fixes and validate the scientific core
+          rm -f .github/repair/core.patch.gz.b64
+          rm -f .github/repair/chunk-00 .github/repair/chunk-01
+          rm -f .github/workflows/repair-pr.yml
+
+      - name: Install the repaired project
+        run: python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'
+
+      - name: Verify lint, types, tests, wheel, sdist, and clean smoke forecasts
         shell: bash
         run: |
           set -Eeuo pipefail
-          python -m ruff check src tests experiments scripts --fix --unsafe-fixes --preview
-          python -m ruff format src tests experiments scripts
           python -m ruff check src tests experiments scripts
           python -m ruff format --check src tests experiments scripts
           python -m mypy src
@@ -132,19 +188,12 @@ jobs:
           make smoke
           git diff --check
 
-      - name: Commit the verified repair and remove this one-time workflow
+      - name: Commit the verified repair
         shell: bash
         run: |
           set -Eeuo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/repair-pr.yml
-          git add .
-          git commit -m "ci: repair quality packaging and paper build gates"
+          git add -A
+          git commit -s -m "ci: repair all release quality gates"
           git push origin HEAD:feat/autonomous-github-pages
-
-      - name: Confirm the repair commit was pushed
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          echo "The push updates pull request #10 and automatically requests fresh PR checks."
