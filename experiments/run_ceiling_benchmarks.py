@@ -2,22 +2,20 @@ from __future__ import annotations
 
 import json
 import math
-import sys
 from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+from fwta.probabilistic import probabilistic_rolling_origin_hindcast
 
 plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["ps.fonttype"] = 42
 plt.rcParams["svg.fonttype"] = "none"
-import numpy as np
-import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
-
-from fwta.probabilistic import probabilistic_rolling_origin_hindcast
 
 
 def _safe(value: Any) -> Any:
