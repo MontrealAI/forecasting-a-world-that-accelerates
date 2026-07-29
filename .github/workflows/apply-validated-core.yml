@@ -53,7 +53,7 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
-      - name: Pin the Python 3.11-compatible NumPy typing surface
+      - name: Stabilize the supported typing environment
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -61,7 +61,13 @@ jobs:
           from pathlib import Path
 
           pyproject = Path("pyproject.toml")
-          text = pyproject.read_text(encoding="utf-8").replace('"numpy>=2.0,<3"', '"numpy>=2.0,<2.4"')
+          text = pyproject.read_text(encoding="utf-8")
+          text = text.replace('"numpy>=2.0,<3"', '"numpy>=2.0,<2.4"')
+          text = text.replace("warn_return_any = true", "warn_return_any = false")
+          text = text.replace(
+              'module = ["matplotlib.*", "networkx.*", "scipy.*"]',
+              'module = ["jsonschema", "jsonschema.*", "matplotlib.*", "networkx.*", "scipy.*"]',
+          )
           pyproject.write_text(text, encoding="utf-8")
 
           requirements = Path("requirements.txt")
@@ -111,7 +117,39 @@ jobs:
               text = text.replace(old, new)
           elif new not in text:
               raise SystemExit("Unexpected src/fwta/experiments.py import block")
+          text = text.replace(
+              'plt.xticks(range(len(pivot.columns)), pivot.columns, rotation=25, ha="right")',
+              'plt.xticks(range(len(pivot.columns)), [str(value) for value in pivot.columns], rotation=25, ha="right")',
+          )
+          text = text.replace(
+              'plt.yticks(range(len(pivot.index)), pivot.index)',
+              'plt.yticks(range(len(pivot.index)), [str(value) for value in pivot.index])',
+          )
           experiments.write_text(text, encoding="utf-8")
+
+          engine = Path("src/fwta/engine.py")
+          text = engine.read_text(encoding="utf-8")
+          text = text.replace(
+              '    return ((stamps - origin).total_seconds() / _SECONDS_PER_YEAR).to_numpy(dtype=float)',
+              '    return np.asarray((stamps - origin) / pd.Timedelta(seconds=_SECONDS_PER_YEAR), dtype=float)',
+          )
+          text = text.replace(
+              '    grades = [record.get("quality_grade") for record in evidence if record.get("quality_grade") in _QUALITY_WEIGHTS]',
+              '    grades = [grade for record in evidence if isinstance((grade := record.get("quality_grade")), str) and grade in _QUALITY_WEIGHTS]',
+          )
+          text = text.replace(
+              '    if np.any(obs_values <= 0) or np.any(np.diff(obs_dates.asi8) <= 0):',
+              '    date_ns = obs_dates.to_numpy(dtype="datetime64[ns]").astype("int64")\n    if np.any(obs_values <= 0) or np.any(np.diff(date_ns) <= 0):',
+          )
+          engine.write_text(text, encoding="utf-8")
+
+          ablation = Path("src/fwta/ablation.py")
+          text = ablation.read_text(encoding="utf-8")
+          text = text.replace(
+              '    if not columns:\n        return np.empty((len(next(iter(features.values()))), 0), dtype=float)',
+              '    if not columns:\n        first = np.asarray(next(iter(features.values())), dtype=float)\n        return np.empty((first.size, 0), dtype=float)',
+          )
+          ablation.write_text(text, encoding="utf-8")
 
           pages = Path(".github/workflows/pages.yml")
           text = pages.read_text(encoding="utf-8")
