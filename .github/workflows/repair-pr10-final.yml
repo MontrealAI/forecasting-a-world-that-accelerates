@@ -1,0 +1,156 @@
+name: Final repair PR 10
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/repair-pr10-final.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: final-repair-pr10
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: Repair and fully verify pull request 10
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Check out pull-request branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: feat/autonomous-github-pages
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install verification toolchain
+        run: python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'
+
+      - name: Apply remaining deterministic repairs
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_if_present(path: str, old: str, new: str) -> None:
+              target = Path(path)
+              text = target.read_text(encoding="utf-8")
+              if old in text:
+                  target.write_text(text.replace(old, new), encoding="utf-8")
+              elif new not in text:
+                  raise SystemExit(f"Neither old nor repaired pattern found in {path}")
+
+          engine = Path("src/fwta/engine.py")
+          text = engine.read_text(encoding="utf-8")
+          text = text.replace("from datetime import date\n", "")
+          text = text.replace(
+              "from .uncertainty import crossing_distribution, residual_bootstrap_model_average, summarize_samples, transform_scenario_samples\n",
+              "from .uncertainty import (\n"
+              "    crossing_distribution,\n"
+              "    residual_bootstrap_model_average,\n"
+              "    summarize_samples,\n"
+              "    transform_scenario_samples,\n"
+              ")\n",
+          )
+          text = text.replace(
+              "    if stamp.tzinfo is None:\n"
+              "        stamp = stamp.tz_localize(\"UTC\")\n"
+              "    else:\n"
+              "        stamp = stamp.tz_convert(\"UTC\")\n",
+              "    stamp = stamp.tz_localize(\"UTC\") if stamp.tzinfo is None else stamp.tz_convert(\"UTC\")\n",
+          )
+          engine.write_text(text, encoding="utf-8")
+
+          replace_if_present("src/fwta/models.py", "zip(test_t, test_y, pred)", "zip(test_t, test_y, pred, strict=True)")
+          replace_if_present("src/fwta/models.py", "zip(test_t, test_y, avg_pred)", "zip(test_t, test_y, avg_pred, strict=True)")
+          replace_if_present("src/fwta/uncertainty.py", "zip(names, weights)", "zip(names, weights, strict=True)")
+
+          report = Path("src/fwta/report.py")
+          text = report.read_text(encoding="utf-8")
+          old = (
+              "import matplotlib.pyplot as plt\n\n"
+              "plt.rcParams[\"pdf.fonttype\"] = 42\n"
+              "plt.rcParams[\"ps.fonttype\"] = 42\n"
+              "plt.rcParams[\"svg.fonttype\"] = \"none\"\n"
+              "import numpy as np\n"
+              "import pandas as pd\n"
+          )
+          new = (
+              "import matplotlib.pyplot as plt\n"
+              "import numpy as np\n"
+              "import pandas as pd\n\n"
+              "plt.rcParams[\"pdf.fonttype\"] = 42\n"
+              "plt.rcParams[\"ps.fonttype\"] = 42\n"
+              "plt.rcParams[\"svg.fonttype\"] = \"none\"\n"
+          )
+          if old in text:
+              text = text.replace(old, new)
+          elif new not in text:
+              raise SystemExit("Unexpected src/fwta/report.py import block")
+          report.write_text(text, encoding="utf-8")
+
+          pages = Path(".github/workflows/pages.yml")
+          text = pages.read_text(encoding="utf-8")
+          for old_group in (
+              "  group: github-pages-${{ github.event_name }}-${{ github.ref }}\n",
+              "  group: pages\n",
+          ):
+              text = text.replace(
+                  old_group,
+                  "  group: ${{ github.event_name == 'pull_request' && format('github-pages-pr-{0}', github.event.pull_request.number) || 'github-pages' }}\n",
+              )
+          text = text.replace(
+              "if: github.event_name != 'pull_request'",
+              "if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')",
+          )
+          pages.write_text(text, encoding="utf-8")
+
+          page404 = Path("site/404.html")
+          text = page404.read_text(encoding="utf-8")
+          text = text.replace('href="favicon.svg"', 'href="/forecasting-a-world-that-accelerates/favicon.svg"')
+          text = text.replace('href="./"', 'href="/forecasting-a-world-that-accelerates/"')
+          text = text.replace('href="paper.html"', 'href="/forecasting-a-world-that-accelerates/paper.html"')
+          page404.write_text(text, encoding="utf-8")
+          PY
+
+          rm -f .github/repair/core-final.b64
+          rm -f .github/workflows/apply-core-repair.yml
+          rm -f .github/workflows/finalize-quality.yml
+
+      - name: Apply Ruff fixes and canonical formatting
+        run: |
+          python -m ruff check --fix --unsafe-fixes src tests experiments scripts
+          python -m ruff format src tests experiments scripts
+
+      - name: Verify all local release gates
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python -m ruff check src tests experiments scripts
+          python -m ruff format --check src tests experiments scripts
+          python -m mypy src
+          python -m pytest -q
+          python scripts/build_python_distribution.py --outdir dist
+          make smoke
+          git diff --check
+
+      - name: Commit and push verified repairs
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -s -m "ci: finalize all release quality gates"
+          git push origin HEAD:feat/autonomous-github-pages
