@@ -137,6 +137,7 @@ jobs:
           from urllib.parse import unquote, urlsplit
 
           root = Path("_site").resolve()
+          repository_prefix = "/forecasting-a-world-that-accelerates/"
           missing = []
 
           class LocalLinkChecker(HTMLParser):
@@ -153,7 +154,10 @@ jobs:
                       parsed = urlsplit(value)
                       if parsed.scheme or parsed.netloc or not parsed.path:
                           continue
-                      relative = Path(unquote(parsed.path))
+                      decoded = unquote(parsed.path)
+                      if decoded.startswith(repository_prefix):
+                          decoded = decoded[len(repository_prefix):]
+                      relative = Path(decoded)
                       target = root / relative.as_posix().lstrip("/") if relative.is_absolute() else self.source.parent / relative
                       if target.is_dir():
                           target = target / "index.html"
