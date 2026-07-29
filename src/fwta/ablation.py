@@ -54,7 +54,7 @@ def fit_canonical_elasticities(
         "selected": list(selected),
         "converged": bool(fit.success),
         "log_q0": float(fit.x[0]),
-        "elasticities": {name: float(value) for name, value in zip(selected, fit.x[1:])},
+        "elasticities": {name: float(value) for name, value in zip(selected, fit.x[1:], strict=True)},
         "rmse_log": rmse(np.log(y), np.log(np.maximum(predictions, 1e-300))),
         "predictions": predictions.tolist(),
     }
