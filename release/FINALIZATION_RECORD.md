@@ -27,12 +27,12 @@
 
 ## Principal immutable hashes
 
-- Paper PDF: `9b12e4369c723e0ef23c533ad8dd462b0aeb5acdeb4146a2e8a65e5987283dc9`
+- Paper PDF: `9eb050bb71b867ad08d3fb5b7b820f73433ce1a5ff83bc3327a18a30ee974c9f`
 - Complete protocol prompt: `f7ac4fa9a8cbfec98ee28e5171853ad9e04a92e82740e18b334f8b16045475a0`
-- Reference forecast: `e69ac453cfd32413d098926bd2c8133eca0025475bbe46ba6e63f9d0c545bae3`
-- Python wheel: `c98d68c1e4789bd1156689c8f80d8de85a682aa9563a6f4f25de400d6284e16a`
-- Python source distribution: `77af04168889b87992b030eec4aafe88402edf1a89a3e7773ad241199cf49c66`
-- arXiv source archive: `4e7030211dc0ae8d77d86186d03116401717704e2458eefd140d45b4f0d24e3d`
+- Reference forecast: `50deba781581819cc9033aeb8a6755406f1a5404f55122effcce96d8192c17d3`
+- Python wheel: `43842de54d1532ff5307d116b95f1c2f74cb52bef63a3b36c87e674b263cb152`
+- Python source distribution: `d07ac114e884eb6a2f1f89ebd7a1907f712d4310c75b6c0ead1535b9957b9052`
+- arXiv source archive: `c8e97ffd726a5de97e24dd933722861d19b32f324b683c7e63ae54094441c8c8`
 
 ## External publication status
 

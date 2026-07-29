@@ -7,10 +7,10 @@ The wheel and source distribution were installed independently, each exposed a w
 
 ## Results
 
-- Wheel SHA-256: `5fb0b8bb137fd57377ec29f15a070d837e30d2a2ba77cafadf70a6292efde429`
-- Source-distribution SHA-256: `dee7862e84c4e64e661acb98bca2901473110483fecb512dbcdd3691eb2fcbdc`
-- Forecast JSON SHA-256: `47066db2b942f7c70334a354de07adbdae92fe8983539b7d23968869eaf087fe`
-- Forecast HTML SHA-256: `bcee1222e18009863df7b72b3d58a0169f7b945602647326a025f79ac0f989cc`
+- Wheel SHA-256: `43842de54d1532ff5307d116b95f1c2f74cb52bef63a3b36c87e674b263cb152`
+- Source-distribution SHA-256: `d07ac114e884eb6a2f1f89ebd7a1907f712d4310c75b6c0ead1535b9957b9052`
+- Forecast JSON SHA-256: `6ea7880d6a97838a7ffce1185b2043e5d88d3b843bdff8a752c120de4c779d2f`
+- Forecast HTML SHA-256: `7ac424232c17cce100ff20b0863b9a02195bbec8545fae49e0e27381a01566ac`
 - Wheel clean-install forecast: **passed**
 - Source-distribution clean-install forecast: **passed**
 - JSON equivalence: **byte-identical**

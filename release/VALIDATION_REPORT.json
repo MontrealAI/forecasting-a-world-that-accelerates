@@ -6,9 +6,9 @@
     "measurement_audits": [
       "U.S. Census BTOS AI-use construct break"
     ],
-    "metr_accelerating_only_rmse_log": 0.2846005820456008,
-    "metr_full_model_average_mean_crps": 45.81204406682758,
-    "metr_full_model_average_mean_wis": 138.09879658685452,
+    "metr_accelerating_only_rmse_log": 0.28460058204560057,
+    "metr_full_model_average_mean_crps": 45.8120409260977,
+    "metr_full_model_average_mean_wis": 138.09879658685455,
     "metr_probabilistic_origins": 6,
     "public_evidence_demonstrations": [
       "METR Time Horizon",
@@ -31,15 +31,15 @@
     "No legal notice guarantees patentability, freedom to operate, regulatory compliance, or immunity from claims."
   ],
   "mechanical_verification": {
-    "branch_condition_coverage_percent": 80.46,
-    "branch_coverage_percent": 90.54,
+    "branch_condition_coverage_percent": 80.38,
+    "branch_coverage_percent": 90.53,
     "coverage_scope": "Combined line-plus-branch coverage of the declared scientific core; pure line and branch-condition rates are reported separately. Trivial __main__ dispatch and deterministic artifact orchestration are excluded.",
     "line_coverage_percent": 93.41,
     "live_registry_empty": true,
     "paper_pages": 53,
-    "paper_sha256": "9b12e4369c723e0ef23c533ad8dd462b0aeb5acdeb4146a2e8a65e5987283dc9",
+    "paper_sha256": "9eb050bb71b867ad08d3fb5b7b820f73433ce1a5ff83bc3327a18a30ee974c9f",
     "prompt_byte_identical": true,
-    "reference_forecast_sha256": "e69ac453cfd32413d098926bd2c8133eca0025475bbe46ba6e63f9d0c545bae3",
+    "reference_forecast_sha256": "50deba781581819cc9033aeb8a6755406f1a5404f55122effcce96d8192c17d3",
     "registry_chain_verified": true,
     "schemas_passed": true,
     "sdist_smoke_passed": true,
@@ -85,11 +85,11 @@
     "deterministic_source_date_epoch": true,
     "mypy": {
       "configured_in_ci": true,
-      "local_execution": false
+      "local_execution": true
     },
     "ruff": {
       "configured_in_ci": true,
-      "local_execution": false
+      "local_execution": true
     }
   },
   "schema_version": "1.0.0"
