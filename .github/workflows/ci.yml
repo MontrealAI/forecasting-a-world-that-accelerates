@@ -17,7 +17,7 @@ concurrency:
 env:
   SOURCE_DATE_EPOCH: "1785254400"
   PYTHONHASHSEED: "0"
-  TZ: "UTC"
+  TZ: UTC
   MPLCONFIGDIR: ".cache/matplotlib"
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
   PYTHONUNBUFFERED: "1"
@@ -94,7 +94,7 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
       - name: Install runtime and distribution verification dependencies
-        run: python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'
+        run: python -m pip install -e '.[dev]' 'setuptools>=83,<84' 'ruff==0.16.0'
       - run: python scripts/build_python_distribution.py --outdir dist
       - name: Smoke-test wheel and source distribution
         run: make smoke
