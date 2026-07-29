@@ -2,26 +2,24 @@ from __future__ import annotations
 
 import json
 import math
-import sys
 from dataclasses import asdict
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-
-plt.rcParams["pdf.fonttype"] = 42
-plt.rcParams["ps.fonttype"] = 42
-plt.rcParams["svg.fonttype"] = "none"
 import numpy as np
 import pandas as pd
-
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
 
 from fwta.ablation import canonical_ablation_suite
 from fwta.io import load_structured
 from fwta.models import DEFAULT_MODELS, fit_all_models, predict_model, rolling_origin_hindcast
 from fwta.synthetic import canonical_system_series, regime_shift_series
 from fwta.workflow import analyze_workflow, task_from_mapping
+
+plt.rcParams["pdf.fonttype"] = 42
+plt.rcParams["ps.fonttype"] = 42
+plt.rcParams["svg.fonttype"] = "none"
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def safe(value):
@@ -141,7 +139,7 @@ def canonical_ablation_experiment() -> dict:
     plt.close()
 
     lines = [r"\begin{tabular}{lr}", r"\toprule", r"Specification & RMSE (log) \\", r"\midrule"]
-    for label, error in sorted(zip(labels, errors), key=lambda item: item[1]):
+    for label, error in sorted(zip(labels, errors, strict=True), key=lambda item: item[1]):
         lines.append(f"{latex_escape(label.replace('_',' '))} & {error:.3f} " + r"\\")
     lines.extend([r"\bottomrule", r"\end{tabular}"])
     (ROOT / "paper/tables/canonical_ablation.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
