@@ -5,7 +5,14 @@ import math
 import numpy as np
 import pytest
 
-from fwta.models import FitResult, fit_all_models, fit_model, model_average_prediction, predict_model, rolling_origin_hindcast
+from fwta.models import (
+    FitResult,
+    fit_all_models,
+    fit_model,
+    model_average_prediction,
+    predict_model,
+    rolling_origin_hindcast,
+)
 
 
 def test_all_prediction_branches_and_fit_failures() -> None:
