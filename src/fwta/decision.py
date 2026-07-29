@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Mapping
 
 import numpy as np
 
@@ -53,9 +53,9 @@ def evaluate_actions(
         )
         probs = np.array([scenario_probabilities[scenario] for scenario in scenarios], dtype=float)
         expected = float(np.dot(probs, scores))
-        losses = np.array([record[scenario].get("loss", max(0.0, -score)) for scenario, score in zip(scenarios, scores)])
+        losses = np.array([record[scenario].get("loss", max(0.0, -score)) for scenario, score in zip(scenarios, scores, strict=True)])
         penalty = cvar(losses, cvar_alpha)
-        regrets = np.array([best_by_scenario[scenario] - score for scenario, score in zip(scenarios, scores)])
+        regrets = np.array([best_by_scenario[scenario] - score for scenario, score in zip(scenarios, scores, strict=True)])
         evaluations.append(
             ActionEvaluation(
                 action=action,
