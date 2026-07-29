@@ -37,13 +37,14 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: pyproject.toml
-      - name: Install project, verification, TeX, and OpenType font dependencies
+      - name: Install project, verification, scientific TeX, and OpenType fonts
         run: |
           python -m pip install -e '.[dev]'
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             fontconfig fonts-linuxlibertine latexmk poppler-utils texlive-bibtex-extra \
-            texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texlive-xetex
+            texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra \
+            texlive-pictures texlive-science texlive-xetex
           sudo fc-cache -f
           fc-match "Linux Biolinum O"
           fc-match "Linux Libertine O"
