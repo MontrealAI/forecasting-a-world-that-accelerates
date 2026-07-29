@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -22,7 +22,7 @@ def _forecast() -> dict[str, object]:
 
 def test_reproducible_time_and_sbom(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setenv("SOURCE_DATE_EPOCH", "0")
-    assert reproducible_utc_now() == datetime(1970, 1, 1, tzinfo=timezone.utc)
+    assert reproducible_utc_now() == datetime(1970, 1, 1, tzinfo=UTC)
     assert reproducible_utc_iso() == "1970-01-01T00:00:00+00:00"
     lock = tmp_path / "requirements-lock.txt"
     lock.write_text("numpy==2.3.5\nPyYAML==6.0.3\n", encoding="utf-8")
@@ -43,7 +43,7 @@ def test_reproducible_time_validation(monkeypatch: pytest.MonkeyPatch) -> None:
     with pytest.raises(ValueError, match="nonnegative"):
         reproducible_utc_now()
     monkeypatch.delenv("SOURCE_DATE_EPOCH", raising=False)
-    assert reproducible_utc_now().tzinfo == timezone.utc
+    assert reproducible_utc_now().tzinfo == UTC
 
 
 def test_sbom_rejects_non_exact_or_duplicate_lock(tmp_path: Path) -> None:
