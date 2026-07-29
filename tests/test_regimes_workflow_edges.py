@@ -5,7 +5,15 @@ import math
 import numpy as np
 import pytest
 
-from fwta.regimes import constrained_growth, cumulative_transition_probability, decaying_acceleration_path, double_exponential, exponential_path, logistic_path, milestone_time
+from fwta.regimes import (
+    constrained_growth,
+    cumulative_transition_probability,
+    decaying_acceleration_path,
+    double_exponential,
+    exponential_path,
+    logistic_path,
+    milestone_time,
+)
 from fwta.workflow import Task, analyze_workflow, task_from_mapping
 
 
