@@ -42,7 +42,7 @@ jobs:
           python -m pip install -e '.[dev]'
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            latexmk poppler-utils texlive-bibtex-extra texlive-fonts-recommended \
+            latexmk poppler-utils texlive-bibtex-extra texlive-fonts-recommended texlive-fonts-extra \
             texlive-latex-extra texlive-xetex
       - name: Resolve and validate version
         id: version
