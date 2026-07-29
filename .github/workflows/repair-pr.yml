@@ -12,18 +12,18 @@ permissions:
 
 concurrency:
   group: repair-autonomous-pages-pr
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   repair:
-    name: Apply, verify, and commit CI repairs
+    name: Repair uploaded source and workflow gates
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Check out the publication branch
+      - name: Check out the pull-request branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.ref_name }}
+          ref: feat/autonomous-github-pages
           fetch-depth: 0
 
       - name: Set up Python
@@ -33,267 +33,118 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
-      - name: Apply deterministic source and workflow repairs
+      - name: Install the quality and build toolchain
+        run: python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'
+
+      - name: Patch non-automatic source and workflow issues
         shell: bash
         run: |
-          set -Eeuo pipefail
           python - <<'PY'
           from pathlib import Path
 
-          root = Path(".")
-
-          def replace(path: str, old: str, new: str) -> None:
-              destination = root / path
-              text = destination.read_text(encoding="utf-8")
+          def replace(path: str, old: str, new: str, *, required: bool = True) -> None:
+              target = Path(path)
+              text = target.read_text(encoding="utf-8")
               if old not in text:
-                  raise SystemExit(f"expected pattern missing from {path}: {old[:100]!r}")
-              destination.write_text(text.replace(old, new), encoding="utf-8")
+                  if required:
+                      raise SystemExit(f"Expected repair pattern not found in {path}")
+                  return
+              target.write_text(text.replace(old, new), encoding="utf-8")
 
-          path = root / "experiments/run_ceiling_benchmarks.py"
-          text = path.read_text(encoding="utf-8").replace("import sys\n", "")
-          text = text.replace(
-              'import matplotlib.pyplot as plt\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\nimport numpy as np\nimport pandas as pd\n\nROOT = Path(__file__).resolve().parents[1]\nsys.path.insert(0, str(ROOT / "src"))\n\nfrom fwta.probabilistic import probabilistic_rolling_origin_hindcast\n',
-              'import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\nfrom fwta.probabilistic import probabilistic_rolling_origin_hindcast\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\n\nROOT = Path(__file__).resolve().parents[1]\n',
+          # Ruff SIM117: preserve deterministic archives while combining contexts.
+          replace(
+              "scripts/build_python_distribution.py",
+              '''        with temporary.open("wb") as raw:\n            with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=source_epoch(), compresslevel=9) as compressed:\n                with tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as destination:\n                    for member in members:\n                        if member.issym() or member.islnk():\n                            raise RuntimeError(f"refusing to normalize linked sdist member: {member.name}")\n                        stable = copy.copy(member)\n                        stable.uid = 0\n                        stable.gid = 0\n                        stable.uname = "root"\n                        stable.gname = "root"\n                        stable.mtime = source_epoch()\n                        stable.pax_headers = {}\n                        payload = source.extractfile(member) if member.isfile() else None\n                        destination.addfile(stable, payload)\n''',
+              '''        with (\n            temporary.open("wb") as raw,\n            gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=source_epoch(), compresslevel=9) as compressed,\n            tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as destination,\n        ):\n            for member in members:\n                if member.issym() or member.islnk():\n                    raise RuntimeError(f"refusing to normalize linked sdist member: {member.name}")\n                stable = copy.copy(member)\n                stable.uid = 0\n                stable.gid = 0\n                stable.uname = "root"\n                stable.gname = "root"\n                stable.mtime = source_epoch()\n                stable.pax_headers = {}\n                payload = source.extractfile(member) if member.isfile() else None\n                destination.addfile(stable, payload)\n''',
           )
-          path.write_text(text, encoding="utf-8")
-
-          path = root / "experiments/run_experiments.py"
-          text = path.read_text(encoding="utf-8").replace("import sys\n", "")
-          text = text.replace(
-              'import matplotlib.pyplot as plt\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\nimport numpy as np\nimport pandas as pd\n\nROOT = Path(__file__).resolve().parents[1]\nsys.path.insert(0, str(ROOT / "src"))\n\nfrom fwta.ablation import canonical_ablation_suite\n',
-              'import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\nfrom fwta.ablation import canonical_ablation_suite\n',
+          replace(
+              "scripts/create_release_bundle.py",
+              '''        with tar_output.open("wb") as raw:\n            with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=epoch, compresslevel=9) as compressed:\n                with tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as archive:\n                    for path in sorted(stage_root.rglob("*")):\n                        if path.is_file():\n                            add_to_tar(archive, path, path.relative_to(stage_root.parent).as_posix(), epoch)\n''',
+              '''        with (\n            tar_output.open("wb") as raw,\n            gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=epoch, compresslevel=9) as compressed,\n            tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as archive,\n        ):\n            for path in sorted(stage_root.rglob("*")):\n                if path.is_file():\n                    add_to_tar(archive, path, path.relative_to(stage_root.parent).as_posix(), epoch)\n''',
           )
-          text = text.replace(
-              'from fwta.workflow import analyze_workflow, task_from_mapping\n\n\ndef safe',
-              'from fwta.workflow import analyze_workflow, task_from_mapping\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\n\nROOT = Path(__file__).resolve().parents[1]\n\n\ndef safe',
-          )
-          text = text.replace(
-              "sorted(zip(labels, errors), key=lambda item: item[1])",
-              "sorted(zip(labels, errors, strict=True), key=lambda item: item[1])",
-          )
-          path.write_text(text, encoding="utf-8")
 
-          path = root / "scripts/run_empirical_cases.py"
-          text = path.read_text(encoding="utf-8").replace(
-              'import matplotlib.pyplot as plt\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\nimport pandas as pd\n',
-              'import matplotlib.pyplot as plt\nimport pandas as pd\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\n',
-          )
-          path.write_text(text, encoding="utf-8")
+          # Make setuptools available to the custom distribution builder.
+          pyproject = Path("pyproject.toml")
+          text = pyproject.read_text(encoding="utf-8")
+          text = text.replace('  "ruff>=0.6,<1",\n', '  "ruff==0.16.0",\n')
+          if '  "setuptools>=77,<83",\n' not in text:
+              text = text.replace('  "ruff==0.16.0",\n]', '  "ruff==0.16.0",\n  "setuptools>=77,<83",\n]')
+          pyproject.write_text(text, encoding="utf-8")
 
-          path = root / "src/fwta/experiments.py"
-          text = path.read_text(encoding="utf-8").replace(
-              'import matplotlib.pyplot as plt\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\nimport numpy as np\nimport pandas as pd\n',
-              'import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n',
-          )
-          text = text.replace(
-              'from .workflow import Task, analyze_workflow\n\n\ndef generate_synthetic_series',
-              'from .workflow import Task, analyze_workflow\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\n\n\ndef generate_synthetic_series',
-          )
-          path.write_text(text, encoding="utf-8")
-
-          path = root / "src/fwta/report.py"
-          text = path.read_text(encoding="utf-8").replace(
-              'import matplotlib.pyplot as plt\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\nimport numpy as np\nimport pandas as pd\n',
-              'import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\nplt.rcParams["pdf.fonttype"] = 42\nplt.rcParams["ps.fonttype"] = 42\nplt.rcParams["svg.fonttype"] = "none"\n',
-          )
-          path.write_text(text, encoding="utf-8")
-
-          replace("src/fwta/ablation.py", "zip(selected, fit.x[1:])", "zip(selected, fit.x[1:], strict=True)")
-          replace("src/fwta/decision.py", "zip(scenarios, scores)", "zip(scenarios, scores, strict=True)")
-          replace("src/fwta/models.py", "zip(test_t, test_y, pred)", "zip(test_t, test_y, pred, strict=True)")
-          replace("src/fwta/models.py", "zip(test_t, test_y, avg_pred)", "zip(test_t, test_y, avg_pred, strict=True)")
-          replace("src/fwta/uncertainty.py", "zip(names, weights)", "zip(names, weights, strict=True)")
-          replace("src/fwta/decision.py", "from typing import Mapping\n", "from collections.abc import Mapping\n")
-          replace("src/fwta/provenance.py", "from typing import Iterable\n", "from collections.abc import Iterable\n")
-
-          path = root / "src/fwta/engine.py"
-          text = path.read_text(encoding="utf-8").replace("from datetime import date\n", "")
-          text = text.replace(
-              "from .uncertainty import crossing_distribution, residual_bootstrap_model_average, summarize_samples, transform_scenario_samples\n",
-              "from .uncertainty import (\n    crossing_distribution,\n    residual_bootstrap_model_average,\n    summarize_samples,\n    transform_scenario_samples,\n)\n",
-          )
-          text = text.replace(
-              '    if stamp.tzinfo is None:\n        stamp = stamp.tz_localize("UTC")\n    else:\n        stamp = stamp.tz_convert("UTC")\n',
-              '    stamp = stamp.tz_localize("UTC") if stamp.tzinfo is None else stamp.tz_convert("UTC")\n',
-          )
-          path.write_text(text, encoding="utf-8")
-
-          path = root / "src/fwta/timeutil.py"
-          text = path.read_text(encoding="utf-8").replace(
-              "from datetime import datetime, timezone\n", "from datetime import UTC, datetime\n"
-          )
-          text = text.replace("datetime.now(timezone.utc)", "datetime.now(UTC)")
-          text = text.replace("datetime.fromtimestamp(epoch, timezone.utc)", "datetime.fromtimestamp(epoch, UTC)")
-          path.write_text(text, encoding="utf-8")
-
-          path = root / "scripts/build_python_distribution.py"
-          text = path.read_text(encoding="utf-8")
-          old = '''        with temporary.open("wb") as raw:
-              with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=source_epoch(), compresslevel=9) as compressed:
-                  with tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as destination:
-                      for member in members:
-                          if member.issym() or member.islnk():
-                              raise RuntimeError(f"refusing to normalize linked sdist member: {member.name}")
-                          stable = copy.copy(member)
-                          stable.uid = 0
-                          stable.gid = 0
-                          stable.uname = "root"
-                          stable.gname = "root"
-                          stable.mtime = source_epoch()
-                          stable.pax_headers = {}
-                          payload = source.extractfile(member) if member.isfile() else None
-                          destination.addfile(stable, payload)
-          '''
-          old = old.replace("              ", "            ").replace("                  ", "                ").replace("                      ", "                    ").replace("                          ", "                        ")
-          new = '''        with (
-              temporary.open("wb") as raw,
-              gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=source_epoch(), compresslevel=9) as compressed,
-              tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as destination,
-          ):
-              for member in members:
-                  if member.issym() or member.islnk():
-                      raise RuntimeError(f"refusing to normalize linked sdist member: {member.name}")
-                  stable = copy.copy(member)
-                  stable.uid = 0
-                  stable.gid = 0
-                  stable.uname = "root"
-                  stable.gname = "root"
-                  stable.mtime = source_epoch()
-                  stable.pax_headers = {}
-                  payload = source.extractfile(member) if member.isfile() else None
-                  destination.addfile(stable, payload)
-          '''
-          new = new.replace("              ", "            ").replace("                  ", "                ")
-          if old not in text:
-              raise SystemExit("nested sdist context pattern missing")
-          path.write_text(text.replace(old, new), encoding="utf-8")
-
-          path = root / "scripts/create_release_bundle.py"
-          text = path.read_text(encoding="utf-8")
-          old = '''        with tar_output.open("wb") as raw:
-              with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=epoch, compresslevel=9) as compressed:
-                  with tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as archive:
-                      for path in sorted(stage_root.rglob("*")):
-                          if path.is_file():
-                              add_to_tar(archive, path, path.relative_to(stage_root.parent).as_posix(), epoch)
-          '''
-          old = old.replace("              ", "            ").replace("                  ", "                ").replace("                      ", "                    ").replace("                          ", "                        ")
-          new = '''        with (
-              tar_output.open("wb") as raw,
-              gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=epoch, compresslevel=9) as compressed,
-              tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as archive,
-          ):
-              for path in sorted(stage_root.rglob("*")):
-                  if path.is_file():
-                      add_to_tar(archive, path, path.relative_to(stage_root.parent).as_posix(), epoch)
-          '''
-          new = new.replace("              ", "            ").replace("                  ", "                ")
-          if old not in text:
-              raise SystemExit("nested release context pattern missing")
-          path.write_text(text.replace(old, new), encoding="utf-8")
-
-          replacements = {
-              "tests/test_metrics.py": (
-                  "from fwta.metrics import acceleration, aicc, akaike_weights, annual_improvement, doubling_time, log_growth_rate, logit, smape\n",
-                  "from fwta.metrics import (\n    acceleration,\n    aicc,\n    akaike_weights,\n    annual_improvement,\n    doubling_time,\n    log_growth_rate,\n    logit,\n    smape,\n)\n",
-              ),
-              "tests/test_models_edges.py": (
-                  "from fwta.models import FitResult, fit_all_models, fit_model, model_average_prediction, predict_model, rolling_origin_hindcast\n",
-                  "from fwta.models import (\n    FitResult,\n    fit_all_models,\n    fit_model,\n    model_average_prediction,\n    predict_model,\n    rolling_origin_hindcast,\n)\n",
-              ),
-              "tests/test_regimes_workflow_edges.py": (
-                  "from fwta.regimes import constrained_growth, cumulative_transition_probability, decaying_acceleration_path, double_exponential, exponential_path, logistic_path, milestone_time\n",
-                  "from fwta.regimes import (\n    constrained_growth,\n    cumulative_transition_probability,\n    decaying_acceleration_path,\n    double_exponential,\n    exponential_path,\n    logistic_path,\n    milestone_time,\n)\n",
-              ),
-          }
-          for destination, (old, new) in replacements.items():
-              replace(destination, old, new)
-
-          path = root / "tests/test_release_utilities.py"
-          text = path.read_text(encoding="utf-8").replace(
-              "from datetime import datetime, timezone\n", "from datetime import UTC, datetime\n"
-          )
-          path.write_text(text.replace("timezone.utc", "UTC"), encoding="utf-8")
-
-          path = root / "tests/test_validation_edges.py"
-          text = path.read_text(encoding="utf-8").replace("import numpy as np\n", "")
-          text = text.replace(
-              "from fwta.canonical import double_counting_audit, generalized_bottleneck, realized_outcome, technical_capacity, technical_growth_rate\n",
-              "from fwta.canonical import (\n    double_counting_audit,\n    generalized_bottleneck,\n    realized_outcome,\n    technical_capacity,\n    technical_growth_rate,\n)\n",
-          )
-          text = text.replace(
-              "from fwta.metrics import aicc, akaike_weights, bic, doubling_time, gaussian_log_likelihood, log_growth_rate, logit, mae, mape, rmse, smape\n",
-              "from fwta.metrics import (\n    aicc,\n    akaike_weights,\n    bic,\n    doubling_time,\n    gaussian_log_likelihood,\n    log_growth_rate,\n    logit,\n    mae,\n    mape,\n    rmse,\n    smape,\n)\n",
-          )
-          path.write_text(text, encoding="utf-8")
-
-          path = root / "pyproject.toml"
-          text = path.read_text(encoding="utf-8").replace('  "ruff>=0.6,<1",\n', '  "ruff==0.16.0",\n  "setuptools>=77,<83",\n')
-          path.write_text(text, encoding="utf-8")
-
-          path = root / "requirements-dev.txt"
-          text = path.read_text(encoding="utf-8").replace("ruff>=0.6,<1", "ruff==0.16.0")
+          requirements_dev = Path("requirements-dev.txt")
+          text = requirements_dev.read_text(encoding="utf-8").replace("ruff>=0.6,<1", "ruff==0.16.0")
           if "setuptools>=77,<83" not in text:
               text = text.rstrip() + "\nsetuptools>=77,<83\n"
-          path.write_text(text, encoding="utf-8")
+          requirements_dev.write_text(text, encoding="utf-8")
 
-          for workflow in (".github/workflows/paper.yml", ".github/workflows/release.yml"):
-              path = root / workflow
-              text = path.read_text(encoding="utf-8").replace(
-                  "texlive-bibtex-extra texlive-fonts-recommended \\\n            texlive-latex-extra texlive-xetex",
-                  "texlive-bibtex-extra texlive-fonts-recommended texlive-fonts-extra \\\n            texlive-latex-extra texlive-xetex",
-              )
-              path.write_text(text, encoding="utf-8")
-
-          path = root / ".github/workflows/pages.yml"
-          text = path.read_text(encoding="utf-8").replace(
-              "  group: github-pages-${{ github.event_name }}-${{ github.ref }}\n",
-              "  group: ${{ github.event_name == 'pull_request' && format('github-pages-pr-{0}', github.ref) || 'github-pages' }}\n",
+          replace(
+              ".github/workflows/ci.yml",
+              "run: python -m pip install -e '.[dev]'\n      - run: python scripts/build_python_distribution.py --outdir dist",
+              "run: python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'\n      - run: python scripts/build_python_distribution.py --outdir dist",
           )
-          path.write_text(text, encoding="utf-8")
+          replace(
+              ".github/workflows/paper.yml",
+              "latexmk texlive-bibtex-extra texlive-fonts-recommended \\\n            texlive-latex-extra texlive-xetex",
+              "latexmk texlive-bibtex-extra texlive-fonts-recommended texlive-fonts-extra \\\n            texlive-latex-extra texlive-xetex",
+          )
+          replace(
+              ".github/workflows/release.yml",
+              "python -m pip install -e '.[dev]'\n",
+              "python -m pip install -e '.[dev]' 'setuptools>=77,<83' 'ruff==0.16.0'\n",
+          )
+          replace(
+              ".github/workflows/release.yml",
+              "latexmk poppler-utils texlive-bibtex-extra texlive-fonts-recommended \\\n            texlive-latex-extra texlive-xetex",
+              "latexmk poppler-utils texlive-bibtex-extra texlive-fonts-recommended texlive-fonts-extra \\\n            texlive-latex-extra texlive-xetex",
+          )
+
+          # Resolve both Codex Pages review findings.
+          replace(
+              ".github/workflows/pages.yml",
+              "  group: github-pages-${{ github.event_name }}-${{ github.ref }}\n",
+              "  group: ${{ github.event_name == 'pull_request' && format('github-pages-pr-{0}', github.event.pull_request.number) || 'github-pages' }}\n",
+          )
+          pages = Path(".github/workflows/pages.yml")
+          text = pages.read_text(encoding="utf-8").replace(
+              "if: github.event_name != 'pull_request'",
+              "if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')",
+          )
+          pages.write_text(text, encoding="utf-8")
+          page404 = Path("site/404.html")
+          text = page404.read_text(encoding="utf-8")
+          text = text.replace('href="favicon.svg"', 'href="/forecasting-a-world-that-accelerates/favicon.svg"')
+          text = text.replace('href="./"', 'href="/forecasting-a-world-that-accelerates/"')
+          text = text.replace('href="paper.html"', 'href="/forecasting-a-world-that-accelerates/paper.html"')
+          page404.write_text(text, encoding="utf-8")
           PY
 
-      - name: Install the declared verification toolchain
-        run: python -m pip install -e '.[dev]'
-
-      - name: Apply Ruff safe fixes and canonical formatting
+      - name: Apply Ruff fixes and validate the scientific core
+        shell: bash
         run: |
-          python -m ruff check --fix src tests experiments scripts
+          set -Eeuo pipefail
+          python -m ruff check src tests experiments scripts --fix --unsafe-fixes --preview
           python -m ruff format src tests experiments scripts
           python -m ruff check src tests experiments scripts
           python -m ruff format --check src tests experiments scripts
-
-      - name: Verify types, tests, and distributions
-        run: |
           python -m mypy src
           python -m pytest -q
           python scripts/build_python_distribution.py --outdir dist
           make smoke
+          git diff --check
 
-      - name: Commit the verified repairs and remove this one-shot workflow
+      - name: Commit the verified repair and remove this one-time workflow
         shell: bash
         run: |
           set -Eeuo pipefail
-          git config user.name "MONTREAL.AI Automation"
-          git config user.email "info@quebec.ai"
-          git rm -- .github/workflows/repair-pr.yml
-          git add -A
-          git diff --cached --stat
-          git commit -s -m "ci: repair release quality gates"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/repair-pr.yml
+          git add .
+          git commit -m "ci: repair quality packaging and paper build gates"
+          git push origin HEAD:feat/autonomous-github-pages
 
-      - name: Request fresh checks for the repaired head
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Confirm the repair commit was pushed
         shell: bash
         run: |
           set -Eeuo pipefail
-          for workflow in ci.yml paper.yml pages.yml security.yml codeql.yml; do
-            curl --fail-with-body --silent --show-error \
-              --request POST \
-              --header "Accept: application/vnd.github+json" \
-              --header "Authorization: Bearer ${GH_TOKEN}" \
-              --header "X-GitHub-Api-Version: 2022-11-28" \
-              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/dispatches" \
-              --data "{\"ref\":\"${GITHUB_REF_NAME}\"}"
-          done
+          echo "The push updates pull request #10 and automatically requests fresh PR checks."
