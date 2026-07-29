@@ -3,7 +3,16 @@ import math
 import numpy as np
 import pytest
 
-from fwta.metrics import acceleration, aicc, akaike_weights, annual_improvement, doubling_time, log_growth_rate, logit, smape
+from fwta.metrics import (
+    acceleration,
+    aicc,
+    akaike_weights,
+    annual_improvement,
+    doubling_time,
+    log_growth_rate,
+    logit,
+    smape,
+)
 
 
 def test_growth_helpers() -> None:

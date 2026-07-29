@@ -12,7 +12,8 @@ from .metrics import rmse
 def _matrix(features: dict[str, Iterable[float]], selected: tuple[str, ...]) -> np.ndarray:
     columns = [np.asarray(features[name], dtype=float) for name in selected]
     if not columns:
-        return np.empty((len(next(iter(features.values()))), 0), dtype=float)
+        first = np.asarray(next(iter(features.values())), dtype=float)
+        return np.empty((first.size, 0), dtype=float)
     matrix = np.column_stack(columns)
     if not np.all(np.isfinite(matrix)):
         raise ValueError("features contain non-finite values")
@@ -54,7 +55,7 @@ def fit_canonical_elasticities(
         "selected": list(selected),
         "converged": bool(fit.success),
         "log_q0": float(fit.x[0]),
-        "elasticities": {name: float(value) for name, value in zip(selected, fit.x[1:])},
+        "elasticities": {name: float(value) for name, value in zip(selected, fit.x[1:], strict=True)},
         "rmse_log": rmse(np.log(y), np.log(np.maximum(predictions, 1e-300))),
         "predictions": predictions.tolist(),
     }

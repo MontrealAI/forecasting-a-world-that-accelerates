@@ -5,7 +5,15 @@ import math
 import numpy as np
 import pytest
 
-from fwta.regimes import constrained_growth, cumulative_transition_probability, decaying_acceleration_path, double_exponential, exponential_path, logistic_path, milestone_time
+from fwta.regimes import (
+    constrained_growth,
+    cumulative_transition_probability,
+    decaying_acceleration_path,
+    double_exponential,
+    exponential_path,
+    logistic_path,
+    milestone_time,
+)
 from fwta.workflow import Task, analyze_workflow, task_from_mapping
 
 
@@ -42,15 +50,29 @@ def test_regime_validation_edges() -> None:
 
 
 def test_task_mapping_reliability_costs_and_errors() -> None:
-    task = task_from_mapping({
-        "task_id": "a", "success_probability": 0.8, "max_attempts": 2,
-        "ai_time": 1, "verification_time": 0.5, "ai_cost": 2,
-        "verification_cost": 1, "human_fallback_cost": 10,
-        "per_attempt_reliability": 0.9, "dependencies": [],
-    })
+    task = task_from_mapping(
+        {
+            "task_id": "a",
+            "success_probability": 0.8,
+            "max_attempts": 2,
+            "ai_time": 1,
+            "verification_time": 0.5,
+            "ai_cost": 2,
+            "verification_cost": 1,
+            "human_fallback_cost": 10,
+            "per_attempt_reliability": 0.9,
+            "dependencies": [],
+        }
+    )
     assert task.achieved_reliability == pytest.approx(0.99)
     assert task.expected_cost > 0
-    result = analyze_workflow([task], parallel_workers=2, parallel_efficiency=0.8, coordination_coefficient=0.2, correlated_failure_penalty=1000)
+    result = analyze_workflow(
+        [task],
+        parallel_workers=2,
+        parallel_efficiency=0.8,
+        coordination_coefficient=0.2,
+        correlated_failure_penalty=1000,
+    )
     assert result.workflow_reliability == 0
     assert math.isinf(result.cost_per_verified_success)
 

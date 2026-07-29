@@ -1,9 +1,9 @@
 {
   "forecast_id": "fwaa-ceiling-reference-2026-07-28",
-  "forecast_sha256": "bc1ba04d4b3137537700d16ca1f429e7f0e16244b51e350539392ff684dd3655",
+  "forecast_sha256": "6f4f507573120b9b31be628672479f50711e92411103e84cb6f9c70491789242",
   "input_sha256": "1082e75e3399a62458ed3db84fe73a75fee29fdb1afe0ade185f3d6283ab442b",
   "previous_record_sha256": null,
-  "record_sha256": "f59501602aeb4dad4c40362b162d0c2e36b7b33e095090bdcdbc14ed1878b74a",
+  "record_sha256": "b4e01b47650871f0820032c2a4315513300191f567a7ba3e3b9d8846d21997b5",
   "registered_at": "2026-07-28T16:00:00+00:00",
   "registry_version": "2.0.0",
   "research_cutoff": "2026-07-28T16:00:00+00:00",

@@ -71,10 +71,18 @@ def test_cli_fit_hindcast_and_synthetic(tmp_path: Path) -> None:
 def test_cli_workflow_validation_manifest_and_run_all(tmp_path: Path, monkeypatch, capsys) -> None:
     root = Path(__file__).resolve().parents[1]
     workflow_output = tmp_path / "workflow.json"
-    assert cli.main(["workflow", str(root / "protocol/examples/example-workflow.yaml"), "--output", str(workflow_output)]) == 0
+    assert (
+        cli.main(["workflow", str(root / "protocol/examples/example-workflow.yaml"), "--output", str(workflow_output)])
+        == 0
+    )
     assert json.loads(workflow_output.read_text(encoding="utf-8"))["estimated_duration"] > 0
 
-    assert cli.main(["validate", str(root / "protocol/examples/example-input.yaml"), str(root / "protocol/input.schema.json")]) == 0
+    assert (
+        cli.main(
+            ["validate", str(root / "protocol/examples/example-input.yaml"), str(root / "protocol/input.schema.json")]
+        )
+        == 0
+    )
     invalid = tmp_path / "invalid.json"
     invalid.write_text("{}", encoding="utf-8")
     assert cli.main(["validate", str(invalid), str(root / "protocol/input.schema.json")]) == 1
@@ -85,7 +93,9 @@ def test_cli_workflow_validation_manifest_and_run_all(tmp_path: Path, monkeypatc
     assert json.loads(manifest.read_text(encoding="utf-8"))["algorithm"] == "SHA-256"
 
     monkeypatch.setattr(cli, "run_all", lambda output, figures, seed: {"seed": seed, "ok": True})
-    assert cli.main(["run-all", "--output", str(tmp_path / "out"), "--figures", str(tmp_path / "fig"), "--seed", "9"]) == 0
+    assert (
+        cli.main(["run-all", "--output", str(tmp_path / "out"), "--figures", str(tmp_path / "fig"), "--seed", "9"]) == 0
+    )
     assert '"ok": true' in capsys.readouterr().out
 
 

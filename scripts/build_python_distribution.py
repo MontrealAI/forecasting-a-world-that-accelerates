@@ -26,21 +26,23 @@ def normalize_sdist(path: Path) -> None:
     temporary = path.with_name(f".{path.name}.normalized")
     with tarfile.open(path, "r:gz") as source:
         members = sorted(source.getmembers(), key=lambda item: item.name)
-        with temporary.open("wb") as raw:
-            with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=source_epoch(), compresslevel=9) as compressed:
-                with tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as destination:
-                    for member in members:
-                        if member.issym() or member.islnk():
-                            raise RuntimeError(f"refusing to normalize linked sdist member: {member.name}")
-                        stable = copy.copy(member)
-                        stable.uid = 0
-                        stable.gid = 0
-                        stable.uname = "root"
-                        stable.gname = "root"
-                        stable.mtime = source_epoch()
-                        stable.pax_headers = {}
-                        payload = source.extractfile(member) if member.isfile() else None
-                        destination.addfile(stable, payload)
+        with (
+            temporary.open("wb") as raw,
+            gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=source_epoch(), compresslevel=9) as compressed,
+            tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as destination,
+        ):
+            for member in members:
+                if member.issym() or member.islnk():
+                    raise RuntimeError(f"refusing to normalize linked sdist member: {member.name}")
+                stable = copy.copy(member)
+                stable.uid = 0
+                stable.gid = 0
+                stable.uname = "root"
+                stable.gname = "root"
+                stable.mtime = source_epoch()
+                stable.pax_headers = {}
+                payload = source.extractfile(member) if member.isfile() else None
+                destination.addfile(stable, payload)
     temporary.replace(path)
 
 
@@ -61,7 +63,9 @@ def copy_sdist_inputs(destination: Path) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build wheel and source distribution with the declared PEP 517 backend.")
+    parser = argparse.ArgumentParser(
+        description="Build wheel and source distribution with the declared PEP 517 backend."
+    )
     parser.add_argument("--outdir", default="dist")
     args = parser.parse_args()
     destination = (ROOT / args.outdir).resolve()

@@ -103,12 +103,14 @@ def main() -> int:
                 if path.is_file():
                     add_to_zip(archive, path, path.relative_to(stage_root.parent).as_posix(), epoch)
 
-        with tar_output.open("wb") as raw:
-            with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=epoch, compresslevel=9) as compressed:
-                with tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as archive:
-                    for path in sorted(stage_root.rglob("*")):
-                        if path.is_file():
-                            add_to_tar(archive, path, path.relative_to(stage_root.parent).as_posix(), epoch)
+        with (
+            tar_output.open("wb") as raw,
+            gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=epoch, compresslevel=9) as compressed,
+            tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as archive,
+        ):
+            for path in sorted(stage_root.rglob("*")):
+                if path.is_file():
+                    add_to_tar(archive, path, path.relative_to(stage_root.parent).as_posix(), epoch)
 
     subprocess.run(
         [os.environ.get("PYTHON", "python3"), str(ROOT / "scripts/update_dist_checksums.py"), "--version", version],

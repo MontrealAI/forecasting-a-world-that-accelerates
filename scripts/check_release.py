@@ -123,7 +123,11 @@ def main() -> int:
         fail("publication status version mismatch")
     if publication.get("repository_published") or publication.get("doi") or publication.get("preprint_identifier"):
         fail("external publication identifiers must not be asserted before they exist")
-    if validation_report.get("package_version") != version or smoke.get("package_version") != version or arxiv.get("package_version") != version:
+    if (
+        validation_report.get("package_version") != version
+        or smoke.get("package_version") != version
+        or arxiv.get("package_version") != version
+    ):
         fail("validation, smoke, or arXiv record version mismatch")
     if finalization.get("package_version") != version:
         fail("finalization record version mismatch")
@@ -186,9 +190,13 @@ def main() -> int:
     for key, path in binary_artifacts.items():
         if path.is_file() and artifact_hashes.get(key) != sha256(path):
             fail(f"binary finalization artifact hash mismatch: {key}")
-    if binary_artifacts["wheel"].is_file() and smoke.get("wheel", {}).get("sha256") != sha256(binary_artifacts["wheel"]):
+    if binary_artifacts["wheel"].is_file() and smoke.get("wheel", {}).get("sha256") != sha256(
+        binary_artifacts["wheel"]
+    ):
         fail("wheel hash does not match smoke report")
-    if binary_artifacts["source_distribution"].is_file() and smoke.get("source_distribution", {}).get("sha256") != sha256(binary_artifacts["source_distribution"]):
+    if binary_artifacts["source_distribution"].is_file() and smoke.get("source_distribution", {}).get(
+        "sha256"
+    ) != sha256(binary_artifacts["source_distribution"]):
         fail("source-distribution hash does not match smoke report")
 
     manifest = json.loads((ROOT / "release/MANIFEST.json").read_text(encoding="utf-8"))

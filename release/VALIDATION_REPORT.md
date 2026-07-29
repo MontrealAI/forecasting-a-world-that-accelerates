@@ -10,15 +10,15 @@
 
 - Automated tests collected: **56**
 - Full test run passed: **yes**
-- Combined line-plus-branch scientific-core coverage: **90.54%**
-- Line coverage: **93.41%**; branch-condition coverage: **80.46%**
+- Combined line-plus-branch scientific-core coverage: **90.53%**
+- Line coverage: **93.41%**; branch-condition coverage: **80.38%**
 - Strict schema suite passed: **yes**
 - Clean wheel smoke forecast passed: **yes**
 - Clean source-distribution smoke forecast passed: **yes**
 - Paper pages: **53**
 - Complete prompt artifacts byte-identical: **yes**
 - Live prospective registry empty by design: **yes**
-- Paper SHA-256: `9b12e4369c723e0ef23c533ad8dd462b0aeb5acdeb4146a2e8a65e5987283dc9`
+- Paper SHA-256: `9eb050bb71b867ad08d3fb5b7b820f73433ce1a5ff83bc3327a18a30ee974c9f`
 
 Coverage scope excludes only trivial module dispatch and deterministic artifact-orchestration code; the forecast engine, mathematical models, uncertainty, scoring, canonical realization, task graphs, registry, schemas, and reporting remain inside the measured scientific core.
 
@@ -45,8 +45,8 @@ Coverage scope excludes only trivial module dispatch and deterministic artifact-
 
 ## Quality and release controls
 
-- Ruff configured in CI: **yes**; available on this build host: **no**.
-- mypy configured in CI: **yes**; available on this build host: **no**.
+- Ruff configured in CI: **yes**; available on this build host: **yes**.
+- mypy configured in CI: **yes**; available on this build host: **yes**.
 - Full tests and compatibility matrix: configured for Ubuntu, macOS, and Windows.
 - CodeQL, dependency auditing, SHA-pinned Actions, CycloneDX SBOM, deterministic timestamps, manifests, and checksums are included.
 

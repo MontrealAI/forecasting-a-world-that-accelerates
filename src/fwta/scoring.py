@@ -13,7 +13,9 @@ def brier_score(probabilities: np.ndarray | list[float], outcomes: np.ndarray | 
     return float(np.mean((p - o) ** 2))
 
 
-def logarithmic_score(probabilities: np.ndarray | list[float], outcomes: np.ndarray | list[float], eps: float = 1e-12) -> float:
+def logarithmic_score(
+    probabilities: np.ndarray | list[float], outcomes: np.ndarray | list[float], eps: float = 1e-12
+) -> float:
     p = np.asarray(probabilities, dtype=float)
     o = np.asarray(outcomes, dtype=float)
     if p.shape != o.shape or p.size == 0 or np.any((p < 0) | (p > 1)) or np.any((o < 0) | (o > 1)):

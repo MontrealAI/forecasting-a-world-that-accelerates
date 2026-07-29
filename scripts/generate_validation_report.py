@@ -133,7 +133,11 @@ def main() -> int:
         "quality_controls": {
             "ruff": {"configured_in_ci": True, "local_execution": shutil.which("ruff") is not None},
             "mypy": {"configured_in_ci": True, "local_execution": shutil.which("mypy") is not None},
-            "cross_platform_ci": ["Ubuntu/Python 3.11 and 3.13", "macOS/Python 3.11 and 3.13", "Windows/Python 3.11 and 3.13"],
+            "cross_platform_ci": [
+                "Ubuntu/Python 3.11 and 3.13",
+                "macOS/Python 3.11 and 3.13",
+                "Windows/Python 3.11 and 3.13",
+            ],
             "codeql_configured": True,
             "dependency_audit_configured": True,
             "cyclonedx_sbom": True,

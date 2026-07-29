@@ -29,17 +29,14 @@ def main() -> int:
     checksum_path = dist / "SHA256SUMS.txt"
 
     artifact_paths = sorted(
-        path
-        for path in dist.iterdir()
-        if path.is_file() and path.name not in {metadata_path.name, checksum_path.name}
+        path for path in dist.iterdir() if path.is_file() and path.name not in {metadata_path.name, checksum_path.name}
     )
     metadata = {
         "version": args.version,
         "canonical_repository": CANONICAL_REPOSITORY,
         "hash_algorithm": "SHA-256",
         "artifacts": [
-            {"name": path.name, "sha256": sha256(path), "bytes": path.stat().st_size}
-            for path in artifact_paths
+            {"name": path.name, "sha256": sha256(path), "bytes": path.stat().st_size} for path in artifact_paths
         ],
     }
     metadata_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")

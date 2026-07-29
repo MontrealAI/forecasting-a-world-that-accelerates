@@ -6,10 +6,6 @@ from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
-
-plt.rcParams["pdf.fonttype"] = 42
-plt.rcParams["ps.fonttype"] = 42
-plt.rcParams["svg.fonttype"] = "none"
 import numpy as np
 import pandas as pd
 
@@ -18,6 +14,10 @@ from .metrics import rmse, smape
 from .models import DEFAULT_MODELS, fit_model, predict_model, rolling_origin_hindcast
 from .regimes import accelerated_exponential, double_exponential, exponential_path, logistic_path
 from .workflow import Task, analyze_workflow
+
+plt.rcParams["pdf.fonttype"] = 42
+plt.rcParams["ps.fonttype"] = 42
+plt.rcParams["svg.fonttype"] = "none"
 
 
 def generate_synthetic_series(regime: str, seed: int = 20260728, n: int = 48) -> pd.DataFrame:
@@ -90,7 +90,14 @@ def _canonical_components(seed: int = 20260728, n: int = 48) -> pd.DataFrame:
     automation = 0.14 + 0.69 * (1.0 - np.exp(-0.64 * t))
     parallelism = 1.0 + 7.0 * (1.0 - np.exp(-0.48 * t))
     reliability = 0.70 + 0.275 * (1.0 - np.exp(-0.78 * t))
-    elasticities = {"theta": 0.85, "cost": 0.32, "duration": 0.38, "automation": 0.45, "parallelism": 0.27, "reliability": 1.25}
+    elasticities = {
+        "theta": 0.85,
+        "cost": 0.32,
+        "duration": 0.38,
+        "automation": 0.45,
+        "parallelism": 0.27,
+        "reliability": 1.25,
+    }
     q0 = 12.0
     technical = (
         q0
@@ -184,11 +191,69 @@ def run_ablation_suite(output_dir: str | Path, seed: int = 20260728) -> pd.DataF
 def _workflow_demo() -> list[Task]:
     return [
         Task("scope", 0.96, 2, 0.35, 0.20, 2.0, 0.35, ai_cost=1.0, verification_cost=0.5, human_fallback_cost=8.0),
-        Task("research_a", 0.90, 3, 1.10, 0.35, 4.0, dependencies=("scope",), ai_cost=2.0, verification_cost=0.7, human_fallback_cost=15.0),
-        Task("research_b", 0.88, 3, 1.25, 0.40, 4.5, dependencies=("scope",), ai_cost=2.2, verification_cost=0.8, human_fallback_cost=16.0),
-        Task("model", 0.84, 3, 1.60, 0.65, 6.0, dependencies=("research_a", "research_b"), ai_cost=3.4, verification_cost=1.1, human_fallback_cost=22.0),
-        Task("review", 0.94, 2, 0.70, 0.80, 3.0, authority_latency=1.50, dependencies=("model",), ai_cost=1.5, verification_cost=2.0, human_fallback_cost=12.0),
-        Task("release", 0.98, 2, 0.30, 0.35, 2.0, authority_latency=3.00, external_latency=1.00, dependencies=("review",), ai_cost=0.7, verification_cost=0.7, human_fallback_cost=8.0),
+        Task(
+            "research_a",
+            0.90,
+            3,
+            1.10,
+            0.35,
+            4.0,
+            dependencies=("scope",),
+            ai_cost=2.0,
+            verification_cost=0.7,
+            human_fallback_cost=15.0,
+        ),
+        Task(
+            "research_b",
+            0.88,
+            3,
+            1.25,
+            0.40,
+            4.5,
+            dependencies=("scope",),
+            ai_cost=2.2,
+            verification_cost=0.8,
+            human_fallback_cost=16.0,
+        ),
+        Task(
+            "model",
+            0.84,
+            3,
+            1.60,
+            0.65,
+            6.0,
+            dependencies=("research_a", "research_b"),
+            ai_cost=3.4,
+            verification_cost=1.1,
+            human_fallback_cost=22.0,
+        ),
+        Task(
+            "review",
+            0.94,
+            2,
+            0.70,
+            0.80,
+            3.0,
+            authority_latency=1.50,
+            dependencies=("model",),
+            ai_cost=1.5,
+            verification_cost=2.0,
+            human_fallback_cost=12.0,
+        ),
+        Task(
+            "release",
+            0.98,
+            2,
+            0.30,
+            0.35,
+            2.0,
+            authority_latency=3.00,
+            external_latency=1.00,
+            dependencies=("review",),
+            ai_cost=0.7,
+            verification_cost=0.7,
+            human_fallback_cost=8.0,
+        ),
     ]
 
 
@@ -259,8 +324,8 @@ def generate_figures(results_dir: str | Path, figures_dir: str | Path) -> None:
     plt.figure(figsize=(8.2, 5.0))
     image = plt.imshow(pivot.to_numpy(), aspect="auto")
     plt.colorbar(image, label="Rolling-origin log RMSE")
-    plt.xticks(range(len(pivot.columns)), pivot.columns, rotation=25, ha="right")
-    plt.yticks(range(len(pivot.index)), pivot.index)
+    plt.xticks(range(len(pivot.columns)), [str(value) for value in pivot.columns], rotation=25, ha="right")
+    plt.yticks(range(len(pivot.index)), [str(value) for value in pivot.index])
     plt.title("Controlled hindcasts: model error by generating regime")
     plt.tight_layout()
     plt.savefig(figures / "hindcast_heatmap.pdf")

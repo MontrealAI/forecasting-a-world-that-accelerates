@@ -21,9 +21,7 @@ def accelerated_exponential(time: Iterable[float], x0: float, g0: float, acceler
     return x0 * np.exp(g0 * t + 0.5 * acceleration * t**2)
 
 
-def decaying_acceleration_path(
-    time: Iterable[float], x0: float, g0: float, a0: float, kappa: float
-) -> np.ndarray:
+def decaying_acceleration_path(time: Iterable[float], x0: float, g0: float, a0: float, kappa: float) -> np.ndarray:
     t = np.asarray(time, dtype=float)
     if x0 <= 0 or kappa <= 0:
         raise ValueError("x0 and kappa must be positive")
@@ -50,9 +48,7 @@ def double_exponential(
     if x_transition <= 0 or jump <= 0 or growth_compounding <= 0:
         raise ValueError("x_transition, jump, and growth_compounding must be positive")
     elapsed = np.maximum(t - transition_time, 0.0)
-    exponent = (growth_at_transition / growth_compounding) * (
-        np.exp(growth_compounding * elapsed) - 1.0
-    )
+    exponent = (growth_at_transition / growth_compounding) * (np.exp(growth_compounding * elapsed) - 1.0)
     post = jump * x_transition * np.exp(exponent)
     return np.where(t < transition_time, np.nan, post)
 

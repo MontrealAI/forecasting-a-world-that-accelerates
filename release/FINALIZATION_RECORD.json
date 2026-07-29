@@ -1,19 +1,19 @@
 {
   "artifact_hashes": {
-    "arxiv_source_archive": "4e7030211dc0ae8d77d86186d03116401717704e2458eefd140d45b4f0d24e3d",
-    "clean_smoke_forecast_html": "4e81380deff4262c882b91641186b754115e759e769410e57db992cb98c5cf2f",
-    "clean_smoke_forecast_json": "fe1a1a016d7840b2099ea05f99dfd8b3896c89c47b6bf21bfbf979e29e0a00e7",
+    "arxiv_source_archive": "c8e97ffd726a5de97e24dd933722861d19b32f324b683c7e63ae54094441c8c8",
+    "clean_smoke_forecast_html": "7ac424232c17cce100ff20b0863b9a02195bbec8545fae49e0e27381a01566ac",
+    "clean_smoke_forecast_json": "6ea7880d6a97838a7ffce1185b2043e5d88d3b843bdff8a752c120de4c779d2f",
     "complete_prompt": "f7ac4fa9a8cbfec98ee28e5171853ad9e04a92e82740e18b334f8b16045475a0",
-    "paper_pdf": "9b12e4369c723e0ef23c533ad8dd462b0aeb5acdeb4146a2e8a65e5987283dc9",
-    "reference_forecast_json": "e69ac453cfd32413d098926bd2c8133eca0025475bbe46ba6e63f9d0c545bae3",
-    "source_distribution": "77af04168889b87992b030eec4aafe88402edf1a89a3e7773ad241199cf49c66",
-    "wheel": "c98d68c1e4789bd1156689c8f80d8de85a682aa9563a6f4f25de400d6284e16a"
+    "paper_pdf": "9eb050bb71b867ad08d3fb5b7b820f73433ce1a5ff83bc3327a18a30ee974c9f",
+    "reference_forecast_json": "50deba781581819cc9033aeb8a6755406f1a5404f55122effcce96d8192c17d3",
+    "source_distribution": "d07ac114e884eb6a2f1f89ebd7a1907f712d4310c75b6c0ead1535b9957b9052",
+    "wheel": "43842de54d1532ff5307d116b95f1c2f74cb52bef63a3b36c87e674b263cb152"
   },
   "artifacts": [
     {
-      "bytes": 385540,
+      "bytes": 389968,
       "path": "paper/preprint.pdf",
-      "sha256": "9b12e4369c723e0ef23c533ad8dd462b0aeb5acdeb4146a2e8a65e5987283dc9"
+      "sha256": "9eb050bb71b867ad08d3fb5b7b820f73433ce1a5ff83bc3327a18a30ee974c9f"
     },
     {
       "bytes": 35164,
@@ -21,24 +21,24 @@
       "sha256": "f7ac4fa9a8cbfec98ee28e5171853ad9e04a92e82740e18b334f8b16045475a0"
     },
     {
-      "bytes": 164668,
+      "bytes": 164680,
       "path": "results/ceiling/reference-forecast.json",
-      "sha256": "e69ac453cfd32413d098926bd2c8133eca0025475bbe46ba6e63f9d0c545bae3"
+      "sha256": "50deba781581819cc9033aeb8a6755406f1a5404f55122effcce96d8192c17d3"
     },
     {
-      "bytes": 65732,
+      "bytes": 66096,
       "path": "dist/forecasting_a_world_that_accelerates-2.0.0-py3-none-any.whl",
-      "sha256": "c98d68c1e4789bd1156689c8f80d8de85a682aa9563a6f4f25de400d6284e16a"
+      "sha256": "43842de54d1532ff5307d116b95f1c2f74cb52bef63a3b36c87e674b263cb152"
     },
     {
-      "bytes": 56533,
+      "bytes": 56822,
       "path": "dist/forecasting_a_world_that_accelerates-2.0.0.tar.gz",
-      "sha256": "77af04168889b87992b030eec4aafe88402edf1a89a3e7773ad241199cf49c66"
+      "sha256": "d07ac114e884eb6a2f1f89ebd7a1907f712d4310c75b6c0ead1535b9957b9052"
     },
     {
-      "bytes": 215648,
+      "bytes": 234567,
       "path": "dist/Forecasting_A_World_That_Accelerates_preprint_source_v2.0.0.zip",
-      "sha256": "4e7030211dc0ae8d77d86186d03116401717704e2458eefd140d45b4f0d24e3d"
+      "sha256": "c8e97ffd726a5de97e24dd933722861d19b32f324b683c7e63ae54094441c8c8"
     }
   ],
   "canonical_repository": "https://github.com/MontrealAI/forecasting-a-world-that-accelerates",
@@ -77,15 +77,15 @@
   "manifest_policy": "release/MANIFEST.json is regenerated after this record and excludes its own self-reference, dist/, caches, and transient build directories.",
   "mechanical_metrics": {
     "blank_pages_detected": 0,
-    "branch_condition_coverage_percent": 80.46,
-    "combined_line_plus_branch_coverage_percent": 90.54,
+    "branch_condition_coverage_percent": 80.38,
+    "combined_line_plus_branch_coverage_percent": 90.53,
     "line_coverage_percent": 93.41,
     "paper_pages": 53,
     "pdfium_pages_rendered": 53,
     "poppler_pages_rendered": 53,
     "schema_instances_validated": 13,
     "tests_collected": 56,
-    "visual_contact_sheets_reviewed": 4
+    "visual_contact_sheets_reviewed": 8
   },
   "package_version": "2.0.0",
   "schema_version": "2.0.0"

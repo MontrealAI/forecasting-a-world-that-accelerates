@@ -21,5 +21,7 @@ def test_full_canonical_ablation_beats_intercept_only() -> None:
         "parallelism": np.log(frame["parallelism"]),
         "reliability": np.log(frame["reliability"]),
     }
-    result = canonical_ablation_suite(frame["value"], features, frame["market"], frame["adoption"], frame["utilization"], frame["bottleneck"])
+    result = canonical_ablation_suite(
+        frame["value"], features, frame["market"], frame["adoption"], frame["utilization"], frame["bottleneck"]
+    )
     assert result["full"]["rmse_log"] < result["intercept_only"]["rmse_log"]

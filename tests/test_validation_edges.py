@@ -3,15 +3,31 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
-import numpy as np
 import pytest
 
 from fwta.ablation import fit_canonical_elasticities
-from fwta.canonical import double_counting_audit, generalized_bottleneck, realized_outcome, technical_capacity, technical_growth_rate
+from fwta.canonical import (
+    double_counting_audit,
+    generalized_bottleneck,
+    realized_outcome,
+    technical_capacity,
+    technical_growth_rate,
+)
 from fwta.io import dump_json, load_structured, schema_registry, validate_instance
-from fwta.metrics import aicc, akaike_weights, bic, doubling_time, gaussian_log_likelihood, log_growth_rate, logit, mae, mape, rmse, smape
+from fwta.metrics import (
+    aicc,
+    akaike_weights,
+    bic,
+    doubling_time,
+    gaussian_log_likelihood,
+    log_growth_rate,
+    logit,
+    mae,
+    mape,
+    rmse,
+    smape,
+)
 from fwta.provenance import write_manifest
-
 
 ELASTICITIES = {"theta": 1.0, "cost": 1.0, "duration": 1.0, "automation": 1.0, "parallelism": 1.0, "reliability": 1.0}
 
@@ -86,7 +102,9 @@ def test_io_manifest_and_ablation_errors(tmp_path: Path) -> None:
 
     schema = tmp_path / "schema.json"
     instance = tmp_path / "instance.json"
-    schema.write_text('{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["x"]}', encoding="utf-8")
+    schema.write_text(
+        '{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["x"]}', encoding="utf-8"
+    )
     instance.write_text("{}", encoding="utf-8")
     assert validate_instance(instance, schema)
 

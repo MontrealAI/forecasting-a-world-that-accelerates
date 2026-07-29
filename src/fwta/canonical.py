@@ -173,4 +173,3 @@ def double_counting_audit(assignments: Mapping[str, str]) -> list[str]:
             errors.append(f"{factor}: duplicate inconsistent assignment")
         seen[factor] = branch
     return errors
-
