@@ -4,11 +4,11 @@ import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import pandas as pd
 
 plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["ps.fonttype"] = 42
 plt.rcParams["svg.fonttype"] = "none"
-import pandas as pd
 
 
 def _best_hindcast(output: dict) -> tuple[str, float | None]:
