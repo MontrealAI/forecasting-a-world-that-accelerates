@@ -3,13 +3,30 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
-import numpy as np
 import pytest
 
 from fwta.ablation import fit_canonical_elasticities
-from fwta.canonical import double_counting_audit, generalized_bottleneck, realized_outcome, technical_capacity, technical_growth_rate
+from fwta.canonical import (
+    double_counting_audit,
+    generalized_bottleneck,
+    realized_outcome,
+    technical_capacity,
+    technical_growth_rate,
+)
 from fwta.io import dump_json, load_structured, schema_registry, validate_instance
-from fwta.metrics import aicc, akaike_weights, bic, doubling_time, gaussian_log_likelihood, log_growth_rate, logit, mae, mape, rmse, smape
+from fwta.metrics import (
+    aicc,
+    akaike_weights,
+    bic,
+    doubling_time,
+    gaussian_log_likelihood,
+    log_growth_rate,
+    logit,
+    mae,
+    mape,
+    rmse,
+    smape,
+)
 from fwta.provenance import write_manifest
 
 
