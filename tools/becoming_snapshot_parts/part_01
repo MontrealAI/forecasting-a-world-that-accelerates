@@ -1,0 +1,90 @@
+def paginate_opensea(session: requests.Session, key: str, urls: list[str], root_keys: list[str],
+                     params: dict[str, Any], max_pages: int = 200) -> tuple[list[Any], list[dict[str, Any]], str]:
+    headers = {"x-api-key": key, "accept": "application/json", "user-agent": "MONTREAL.AI-Becoming-Snapshot/1.0"}
+    errors: list[str] = []
+    for base_url in urls:
+        all_items: list[Any] = []
+        pages: list[dict[str, Any]] = []
+        cursor: str | None = None
+        try:
+            for page_no in range(1, max_pages + 1):
+                q = dict(params)
+                if cursor:
+                    q["next"] = cursor
+                data = request_json(session, "GET", base_url, headers=headers, params=q)
+                pages.append(data)
+                items: list[Any] | None = None
+                for root_key in root_keys:
+                    candidate = data.get(root_key)
+                    if isinstance(candidate, list):
+                        items = candidate
+                        break
+                if items is None:
+                    # Accept a bare list response for forward compatibility.
+                    if isinstance(data, list):
+                        items = data
+                    else:
+                        raise RuntimeError(f"No expected array {root_keys} in response keys {list(data)[:20]}")
+                all_items.extend(items)
+                cursor_val = data.get("next") or data.get("next_cursor")
+                if isinstance(cursor_val, dict):
+                    cursor_val = cursor_val.get("value")
+                cursor = str(cursor_val) if cursor_val else None
+                if not cursor:
+                    return all_items, pages, base_url
+                time.sleep(0.15)
+            raise RuntimeError(f"Pagination exceeded {max_pages} pages")
+        except Exception as exc:
+            errors.append(f"{base_url}: {exc}")
+    raise RuntimeError("All OpenSea endpoint variants failed: " + " | ".join(errors))
+
+
+def get_collection_nfts(session: requests.Session, key: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str]:
+    urls = [
+        f"https://api.opensea.io/api/v2/collection/{COLLECTION_SLUG}/nfts",
+        f"https://api.opensea.io/api/v2/collections/{COLLECTION_SLUG}/nfts",
+    ]
+    items, pages, endpoint = paginate_opensea(session, key, urls, ["nfts"], {"limit": 200})
+    return [x for x in items if isinstance(x, dict)], pages, endpoint
+
+
+def get_collection_holders(session: requests.Session, key: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str]:
+    urls = [f"https://api.opensea.io/api/v2/collections/{COLLECTION_SLUG}/holders"]
+    items, pages, endpoint = paginate_opensea(session, key, urls, ["holders", "owners"], {"limit": 200})
+    return [x for x in items if isinstance(x, dict)], pages, endpoint
+
+
+def get_collection_events(session: requests.Session, key: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str]:
+    urls = [f"https://api.opensea.io/api/v2/events/collection/{COLLECTION_SLUG}"]
+    # Include transfer and sale because sale payloads can expose counterparties when transfer pagination is incomplete.
+    items, pages, endpoint = paginate_opensea(
+        session, key, urls, ["asset_events", "events"], {"limit": 200, "event_type": "transfer"}, max_pages=200
+    )
+    return [x for x in items if isinstance(x, dict)], pages, endpoint
+
+
+def normalize_address(value: Any) -> str | None:
+    if isinstance(value, str) and ADDRESS_RE.fullmatch(value):
+        return Web3.to_checksum_address(value)
+    return None
+
+
+def collect_addresses(value: Any, *, key_hint: str = "") -> set[str]:
+    out: set[str] = set()
+    if isinstance(value, dict):
+        for key, child in value.items():
+            k = str(key).lower()
+            # Address-bearing OpenSea fields. Avoid blindly collecting contract/payment-token addresses.
+            address_context = any(part in k for part in (
+                "owner", "holder", "from", "to", "seller", "buyer", "maker", "taker", "account", "wallet"
+            ))
+            if address_context:
+                addr = normalize_address(child)
+                if addr and addr.lower() != ZERO:
+                    out.add(addr)
+            out |= collect_addresses(child, key_hint=k)
+    elif isinstance(value, list):
+        for child in value:
+            out |= collect_addresses(child, key_hint=key_hint)
+    elif key_hint and any(part in key_hint for part in (
+        "owner", "holder", "from", "to", "seller", "buyer", "maker", "taker", "account", "wallet"
