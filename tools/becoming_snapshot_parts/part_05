@@ -1,0 +1,90 @@
+        holders, holder_pages, holder_endpoint = get_collection_holders(session, key)
+    except Exception as exc:
+        holder_error = str(exc)
+
+    events: list[dict[str, Any]] = []
+    event_pages: list[dict[str, Any]] = []
+    event_endpoint = None
+    try:
+        events, event_pages, event_endpoint = get_collection_events(session, key)
+    except Exception as exc:
+        event_error = str(exc)
+
+    candidates = {creator}
+    candidates |= collect_addresses(holders)
+    candidates |= collect_addresses(events)
+    candidates.discard(Web3.to_checksum_address(ZERO))
+
+    snapshot_block = determine_finalized_block(session)
+    block_number = int(snapshot_block["block_number"])
+    w3, balance_provider, provider_attempts = get_web3_provider(block_number)
+
+    candidate_list = sorted(candidates, key=str.lower)
+    balances = query_balances(w3, candidate_list, token_ids, block_number)
+
+    supply_by_token = {int(r["token_id_decimal"]): int(r["encoded_original_supply"]) for r in records}
+    found_by_token: dict[int, int] = {}
+    for token_id in token_ids:
+        found_by_token[token_id] = sum(
+            balances.get((address.lower(), token_id), 0) for address in candidate_list
+        )
+
+    missing_tokens = [tid for tid in token_ids if found_by_token[tid] < supply_by_token[tid]]
+    owner_fallback: dict[str, list[str]] = {}
+    added_addresses: set[str] = set()
+    if missing_tokens:
+        for i, token_id in enumerate(missing_tokens):
+            owners = get_nft_owners(session, key, token_id)
+            owner_fallback[str(token_id)] = owners
+            for owner in owners:
+                if owner not in candidates:
+                    added_addresses.add(owner)
+            if i + 1 < len(missing_tokens):
+                time.sleep(1.05)
+        if added_addresses:
+            candidates |= added_addresses
+            candidate_list = sorted(candidates, key=str.lower)
+            balances = query_balances(w3, candidate_list, token_ids, block_number)
+            for token_id in token_ids:
+                found_by_token[token_id] = sum(
+                    balances.get((address.lower(), token_id), 0) for address in candidate_list
+                )
+
+    # Independent full balance verification through a second provider.
+    second_provider = None
+    second_balances: dict[tuple[str, int], int] | None = None
+    second_error = None
+    for url in RPC_URLS:
+        if url == balance_provider:
+            continue
+        try:
+            w3_second = Web3(Web3.HTTPProvider(url, request_kwargs={"timeout": 60}))
+            block = w3_second.eth.get_block(block_number)
+            if block.hash.hex().lower() != str(snapshot_block["block_hash"]).lower():
+                raise RuntimeError("snapshot block hash mismatch")
+            second_balances = query_balances(w3_second, candidate_list, token_ids, block_number)
+            second_provider = url
+            break
+        except Exception as exc:
+            second_error = str(exc)
+    if second_balances is None or second_provider is None:
+        raise RuntimeError(f"Could not independently verify all balances: {second_error}")
+    balance_disagreements = []
+    for key_pair, value in balances.items():
+        if second_balances.get(key_pair) != value:
+            balance_disagreements.append({
+                "owner": key_pair[0], "token_id": str(key_pair[1]),
+                "primary": value, "secondary": second_balances.get(key_pair),
+            })
+    if balance_disagreements:
+        raise RuntimeError(f"Independent RPC balance verification disagreed on {len(balance_disagreements)} pairs")
+
+    positive_owners = sorted({
+        address for address in candidate_list
+        if any(balances.get((address.lower(), token_id), 0) > 0 for token_id in token_ids)
+    }, key=str.lower)
+    address_types = get_code_types(w3, positive_owners, block_number)
+
+    holdings_rows: list[dict[str, Any]] = []
+    manifest_out: list[dict[str, Any]] = []
+    record_by_id = {int(r["token_id_decimal"]): r for r in records}
