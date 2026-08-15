@@ -1,30 +1,57 @@
-        holders, holder_pages, holder_endpoint = get_collection_holders(session, key)
+        holders, holder_pages, holder_endpoint, holder_page_addresses = scrape_holders_html(session)
     except Exception as exc:
         holder_error = str(exc)
+        holder_page_addresses = set()
+        print(f"Public holder-page discovery failed: {exc}", flush=True)
+        if not key:
+            try:
+                key = get_opensea_key(session)
+            except Exception as key_exc:
+                holder_error += f" | API key fallback failed: {key_exc}"
+        if key:
+            try:
+                holders, holder_pages, holder_endpoint = get_collection_holders(session, key)
+                holder_error = None
+            except Exception as api_exc:
+                holder_error = (holder_error or "") + f" | holder API fallback failed: {api_exc}"
 
-    # Fast, deterministic address discovery: use the collection-wide current holder set.
-    # The exact finalized balances below are authoritative; any missing address makes the
-    # supply audit fail and triggers the per-token owner fallback.
+    # Public pages are used only to discover candidate addresses. Historical ownership is
+    # decided below by the legacy contract at one finalized Ethereum block.
     events: list[dict[str, Any]] = []
     event_pages: list[dict[str, Any]] = []
     event_endpoint = None
-    event_error = "Collection transfer history intentionally omitted from fast path"
+    event_error = "Transfer-history indexing not required; candidate set is supply-audited onchain"
 
     candidates = {creator}
+    candidates |= collection_page_addresses
+    candidates |= holder_page_addresses
     candidates |= collect_addresses(holders)
-    # OpenSea may nest the wallet in owner.address / holder.address. Extract every
-    # Ethereum address appearing in the holder payload; balanceOfBatch will discard
-    # non-holders because their balances are zero.
-    for raw_address in re.findall(r"0x[a-fA-F0-9]{40}", json.dumps(holders)):
-        candidates.add(Web3.to_checksum_address(raw_address))
-    candidates.discard(Web3.to_checksum_address(ZERO))
-    print(f"Address discovery: {len(holders)} holder records, {len(candidates)} candidate addresses", flush=True)
+    for raw_address in RAW_ADDRESS_RE.findall(json.dumps(holders)):
+        try:
+            candidates.add(Web3.to_checksum_address(raw_address))
+        except Exception:
+            pass
+    candidates = {
+        address for address in candidates
+        if address.lower() not in (ZERO, CONTRACT.lower())
+    }
+    print(
+        f"Address discovery: {len(holders)} holder records, {len(collection_page_addresses)} collection-page addresses, "
+        f"{len(candidates)} unique candidate addresses",
+        flush=True,
+    )
 
+    print("Stage 3/6: fixing the snapshot to an independently corroborated finalized block", flush=True)
     snapshot_block = determine_finalized_block(session)
     block_number = int(snapshot_block["block_number"])
-    print(f"Finalized snapshot block: {block_number} {snapshot_block['block_hash']}", flush=True)
+    print(
+        f"Finalized snapshot block: {block_number} | {snapshot_block['block_hash']} | "
+        f"{snapshot_block['block_timestamp_utc']}",
+        flush=True,
+    )
     w3, balance_provider, provider_attempts = get_web3_provider(block_number)
 
+    print("Stage 4/6: reading the complete ERC-1155 balance matrix", flush=True)
     candidate_list = sorted(candidates, key=str.lower)
     balances = query_balances(w3, candidate_list, token_ids, block_number)
 
@@ -36,28 +63,30 @@
         )
 
     missing_tokens = [tid for tid in token_ids if found_by_token[tid] < supply_by_token[tid]]
-    print(f"Initial supply audit: {len(missing_tokens)} token(s) require owner fallback", flush=True)
+    print(f"Initial supply audit: {len(missing_tokens)} token(s) require targeted owner discovery", flush=True)
     owner_fallback: dict[str, list[str]] = {}
     added_addresses: set[str] = set()
     if missing_tokens:
-        for i, token_id in enumerate(missing_tokens):
+        for i, token_id in enumerate(missing_tokens, 1):
             owners = get_nft_owners(session, key, token_id)
             owner_fallback[str(token_id)] = owners
             for owner in owners:
                 if owner not in candidates:
                     added_addresses.add(owner)
-            if i + 1 < len(missing_tokens):
-                time.sleep(1.05)
+            if i % 10 == 0 or i == len(missing_tokens):
+                print(f"Targeted owner discovery: {i}/{len(missing_tokens)} token(s)", flush=True)
+            time.sleep(0.1)
         if added_addresses:
             candidates |= added_addresses
             candidate_list = sorted(candidates, key=str.lower)
+            print(f"Recomputing matrix after adding {len(added_addresses)} candidate address(es)", flush=True)
             balances = query_balances(w3, candidate_list, token_ids, block_number)
             for token_id in token_ids:
                 found_by_token[token_id] = sum(
                     balances.get((address.lower(), token_id), 0) for address in candidate_list
                 )
 
-    # Independent full balance verification through a second provider.
+    print("Stage 5/6: independently recomputing every balance through a second RPC", flush=True)
     second_provider = None
     second_balances: dict[tuple[str, int], int] | None = None
     second_error = None
@@ -74,6 +103,7 @@
             break
         except Exception as exc:
             second_error = str(exc)
+            print(f"Secondary RPC candidate failed: {url}: {exc}", flush=True)
     if second_balances is None or second_provider is None:
         raise RuntimeError(f"Could not independently verify all balances: {second_error}")
     balance_disagreements = []
@@ -90,6 +120,7 @@
         address for address in candidate_list
         if any(balances.get((address.lower(), token_id), 0) > 0 for token_id in token_ids)
     }, key=str.lower)
+    print(f"Stage 6/6: classifying {len(positive_owners)} positive-balance owner address(es) and packaging", flush=True)
     address_types = get_code_types(w3, positive_owners, block_number)
 
     holdings_rows: list[dict[str, Any]] = []
