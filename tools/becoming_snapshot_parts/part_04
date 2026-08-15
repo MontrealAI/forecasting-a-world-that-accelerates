@@ -1,0 +1,90 @@
+            attempts.append({"provider": url, "status": "ok", "block_hash": block.hash.hex()})
+            return w3, url, attempts
+        except Exception as exc:
+            attempts.append({"provider": url, "status": "error", "error": str(exc)})
+    raise RuntimeError(f"No usable Web3 provider: {attempts}")
+
+
+def query_balances(w3: Web3, candidates: list[str], token_ids: list[int], block_number: int,
+                   chunk_size: int = 500) -> dict[tuple[str, int], int]:
+    contract = w3.eth.contract(address=CONTRACT, abi=BALANCE_OF_BATCH_ABI)
+    pairs = [(address, token_id) for address in candidates for token_id in token_ids]
+    result: dict[tuple[str, int], int] = {}
+    for start in range(0, len(pairs), chunk_size):
+        chunk = pairs[start:start + chunk_size]
+        accounts = [Web3.to_checksum_address(address) for address, _ in chunk]
+        ids = [token_id for _, token_id in chunk]
+        values = contract.functions.balanceOfBatch(accounts, ids).call(block_identifier=block_number)
+        if len(values) != len(chunk):
+            raise RuntimeError(f"balanceOfBatch returned {len(values)} values for {len(chunk)} pairs")
+        for (address, token_id), value in zip(chunk, values):
+            result[(address.lower(), token_id)] = int(value)
+    return result
+
+
+def get_nft_owners(session: requests.Session, key: str, token_id: int) -> list[str]:
+    headers = {"x-api-key": key, "accept": "application/json", "user-agent": "MONTREAL.AI-Becoming-Snapshot/1.0"}
+    url = f"https://api.opensea.io/api/v2/chain/{CHAIN}/contract/{CONTRACT}/nfts/{token_id}/owners"
+    cursor: str | None = None
+    owners: set[str] = set()
+    for _ in range(20):
+        params: dict[str, Any] = {"limit": 200}
+        if cursor:
+            params["next"] = cursor
+        data = request_json(session, "GET", url, headers=headers, params=params)
+        entries = data.get("owners") or data.get("holders") or []
+        owners |= collect_addresses(entries)
+        cursor_val = data.get("next") or data.get("next_cursor")
+        if isinstance(cursor_val, dict):
+            cursor_val = cursor_val.get("value")
+        cursor = str(cursor_val) if cursor_val else None
+        if not cursor:
+            break
+        time.sleep(1.05)
+    return sorted(owners, key=str.lower)
+
+
+def get_code_types(w3: Web3, addresses: list[str], block_number: int) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for address in addresses:
+        try:
+            code = w3.eth.get_code(Web3.to_checksum_address(address), block_identifier=block_number)
+            out[address.lower()] = "contract" if len(code) > 0 else "eoa"
+        except Exception:
+            out[address.lower()] = "unknown"
+    return out
+
+
+def write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
+    with path.open("w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main() -> None:
+    session = requests.Session()
+    session.headers.update({"user-agent": "MONTREAL.AI-Becoming-Snapshot/1.0"})
+    started_at = utc_now()
+
+    key = get_opensea_key(session)
+    raw_nfts, nft_pages, nft_endpoint = get_collection_nfts(session, key)
+    records, manifest_audit = canonicalize_nfts(raw_nfts)
+    if len(records) != EXPECTED_COUNT:
+        write_json(OUT / "debug-opensea-nft-pages.json", nft_pages)
+        write_json(OUT / "debug-manifest-audit.json", manifest_audit)
+        raise RuntimeError(f"Expected {EXPECTED_COUNT} unique canonical NFTs, obtained {len(records)}")
+
+    token_ids = [int(r["token_id_decimal"]) for r in records]
+    creators = sorted({r["encoded_creator"] for r in records}, key=str.lower)
+    if len(creators) != 1:
+        raise RuntimeError(f"Expected one encoded creator, found {creators}")
+    creator = creators[0]
+
+    # OpenSea holder and transfer-event data are used only for address discovery.
+    holder_error = None
+    event_error = None
+    holders: list[dict[str, Any]] = []
+    holder_pages: list[dict[str, Any]] = []
+    holder_endpoint = None
+    try:
