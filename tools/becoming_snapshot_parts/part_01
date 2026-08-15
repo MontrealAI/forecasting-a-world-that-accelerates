@@ -1,6 +1,136 @@
+def encoded_creator_of(token_id: int) -> str:
+    return Web3.to_checksum_address("0x" + (token_id >> 96).to_bytes(20, "big").hex())
+
+
+def extract_item_pairs(html_text: str) -> set[tuple[str, int]]:
+    pairs: set[tuple[str, int]] = set()
+    for pattern in ITEM_PATH_PATTERNS:
+        for contract_raw, token_raw in pattern.findall(html_text):
+            try:
+                pairs.add((Web3.to_checksum_address(contract_raw), int(token_raw)))
+            except Exception:
+                continue
+    return pairs
+
+
+def scrape_collection_html(session: requests.Session, max_pages: int = 40) -> tuple[
+    list[dict[str, Any]], list[dict[str, Any]], str, set[str]
+]:
+    endpoint = f"https://opensea.io/collection/{COLLECTION_SLUG}"
+    records: dict[int, dict[str, Any]] = {}
+    page_summaries: list[dict[str, Any]] = []
+    discovered_addresses: set[str] = set()
+    no_new_streak = 0
+
+    for page_no in range(1, max_pages + 1):
+        html_text = request_text(session, endpoint, params={"page": page_no})
+        all_pairs = extract_item_pairs(html_text)
+        accepted_this_page = 0
+        before = len(records)
+        for contract, token_id in all_pairs:
+            if contract.lower() != CONTRACT.lower():
+                continue
+            try:
+                creator = encoded_creator_of(token_id)
+                supply = token_id & ((1 << 32) - 1)
+            except Exception:
+                continue
+            if creator.lower() != EXPECTED_CREATOR.lower() or supply <= 0:
+                continue
+            if token_id not in records:
+                encoded_index = (token_id >> 32) & ((1 << 64) - 1)
+                records[token_id] = {
+                    "identifier": str(token_id),
+                    "contract": CONTRACT,
+                    "token_standard": "erc1155",
+                    "name": f"MONTREAL.AI Genesis — encoded index {encoded_index}",
+                    "discovered_on_public_page": page_no,
+                }
+                accepted_this_page += 1
+
+        for raw_address in RAW_ADDRESS_RE.findall(html_text):
+            try:
+                address = Web3.to_checksum_address(raw_address)
+                if address.lower() != ZERO:
+                    discovered_addresses.add(address)
+            except Exception:
+                pass
+
+        page_summaries.append({
+            "page": page_no,
+            "url": f"{endpoint}?page={page_no}",
+            "response_bytes": len(html_text.encode("utf-8")),
+            "raw_item_link_pairs": len(all_pairs),
+            "new_canonical_token_ids": accepted_this_page,
+            "cumulative_canonical_token_ids": len(records),
+            "html_sha256": hashlib.sha256(html_text.encode("utf-8")).hexdigest(),
+        })
+        print(
+            f"Public collection page {page_no}: {accepted_this_page} new canonical ID(s); cumulative {len(records)}",
+            flush=True,
+        )
+
+        if len(records) == before:
+            no_new_streak += 1
+        else:
+            no_new_streak = 0
+        if len(records) >= EXPECTED_COUNT and no_new_streak >= 1:
+            break
+        if page_no >= 3 and no_new_streak >= 3:
+            break
+        time.sleep(0.2)
+
+    return list(records.values()), page_summaries, endpoint, discovered_addresses
+
+
+def scrape_holders_html(session: requests.Session, max_pages: int = 30) -> tuple[
+    list[dict[str, Any]], list[dict[str, Any]], str, set[str]
+]:
+    endpoint = f"https://opensea.io/collection/{COLLECTION_SLUG}/holders"
+    addresses: set[str] = set()
+    page_summaries: list[dict[str, Any]] = []
+    no_new_streak = 0
+
+    for page_no in range(1, max_pages + 1):
+        html_text = request_text(session, endpoint, params={"page": page_no})
+        page_addresses: set[str] = set()
+        for raw_address in RAW_ADDRESS_RE.findall(html_text):
+            try:
+                address = Web3.to_checksum_address(raw_address)
+                if address.lower() not in (ZERO, CONTRACT.lower()):
+                    page_addresses.add(address)
+            except Exception:
+                pass
+        before = len(addresses)
+        addresses |= page_addresses
+        new_count = len(addresses) - before
+        page_summaries.append({
+            "page": page_no,
+            "url": f"{endpoint}?page={page_no}",
+            "response_bytes": len(html_text.encode("utf-8")),
+            "addresses_seen_on_page": len(page_addresses),
+            "new_addresses": new_count,
+            "cumulative_addresses": len(addresses),
+            "html_sha256": hashlib.sha256(html_text.encode("utf-8")).hexdigest(),
+        })
+        print(f"Public holders page {page_no}: {new_count} new address candidate(s); cumulative {len(addresses)}", flush=True)
+        if new_count == 0:
+            no_new_streak += 1
+        else:
+            no_new_streak = 0
+        if page_no >= 2 and no_new_streak >= 2:
+            break
+        time.sleep(0.2)
+
+    holders = [{"owner": address} for address in sorted(addresses, key=str.lower)]
+    return holders, page_summaries, endpoint, addresses
+
+
 def paginate_opensea(session: requests.Session, key: str, urls: list[str], root_keys: list[str],
                      params: dict[str, Any], max_pages: int = 200) -> tuple[list[Any], list[dict[str, Any]], str]:
-    headers = {"x-api-key": key, "accept": "application/json", "user-agent": "MONTREAL.AI-Becoming-Snapshot/1.0"}
+    headers = {"accept": "application/json", "user-agent": "MONTREAL.AI-Becoming-Snapshot/1.0"}
+    if key:
+        headers["x-api-key"] = key
     errors: list[str] = []
     for base_url in urls:
         all_items: list[Any] = []
@@ -11,7 +141,7 @@ def paginate_opensea(session: requests.Session, key: str, urls: list[str], root_
                 q = dict(params)
                 if cursor:
                     q["next"] = cursor
-                data = request_json(session, "GET", base_url, headers=headers, params=q, attempts=3, timeout=20)
+                data = request_json(session, "GET", base_url, headers=headers, params=q, attempts=2, timeout=20)
                 pages.append(data)
                 items: list[Any] | None = None
                 for root_key in root_keys:
@@ -20,13 +150,12 @@ def paginate_opensea(session: requests.Session, key: str, urls: list[str], root_
                         items = candidate
                         break
                 if items is None:
-                    # Accept a bare list response for forward compatibility.
                     if isinstance(data, list):
                         items = data
                     else:
                         raise RuntimeError(f"No expected array {root_keys} in response keys {list(data)[:20]}")
                 all_items.extend(items)
-                print(f"OpenSea page {page_no}: {len(items)} record(s), cumulative {len(all_items)}", flush=True)
+                print(f"OpenSea API page {page_no}: {len(items)} record(s), cumulative {len(all_items)}", flush=True)
                 cursor_val = data.get("next") or data.get("next_cursor")
                 if isinstance(cursor_val, dict):
                     cursor_val = cursor_val.get("value")
@@ -37,7 +166,7 @@ def paginate_opensea(session: requests.Session, key: str, urls: list[str], root_
             raise RuntimeError(f"Pagination exceeded {max_pages} pages")
         except Exception as exc:
             errors.append(f"{base_url}: {exc}")
-            print(f"OpenSea endpoint variant failed: {base_url}: {exc}", flush=True)
+            print(f"OpenSea API endpoint variant failed: {base_url}: {exc}", flush=True)
     raise RuntimeError("All OpenSea endpoint variants failed: " + " | ".join(errors))
 
 
@@ -58,7 +187,6 @@ def get_collection_holders(session: requests.Session, key: str) -> tuple[list[di
 
 def get_collection_events(session: requests.Session, key: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str]:
     urls = [f"https://api.opensea.io/api/v2/events/collection/{COLLECTION_SLUG}"]
-    # Include transfer and sale because sale payloads can expose counterparties when transfer pagination is incomplete.
     items, pages, endpoint = paginate_opensea(
         session, key, urls, ["asset_events", "events"], {"limit": 50, "event_type": "transfer"}, max_pages=200
     )
@@ -76,7 +204,6 @@ def collect_addresses(value: Any, *, key_hint: str = "") -> set[str]:
     if isinstance(value, dict):
         for key, child in value.items():
             k = str(key).lower()
-            # Address-bearing OpenSea fields. Avoid blindly collecting contract/payment-token addresses.
             address_context = any(part in k for part in (
                 "owner", "holder", "from", "to", "seller", "buyer", "maker", "taker", "account", "wallet"
             ))
