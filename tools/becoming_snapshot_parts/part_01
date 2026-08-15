@@ -11,7 +11,7 @@ def paginate_opensea(session: requests.Session, key: str, urls: list[str], root_
                 q = dict(params)
                 if cursor:
                     q["next"] = cursor
-                data = request_json(session, "GET", base_url, headers=headers, params=q)
+                data = request_json(session, "GET", base_url, headers=headers, params=q, attempts=3, timeout=20)
                 pages.append(data)
                 items: list[Any] | None = None
                 for root_key in root_keys:
@@ -26,6 +26,7 @@ def paginate_opensea(session: requests.Session, key: str, urls: list[str], root_
                     else:
                         raise RuntimeError(f"No expected array {root_keys} in response keys {list(data)[:20]}")
                 all_items.extend(items)
+                print(f"OpenSea page {page_no}: {len(items)} record(s), cumulative {len(all_items)}", flush=True)
                 cursor_val = data.get("next") or data.get("next_cursor")
                 if isinstance(cursor_val, dict):
                     cursor_val = cursor_val.get("value")
@@ -36,6 +37,7 @@ def paginate_opensea(session: requests.Session, key: str, urls: list[str], root_
             raise RuntimeError(f"Pagination exceeded {max_pages} pages")
         except Exception as exc:
             errors.append(f"{base_url}: {exc}")
+            print(f"OpenSea endpoint variant failed: {base_url}: {exc}", flush=True)
     raise RuntimeError("All OpenSea endpoint variants failed: " + " | ".join(errors))
 
 
@@ -44,13 +46,13 @@ def get_collection_nfts(session: requests.Session, key: str) -> tuple[list[dict[
         f"https://api.opensea.io/api/v2/collection/{COLLECTION_SLUG}/nfts",
         f"https://api.opensea.io/api/v2/collections/{COLLECTION_SLUG}/nfts",
     ]
-    items, pages, endpoint = paginate_opensea(session, key, urls, ["nfts"], {"limit": 200})
+    items, pages, endpoint = paginate_opensea(session, key, urls, ["nfts"], {"limit": 50})
     return [x for x in items if isinstance(x, dict)], pages, endpoint
 
 
 def get_collection_holders(session: requests.Session, key: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str]:
     urls = [f"https://api.opensea.io/api/v2/collections/{COLLECTION_SLUG}/holders"]
-    items, pages, endpoint = paginate_opensea(session, key, urls, ["holders", "owners"], {"limit": 200})
+    items, pages, endpoint = paginate_opensea(session, key, urls, ["holders", "owners"], {"limit": 50})
     return [x for x in items if isinstance(x, dict)], pages, endpoint
 
 
@@ -58,7 +60,7 @@ def get_collection_events(session: requests.Session, key: str) -> tuple[list[dic
     urls = [f"https://api.opensea.io/api/v2/events/collection/{COLLECTION_SLUG}"]
     # Include transfer and sale because sale payloads can expose counterparties when transfer pagination is incomplete.
     items, pages, endpoint = paginate_opensea(
-        session, key, urls, ["asset_events", "events"], {"limit": 200, "event_type": "transfer"}, max_pages=200
+        session, key, urls, ["asset_events", "events"], {"limit": 50, "event_type": "transfer"}, max_pages=200
     )
     return [x for x in items if isinstance(x, dict)], pages, endpoint
 
