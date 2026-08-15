@@ -21,6 +21,7 @@ COLLECTION_SLUG = "montrealai"
 CHAIN = "ethereum"
 CHAIN_ID = 1
 CONTRACT = Web3.to_checksum_address("0x495f947276749ce646f68ac8c248420045cb7b5e")
+EXPECTED_CREATOR = Web3.to_checksum_address("0x054a2e4b3b5ea2c62372e92358fdf7fb74b4f34a")
 EXPECTED_COUNT = 556
 ZERO = "0x0000000000000000000000000000000000000000"
 OUT = Path("snapshot-output")
@@ -46,6 +47,11 @@ BALANCE_OF_BATCH_ABI = [{
 
 ADDRESS_RE = re.compile(r"^0x[a-fA-F0-9]{40}$")
 NUMBER_RE = re.compile(r"#\s*0*(\d{1,4})(?!\d)")
+RAW_ADDRESS_RE = re.compile(r"0x[a-fA-F0-9]{40}")
+ITEM_PATH_PATTERNS = [
+    re.compile(r"/item/ethereum/(0x[a-fA-F0-9]{40})/(\d+)", re.I),
+    re.compile(r"\\/item\\/ethereum\\/(0x[a-fA-F0-9]{40})\\/(\d+)", re.I),
+]
 
 
 def utc_now() -> str:
@@ -65,14 +71,12 @@ def request_json(session: requests.Session, method: str, url: str, *, headers: d
         try:
             response = session.request(method, url, headers=headers, params=params, json=json_body, timeout=timeout)
             if response.status_code == 429:
-                wait = float(response.headers.get("Retry-After", delay))
+                wait = min(float(response.headers.get("Retry-After", delay)), 15.0)
                 if attempt + 1 == attempts:
                     response.raise_for_status()
                 time.sleep(max(wait, delay))
-                delay = min(delay * 2, 20)
+                delay = min(delay * 2, 15)
                 continue
-            # Retry temporary network/server failures, but fail immediately on permanent
-            # endpoint/parameter errors so an endpoint fallback can run without a long stall.
             if response.status_code in (408, 425) or response.status_code >= 500:
                 response.raise_for_status()
             if 400 <= response.status_code < 500:
@@ -86,24 +90,56 @@ def request_json(session: requests.Session, method: str, url: str, *, headers: d
             if not retryable or attempt + 1 == attempts:
                 break
             time.sleep(delay)
-            delay = min(delay * 2, 20)
+            delay = min(delay * 2, 15)
         except (requests.Timeout, requests.ConnectionError, ValueError) as exc:
             last = exc
             if attempt + 1 == attempts:
                 break
             time.sleep(delay)
-            delay = min(delay * 2, 20)
+            delay = min(delay * 2, 15)
         except Exception as exc:
             last = exc
             break
     raise RuntimeError(f"Request failed after {attempt + 1} attempt(s): {method} {url}: {last}")
 
 
+def request_text(session: requests.Session, url: str, *, params: dict[str, Any] | None = None,
+                 attempts: int = 3, timeout: int = 25) -> str:
+    headers = {
+        "accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
+        "accept-language": "en-US,en;q=0.9",
+        "cache-control": "no-cache",
+        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/151 Safari/537.36",
+    }
+    delay = 1.0
+    last: Exception | None = None
+    for attempt in range(attempts):
+        try:
+            response = session.get(url, params=params, headers=headers, timeout=timeout)
+            if response.status_code == 429:
+                if attempt + 1 == attempts:
+                    response.raise_for_status()
+                time.sleep(min(float(response.headers.get("Retry-After", delay)), 10.0))
+                delay = min(delay * 2, 10)
+                continue
+            response.raise_for_status()
+            if len(response.text) < 1000:
+                raise RuntimeError(f"unexpectedly short HTML response ({len(response.text)} bytes)")
+            return response.text
+        except Exception as exc:
+            last = exc
+            if attempt + 1 == attempts:
+                break
+            time.sleep(delay)
+            delay = min(delay * 2, 10)
+    raise RuntimeError(f"HTML request failed after {attempts} attempt(s): {url}: {last}")
+
+
 def get_opensea_key(session: requests.Session) -> str:
     data = request_json(
         session, "POST", "https://api.opensea.io/api/v2/auth/keys",
         headers={"accept": "application/json", "content-type": "application/json"},
-        json_body={}, attempts=2, timeout=15,
+        json_body={}, attempts=1, timeout=10,
     )
     key = data.get("api_key")
     if not key:
