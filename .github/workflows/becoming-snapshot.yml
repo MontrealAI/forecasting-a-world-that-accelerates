@@ -1,0 +1,56 @@
+name: MONTREAL.AI Becoming Genesis Snapshot
+
+on:
+  push:
+    branches:
+      - snapshot-becoming-omega-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout isolated snapshot branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Assemble and validate extractor
+        shell: bash
+        run: |
+          cat tools/becoming_snapshot_parts/part_* > tools/becoming_snapshot.py
+          python -m py_compile tools/becoming_snapshot.py
+          wc -l -c tools/becoming_snapshot.py
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests "web3>=7,<8"
+
+      - name: Take finalized Ethereum snapshot
+        run: python tools/becoming_snapshot.py
+
+      - name: Add reproducible source to release package
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p snapshot-output
+          cp tools/becoming_snapshot.py snapshot-output/snapshot-extractor.py
+          cp .github/workflows/becoming-snapshot.yml snapshot-output/github-actions-workflow.yml
+          if [ -f snapshot-output/SHA256SUMS ]; then
+            (cd snapshot-output && sha256sum snapshot-extractor.py github-actions-workflow.yml >> SHA256SUMS)
+          fi
+
+      - name: Upload complete snapshot package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: montrealai-becoming-genesis-snapshot
+          path: snapshot-output
+          if-no-files-found: warn
+          retention-days: 1
