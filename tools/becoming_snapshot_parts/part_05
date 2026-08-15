@@ -12,10 +12,17 @@
 
     candidates = {creator}
     candidates |= collect_addresses(holders)
+    # OpenSea may nest the wallet in owner.address / holder.address. Extract every
+    # Ethereum address appearing in the holder payload; balanceOfBatch will discard
+    # non-holders because their balances are zero.
+    for raw_address in re.findall(r"0x[a-fA-F0-9]{40}", json.dumps(holders)):
+        candidates.add(Web3.to_checksum_address(raw_address))
     candidates.discard(Web3.to_checksum_address(ZERO))
+    print(f"Address discovery: {len(holders)} holder records, {len(candidates)} candidate addresses", flush=True)
 
     snapshot_block = determine_finalized_block(session)
     block_number = int(snapshot_block["block_number"])
+    print(f"Finalized snapshot block: {block_number} {snapshot_block['block_hash']}", flush=True)
     w3, balance_provider, provider_attempts = get_web3_provider(block_number)
 
     candidate_list = sorted(candidates, key=str.lower)
@@ -29,6 +36,7 @@
         )
 
     missing_tokens = [tid for tid in token_ids if found_by_token[tid] < supply_by_token[tid]]
+    print(f"Initial supply audit: {len(missing_tokens)} token(s) require owner fallback", flush=True)
     owner_fallback: dict[str, list[str]] = {}
     added_addresses: set[str] = set()
     if missing_tokens:
@@ -57,7 +65,7 @@
         if url == balance_provider:
             continue
         try:
-            w3_second = Web3(Web3.HTTPProvider(url, request_kwargs={"timeout": 60}))
+            w3_second = Web3(Web3.HTTPProvider(url, request_kwargs={"timeout": 30}))
             block = w3_second.eth.get_block(block_number)
             if block.hash.hex().lower() != str(snapshot_block["block_hash"]).lower():
                 raise RuntimeError("snapshot block hash mismatch")
