@@ -100,7 +100,11 @@ def request_json(session: requests.Session, method: str, url: str, *, headers: d
 
 
 def get_opensea_key(session: requests.Session) -> str:
-    data = request_json(session, "POST", "https://api.opensea.io/api/v2/auth/keys")
+    data = request_json(
+        session, "POST", "https://api.opensea.io/api/v2/auth/keys",
+        headers={"accept": "application/json", "content-type": "application/json"},
+        json_body={}, attempts=2, timeout=15,
+    )
     key = data.get("api_key")
     if not key:
         raise RuntimeError(f"OpenSea instant-key response did not contain api_key: {data}")
