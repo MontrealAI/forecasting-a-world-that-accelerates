@@ -1,0 +1,90 @@
+    unresolved: list[dict[str, Any]] = []
+    oversupplied: list[dict[str, Any]] = []
+    for token_id in token_ids:
+        record = record_by_id[token_id]
+        token_holders = []
+        total = 0
+        for address in positive_owners:
+            balance = balances.get((address.lower(), token_id), 0)
+            if balance <= 0:
+                continue
+            total += balance
+            token_holders.append({"owner": address, "balance": str(balance)})
+            holdings_rows.append({
+                "snapshot_block_number": block_number,
+                "snapshot_block_hash": snapshot_block["block_hash"],
+                "snapshot_block_timestamp_utc": snapshot_block["block_timestamp_utc"],
+                "canonical_sequence": record["canonical_sequence"],
+                "canonical_number": record["canonical_number"],
+                "name": record["name"],
+                "contract": CONTRACT,
+                "token_id_decimal": record["token_id_decimal"],
+                "token_id_hex": record["token_id_hex"],
+                "owner": address,
+                "owner_address_type": address_types.get(address.lower(), "unknown"),
+                "balance": balance,
+                "owner_is_encoded_creator": address.lower() == creator.lower(),
+                "opensea_url": record["opensea_url"],
+            })
+        expected = supply_by_token[token_id]
+        status = "fully_accounted" if total == expected else ("under_accounted" if total < expected else "over_accounted")
+        if total < expected:
+            unresolved.append({"token_id": str(token_id), "expected_supply": expected, "accounted_balance": total})
+        if total > expected:
+            oversupplied.append({"token_id": str(token_id), "expected_supply": expected, "accounted_balance": total})
+        enriched = dict(record)
+        enriched.update({
+            "snapshot_owner_count": len(token_holders),
+            "snapshot_accounted_balance": str(total),
+            "snapshot_supply_status": status,
+            "snapshot_holders": token_holders,
+        })
+        manifest_out.append(enriched)
+
+    if unresolved or oversupplied:
+        write_json(OUT / "debug-unresolved.json", {"unresolved": unresolved, "oversupplied": oversupplied, "fallback": owner_fallback})
+        raise RuntimeError(f"Ownership accounting failed: {len(unresolved)} under-accounted, {len(oversupplied)} over-accounted")
+
+    by_wallet: dict[str, dict[str, Any]] = {}
+    for row in holdings_rows:
+        owner = row["owner"]
+        if owner not in by_wallet:
+            by_wallet[owner] = {
+                "owner": owner,
+                "owner_address_type": row["owner_address_type"],
+                "owner_is_encoded_creator": row["owner_is_encoded_creator"],
+                "distinct_genesis_tokens": 0,
+                "total_genesis_units": 0,
+                "canonical_numbers": [],
+                "token_ids_decimal": [],
+            }
+        item = by_wallet[owner]
+        item["distinct_genesis_tokens"] += 1
+        item["total_genesis_units"] += int(row["balance"])
+        item["canonical_numbers"].append(str(row["canonical_number"]))
+        item["token_ids_decimal"].append(str(row["token_id_decimal"]))
+
+    wallet_rows = []
+    for item in by_wallet.values():
+        item["canonical_numbers"] = ";".join(item["canonical_numbers"])
+        item["token_ids_decimal"] = ";".join(item["token_ids_decimal"])
+        wallet_rows.append(item)
+    wallet_rows.sort(key=lambda x: (-int(x["total_genesis_units"]), str(x["owner"]).lower()))
+
+    snapshot_block["balance_primary_provider"] = balance_provider
+    snapshot_block["balance_secondary_provider"] = second_provider
+    snapshot_block["provider_selection_attempts"] = provider_attempts
+
+    audit_report = {
+        "schema": "montrealai-becoming-genesis-snapshot-audit-v1",
+        "started_at_utc": started_at,
+        "completed_at_utc": utc_now(),
+        "collection_slug": COLLECTION_SLUG,
+        "contract": CONTRACT,
+        "expected_canonical_token_count": EXPECTED_COUNT,
+        "canonical_token_count": len(records),
+        "unique_token_id_count": len(set(token_ids)),
+        "encoded_creator_addresses": creators,
+        "encoded_supply_distribution": dict(sorted(defaultdict(int, {
+            str(supply): sum(1 for v in supply_by_token.values() if v == supply)
+            for supply in set(supply_by_token.values())
