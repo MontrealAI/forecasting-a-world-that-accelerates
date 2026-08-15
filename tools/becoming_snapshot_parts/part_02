@@ -1,0 +1,90 @@
+    )):
+        addr = normalize_address(value)
+        if addr and addr.lower() != ZERO:
+            out.add(addr)
+    return out
+
+
+def first_present(obj: dict[str, Any], keys: Iterable[str]) -> Any:
+    for key in keys:
+        if key in obj and obj[key] is not None:
+            return obj[key]
+    return None
+
+
+def parse_token_id(nft: dict[str, Any]) -> int:
+    raw = first_present(nft, ["identifier", "token_id", "tokenId", "id"])
+    if isinstance(raw, dict):
+        raw = first_present(raw, ["identifier", "token_id", "tokenId", "id"])
+    if raw is None:
+        raise ValueError(f"NFT lacks token identifier: {nft}")
+    return int(str(raw), 0)
+
+
+def parse_contract(nft: dict[str, Any]) -> str | None:
+    raw = first_present(nft, ["contract", "contract_address", "address"])
+    if isinstance(raw, dict):
+        raw = first_present(raw, ["address", "contract_address"])
+    return normalize_address(raw)
+
+
+def canonicalize_nfts(raw_nfts: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    dedup: dict[tuple[str, int], dict[str, Any]] = {}
+    rejected: list[dict[str, Any]] = []
+    for nft in raw_nfts:
+        try:
+            token_id = parse_token_id(nft)
+            contract = parse_contract(nft) or CONTRACT
+        except Exception as exc:
+            rejected.append({"reason": str(exc), "raw": nft})
+            continue
+        if contract.lower() != CONTRACT.lower():
+            rejected.append({"reason": f"unexpected contract {contract}", "raw": nft})
+            continue
+        dedup[(contract.lower(), token_id)] = nft
+
+    records: list[dict[str, Any]] = []
+    for (_, token_id), nft in dedup.items():
+        name = str(first_present(nft, ["name", "title"]) or "")
+        matches = NUMBER_RE.findall(name)
+        number_from_name = int(matches[-1]) if matches else None
+        creator_int = token_id >> 96
+        creator = Web3.to_checksum_address("0x" + creator_int.to_bytes(20, "big").hex())
+        encoded_index = (token_id >> 32) & ((1 << 64) - 1)
+        encoded_supply = token_id & ((1 << 32) - 1)
+        metadata_url = first_present(nft, ["metadata_url", "metadata_uri", "token_uri"])
+        image_url = first_present(nft, ["image_url", "display_image_url", "image_original_url"])
+        records.append({
+            "canonical_number_from_name": number_from_name,
+            "name": name,
+            "chain": CHAIN,
+            "chain_id": CHAIN_ID,
+            "contract": CONTRACT,
+            "token_standard": str(first_present(nft, ["token_standard", "standard"]) or "erc1155").lower(),
+            "token_id_decimal": str(token_id),
+            "token_id_hex": "0x" + token_id.to_bytes(32, "big").hex(),
+            "encoded_creator": creator,
+            "encoded_index": str(encoded_index),
+            "encoded_original_supply": str(encoded_supply),
+            "metadata_url": metadata_url,
+            "image_url": image_url,
+            "opensea_url": f"https://opensea.io/item/{CHAIN}/{CONTRACT}/{token_id}",
+        })
+
+    numbers = [r["canonical_number_from_name"] for r in records]
+    number_set = {n for n in numbers if n is not None}
+    names_form_complete_sequence = (
+        len(records) == EXPECTED_COUNT
+        and len(number_set) == EXPECTED_COUNT
+        and number_set == set(range(1, EXPECTED_COUNT + 1))
+    )
+    if names_form_complete_sequence:
+        records.sort(key=lambda r: int(r["canonical_number_from_name"]))
+    else:
+        records.sort(key=lambda r: (int(r["encoded_index"]), int(r["token_id_decimal"])))
+
+    for i, record in enumerate(records, 1):
+        record["canonical_sequence"] = i
+        record["canonical_number"] = record["canonical_number_from_name"] if names_form_complete_sequence else i
+
+    audit = {
