@@ -34,6 +34,8 @@ def get_nft_owners(session: requests.Session, key: str, token_id: int) -> list[s
         data = request_json(session, "GET", url, headers=headers, params=params)
         entries = data.get("owners") or data.get("holders") or []
         owners |= collect_addresses(entries)
+        for raw_address in re.findall(r"0x[a-fA-F0-9]{40}", json.dumps(entries)):
+            owners.add(Web3.to_checksum_address(raw_address))
         cursor_val = data.get("next") or data.get("next_cursor")
         if isinstance(cursor_val, dict):
             cursor_val = cursor_val.get("value")
@@ -67,9 +69,13 @@ def main() -> None:
     session.headers.update({"user-agent": "MONTREAL.AI-Becoming-Snapshot/1.0"})
     started_at = utc_now()
 
+    print("Stage 1/6: acquiring temporary OpenSea discovery key", flush=True)
     key = get_opensea_key(session)
+    print("Stage 2/6: enumerating all collection token identifiers", flush=True)
     raw_nfts, nft_pages, nft_endpoint = get_collection_nfts(session, key)
+    print(f"OpenSea collection enumeration: {len(raw_nfts)} records across {len(nft_pages)} page(s) via {nft_endpoint}", flush=True)
     records, manifest_audit = canonicalize_nfts(raw_nfts)
+    print(f"Canonicalization: {len(records)} unique legacy ERC-1155 token IDs", flush=True)
     if len(records) != EXPECTED_COUNT:
         write_json(OUT / "debug-opensea-nft-pages.json", nft_pages)
         write_json(OUT / "debug-manifest-audit.json", manifest_audit)
@@ -80,6 +86,7 @@ def main() -> None:
     if len(creators) != 1:
         raise RuntimeError(f"Expected one encoded creator, found {creators}")
     creator = creators[0]
+    print(f"Token-ID structural validation: creator {creator}; exact count {len(token_ids)}", flush=True)
 
     # OpenSea holder and transfer-event data are used only for address discovery.
     holder_error = None
@@ -87,4 +94,5 @@ def main() -> None:
     holders: list[dict[str, Any]] = []
     holder_pages: list[dict[str, Any]] = []
     holder_endpoint = None
+    print("Stage 3/6: discovering the complete current holder-address set", flush=True)
     try:
