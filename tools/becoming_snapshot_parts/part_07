@@ -1,0 +1,90 @@
+        }).items())),
+        "opensea_nft_endpoint": nft_endpoint,
+        "opensea_nft_pages": len(nft_pages),
+        "opensea_holder_endpoint": holder_endpoint,
+        "opensea_holder_records": len(holders),
+        "opensea_holder_error": holder_error,
+        "opensea_event_endpoint": event_endpoint,
+        "opensea_transfer_event_records": len(events),
+        "opensea_event_error": event_error,
+        "candidate_address_count": len(candidate_list),
+        "fallback_missing_token_count_before_owner_lookup": len(missing_tokens),
+        "fallback_added_address_count": len(added_addresses),
+        "positive_owner_address_count": len(positive_owners),
+        "token_holder_row_count": len(holdings_rows),
+        "wallet_summary_row_count": len(wallet_rows),
+        "total_accounted_units": sum(int(row["balance"]) for row in holdings_rows),
+        "fully_accounted_token_count": sum(1 for r in manifest_out if r["snapshot_supply_status"] == "fully_accounted"),
+        "under_accounted_token_count": len(unresolved),
+        "over_accounted_token_count": len(oversupplied),
+        "independent_rpc_pair_disagreement_count": len(balance_disagreements),
+        "manifest_audit": manifest_audit,
+        "status": "PASS",
+    }
+
+    write_json(OUT / "snapshot-block.json", snapshot_block)
+    write_json(OUT / "genesis-manifest-556.json", manifest_out)
+    write_json(OUT / "audit-report.json", audit_report)
+    write_json(OUT / "opensea-discovery-summary.json", {
+        "nft_endpoint": nft_endpoint,
+        "nft_page_count": len(nft_pages),
+        "holder_endpoint": holder_endpoint,
+        "holder_record_count": len(holders),
+        "holder_error": holder_error,
+        "event_endpoint": event_endpoint,
+        "event_record_count": len(events),
+        "event_error": event_error,
+        "candidate_addresses": candidate_list,
+        "fallback_owner_lookup": owner_fallback,
+    })
+
+    (OUT / "genesis-token-ids-556.txt").write_text(
+        "\n".join(r["token_id_decimal"] for r in records) + "\n", encoding="utf-8"
+    )
+    (OUT / "genesis-token-ids-556-hex.txt").write_text(
+        "\n".join(r["token_id_hex"] for r in records) + "\n", encoding="utf-8"
+    )
+
+    manifest_fields = [
+        "canonical_sequence", "canonical_number", "canonical_number_from_name", "name", "chain", "chain_id",
+        "contract", "token_standard", "token_id_decimal", "token_id_hex", "encoded_creator", "encoded_index",
+        "encoded_original_supply", "metadata_url", "image_url", "opensea_url", "snapshot_owner_count",
+        "snapshot_accounted_balance", "snapshot_supply_status",
+    ]
+    write_csv(OUT / "genesis-manifest-556.csv", manifest_out, manifest_fields)
+    holdings_fields = [
+        "snapshot_block_number", "snapshot_block_hash", "snapshot_block_timestamp_utc", "canonical_sequence",
+        "canonical_number", "name", "contract", "token_id_decimal", "token_id_hex", "owner",
+        "owner_address_type", "balance", "owner_is_encoded_creator", "opensea_url",
+    ]
+    write_csv(OUT / "snapshot-token-holdings.csv", holdings_rows, holdings_fields)
+    wallet_fields = [
+        "owner", "owner_address_type", "owner_is_encoded_creator", "distinct_genesis_tokens",
+        "total_genesis_units", "canonical_numbers", "token_ids_decimal",
+    ]
+    write_csv(OUT / "snapshot-wallet-summary.csv", wallet_rows, wallet_fields)
+
+    methodology = f"""# MONTREAL.AI — BECOMING Ω: THE FINAL 444\n\n## Genesis ownership snapshot methodology\n\n- Collection slug: `{COLLECTION_SLUG}`\n- Ethereum chain ID: `{CHAIN_ID}`\n- Legacy ERC-1155 contract: `{CONTRACT}`\n- Canonical token count: `{EXPECTED_COUNT}`\n- Snapshot block: `{block_number}`\n- Snapshot block hash: `{snapshot_block['block_hash']}`\n- Snapshot block timestamp: `{snapshot_block['block_timestamp_utc']}`\n\nThe 556 token identifiers were enumerated from OpenSea's collection endpoint and then structurally validated against the legacy OpenSea Shared Storefront token-ID encoding. OpenSea holder and collection-transfer data were used only to discover candidate wallet addresses. Final ownership was not taken from OpenSea: every candidate-address/token pair was read directly from the ERC-1155 contract with `balanceOfBatch` at the exact finalized Ethereum block above.\n\nThe full balance matrix was independently recomputed through two separate public Ethereum RPC providers. Every token's summed balance was compared with the original supply encoded in its 256-bit token identifier. The release is marked PASS only when all 556 tokens are fully accounted for and both RPC computations agree.\n\nNo wallet connection, signature, private key, transaction, gas payment, OpenSea account, Etherscan key, or paid RPC key was used. A temporary free OpenSea agent key was used solely for public collection membership and address discovery; the ownership result itself is fixed by Ethereum state at the published block.\n"""
+    (OUT / "METHODOLOGY.md").write_text(methodology, encoding="utf-8")
+
+    readme = f"""# MONTREAL.AI — BECOMING Ω: THE FINAL 444\n\n## Complete Genesis 556 ownership snapshot\n\nSnapshot block: **{block_number}**  \nBlock hash: `{snapshot_block['block_hash']}`  \nBlock timestamp: **{snapshot_block['block_timestamp_utc']}**  \nAudit result: **PASS**\n\nPrimary files:\n\n- `genesis-manifest-556.json` — canonical token manifest with snapshot holders\n- `genesis-manifest-556.csv` — spreadsheet-friendly manifest\n- `genesis-token-ids-556.txt` — all 556 decimal token IDs\n- `snapshot-token-holdings.csv` — authoritative token-by-token ownership\n- `snapshot-wallet-summary.csv` — wallet-level aggregate\n- `snapshot-block.json` — finalized block proof and RPC corroboration\n- `audit-report.json` — completeness and consistency checks\n- `METHODOLOGY.md` — reproducible method\n- `SHA256SUMS` — integrity hashes\n"""
+    (OUT / "README.md").write_text(readme, encoding="utf-8")
+
+    # Generate hashes last, excluding SHA256SUMS itself.
+    hash_lines = []
+    for path in sorted(p for p in OUT.iterdir() if p.is_file() and p.name != "SHA256SUMS"):
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        hash_lines.append(f"{digest}  {path.name}")
+    (OUT / "SHA256SUMS").write_text("\n".join(hash_lines) + "\n", encoding="utf-8")
+
+    print(json.dumps({
+        "status": "PASS",
+        "snapshot_block": block_number,
+        "snapshot_hash": snapshot_block["block_hash"],
+        "snapshot_timestamp_utc": snapshot_block["block_timestamp_utc"],
+        "tokens": len(records),
+        "positive_owners": len(positive_owners),
+        "holding_rows": len(holdings_rows),
+        "total_units": sum(int(row["balance"]) for row in holdings_rows),
+        "output": str(OUT),
+    }, indent=2))
