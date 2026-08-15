@@ -2,17 +2,16 @@
     except Exception as exc:
         holder_error = str(exc)
 
+    # Fast, deterministic address discovery: use the collection-wide current holder set.
+    # The exact finalized balances below are authoritative; any missing address makes the
+    # supply audit fail and triggers the per-token owner fallback.
     events: list[dict[str, Any]] = []
     event_pages: list[dict[str, Any]] = []
     event_endpoint = None
-    try:
-        events, event_pages, event_endpoint = get_collection_events(session, key)
-    except Exception as exc:
-        event_error = str(exc)
+    event_error = "Collection transfer history intentionally omitted from fast path"
 
     candidates = {creator}
     candidates |= collect_addresses(holders)
-    candidates |= collect_addresses(events)
     candidates.discard(Web3.to_checksum_address(ZERO))
 
     snapshot_block = determine_finalized_block(session)
