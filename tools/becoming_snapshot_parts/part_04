@@ -6,54 +6,91 @@
 
 
 def query_balances(w3: Web3, candidates: list[str], token_ids: list[int], block_number: int,
-                   chunk_size: int = 500) -> dict[tuple[str, int], int]:
+                   chunk_size: int = 1000) -> dict[tuple[str, int], int]:
     contract = w3.eth.contract(address=CONTRACT, abi=BALANCE_OF_BATCH_ABI)
     pairs = [(address, token_id) for address in candidates for token_id in token_ids]
     result: dict[tuple[str, int], int] = {}
-    for start in range(0, len(pairs), chunk_size):
-        chunk = pairs[start:start + chunk_size]
+
+    def call_chunk(chunk: list[tuple[str, int]]) -> None:
         accounts = [Web3.to_checksum_address(address) for address, _ in chunk]
         ids = [token_id for _, token_id in chunk]
-        values = contract.functions.balanceOfBatch(accounts, ids).call(block_identifier=block_number)
+        try:
+            values = contract.functions.balanceOfBatch(accounts, ids).call(block_identifier=block_number)
+        except Exception:
+            if len(chunk) <= 100:
+                raise
+            middle = len(chunk) // 2
+            call_chunk(chunk[:middle])
+            call_chunk(chunk[middle:])
+            return
         if len(values) != len(chunk):
             raise RuntimeError(f"balanceOfBatch returned {len(values)} values for {len(chunk)} pairs")
         for (address, token_id), value in zip(chunk, values):
             result[(address.lower(), token_id)] = int(value)
+
+    total_chunks = (len(pairs) + chunk_size - 1) // chunk_size
+    for chunk_no, start in enumerate(range(0, len(pairs), chunk_size), 1):
+        call_chunk(pairs[start:start + chunk_size])
+        if chunk_no == 1 or chunk_no % 10 == 0 or chunk_no == total_chunks:
+            print(f"Onchain balance matrix: chunk {chunk_no}/{total_chunks}", flush=True)
     return result
 
 
 def get_nft_owners(session: requests.Session, key: str, token_id: int) -> list[str]:
-    headers = {"x-api-key": key, "accept": "application/json", "user-agent": "MONTREAL.AI-Becoming-Snapshot/1.0"}
-    url = f"https://api.opensea.io/api/v2/chain/{CHAIN}/contract/{CONTRACT}/nfts/{token_id}/owners"
-    cursor: str | None = None
     owners: set[str] = set()
-    for _ in range(20):
-        params: dict[str, Any] = {"limit": 200}
-        if cursor:
-            params["next"] = cursor
-        data = request_json(session, "GET", url, headers=headers, params=params)
-        entries = data.get("owners") or data.get("holders") or []
-        owners |= collect_addresses(entries)
-        for raw_address in re.findall(r"0x[a-fA-F0-9]{40}", json.dumps(entries)):
-            owners.add(Web3.to_checksum_address(raw_address))
-        cursor_val = data.get("next") or data.get("next_cursor")
-        if isinstance(cursor_val, dict):
-            cursor_val = cursor_val.get("value")
-        cursor = str(cursor_val) if cursor_val else None
-        if not cursor:
-            break
-        time.sleep(1.05)
+
+    # Public item-page fallback: no key or account required. Every address found is only
+    # a candidate; the historical ERC-1155 balance call below decides actual ownership.
+    item_url = f"https://opensea.io/item/{CHAIN}/{CONTRACT}/{token_id}"
+    try:
+        html_text = request_text(session, item_url, attempts=2, timeout=20)
+        for raw_address in RAW_ADDRESS_RE.findall(html_text):
+            try:
+                address = Web3.to_checksum_address(raw_address)
+                if address.lower() not in (ZERO, CONTRACT.lower()):
+                    owners.add(address)
+            except Exception:
+                pass
+    except Exception as exc:
+        print(f"Public item owner discovery failed for {token_id}: {exc}", flush=True)
+
+    if key:
+        headers = {"x-api-key": key, "accept": "application/json", "user-agent": "MONTREAL.AI-Becoming-Snapshot/1.0"}
+        url = f"https://api.opensea.io/api/v2/chain/{CHAIN}/contract/{CONTRACT}/nfts/{token_id}/owners"
+        cursor: str | None = None
+        try:
+            for _ in range(20):
+                params: dict[str, Any] = {"limit": 50}
+                if cursor:
+                    params["next"] = cursor
+                data = request_json(session, "GET", url, headers=headers, params=params, attempts=2, timeout=20)
+                entries = data.get("owners") or data.get("holders") or []
+                owners |= collect_addresses(entries)
+                for raw_address in RAW_ADDRESS_RE.findall(json.dumps(entries)):
+                    owners.add(Web3.to_checksum_address(raw_address))
+                cursor_val = data.get("next") or data.get("next_cursor")
+                if isinstance(cursor_val, dict):
+                    cursor_val = cursor_val.get("value")
+                cursor = str(cursor_val) if cursor_val else None
+                if not cursor:
+                    break
+                time.sleep(0.2)
+        except Exception as exc:
+            print(f"OpenSea API owner fallback failed for {token_id}: {exc}", flush=True)
+
     return sorted(owners, key=str.lower)
 
 
 def get_code_types(w3: Web3, addresses: list[str], block_number: int) -> dict[str, str]:
     out: dict[str, str] = {}
-    for address in addresses:
+    for i, address in enumerate(addresses, 1):
         try:
             code = w3.eth.get_code(Web3.to_checksum_address(address), block_identifier=block_number)
             out[address.lower()] = "contract" if len(code) > 0 else "eoa"
         except Exception:
             out[address.lower()] = "unknown"
+        if i % 50 == 0 or i == len(addresses):
+            print(f"Wallet classification: {i}/{len(addresses)}", flush=True)
     return out
 
 
@@ -68,31 +105,48 @@ def main() -> None:
     session = requests.Session()
     session.headers.update({"user-agent": "MONTREAL.AI-Becoming-Snapshot/1.0"})
     started_at = utc_now()
+    key = ""
+    discovery_errors: list[str] = []
 
-    print("Stage 1/6: acquiring temporary OpenSea discovery key", flush=True)
-    key = get_opensea_key(session)
-    print("Stage 2/6: enumerating all collection token identifiers", flush=True)
-    raw_nfts, nft_pages, nft_endpoint = get_collection_nfts(session, key)
-    print(f"OpenSea collection enumeration: {len(raw_nfts)} records across {len(nft_pages)} page(s) via {nft_endpoint}", flush=True)
+    print("Stage 1/6: enumerating token identifiers from public OpenSea collection pages", flush=True)
+    raw_nfts: list[dict[str, Any]] = []
+    nft_pages: list[dict[str, Any]] = []
+    nft_endpoint = ""
+    collection_page_addresses: set[str] = set()
+    try:
+        raw_nfts, nft_pages, nft_endpoint, collection_page_addresses = scrape_collection_html(session)
+    except Exception as exc:
+        discovery_errors.append(f"public collection pages: {exc}")
+        print(f"Public collection-page discovery failed: {exc}", flush=True)
+
+    if len(raw_nfts) != EXPECTED_COUNT:
+        print(f"Public pages returned {len(raw_nfts)} canonical IDs; trying bounded API fallback", flush=True)
+        try:
+            key = get_opensea_key(session)
+            raw_nfts, nft_pages, nft_endpoint = get_collection_nfts(session, key)
+        except Exception as exc:
+            discovery_errors.append(f"OpenSea API fallback: {exc}")
+            print(f"OpenSea API fallback failed: {exc}", flush=True)
+
     records, manifest_audit = canonicalize_nfts(raw_nfts)
     print(f"Canonicalization: {len(records)} unique legacy ERC-1155 token IDs", flush=True)
     if len(records) != EXPECTED_COUNT:
         write_json(OUT / "debug-opensea-nft-pages.json", nft_pages)
         write_json(OUT / "debug-manifest-audit.json", manifest_audit)
+        write_json(OUT / "debug-discovery-errors.json", discovery_errors)
         raise RuntimeError(f"Expected {EXPECTED_COUNT} unique canonical NFTs, obtained {len(records)}")
 
     token_ids = [int(r["token_id_decimal"]) for r in records]
     creators = sorted({r["encoded_creator"] for r in records}, key=str.lower)
-    if len(creators) != 1:
-        raise RuntimeError(f"Expected one encoded creator, found {creators}")
+    if len(creators) != 1 or creators[0].lower() != EXPECTED_CREATOR.lower():
+        raise RuntimeError(f"Expected encoded creator {EXPECTED_CREATOR}, found {creators}")
     creator = creators[0]
     print(f"Token-ID structural validation: creator {creator}; exact count {len(token_ids)}", flush=True)
 
-    # OpenSea holder and transfer-event data are used only for address discovery.
     holder_error = None
     event_error = None
     holders: list[dict[str, Any]] = []
     holder_pages: list[dict[str, Any]] = []
     holder_endpoint = None
-    print("Stage 3/6: discovering the complete current holder-address set", flush=True)
+    print("Stage 2/6: discovering candidate holder addresses from public holder pages", flush=True)
     try:
