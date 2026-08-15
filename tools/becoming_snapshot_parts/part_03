@@ -11,7 +11,7 @@
 
 def rpc_call(session: requests.Session, url: str, method: str, params: list[Any], request_id: int = 1) -> Any:
     payload = {"jsonrpc": "2.0", "id": request_id, "method": method, "params": params}
-    data = request_json(session, "POST", url, json_body=payload, timeout=45)
+    data = request_json(session, "POST", url, json_body=payload, attempts=2, timeout=12)
     if "error" in data:
         raise RuntimeError(f"RPC {method} error at {url}: {data['error']}")
     return data.get("result")
@@ -19,50 +19,53 @@ def rpc_call(session: requests.Session, url: str, method: str, params: list[Any]
 
 def determine_finalized_block(session: requests.Session) -> dict[str, Any]:
     observations: list[dict[str, Any]] = []
+    verification: list[dict[str, Any]] = []
     selected: dict[str, Any] | None = None
     selected_provider: str | None = None
+    corroborated = False
+
     for url in RPC_URLS:
         try:
-            block = rpc_call(session, url, "eth_getBlockByNumber", ["finalized", False])
-            if not isinstance(block, dict) or not block.get("number") or not block.get("hash"):
-                raise RuntimeError(f"Malformed finalized block: {block}")
-            obs = {
-                "provider": url,
-                "number": int(block["number"], 16),
-                "hash": block["hash"],
-                "timestamp": int(block["timestamp"], 16),
-                "status": "ok",
-            }
-            observations.append(obs)
             if selected is None:
+                block = rpc_call(session, url, "eth_getBlockByNumber", ["finalized", False])
+                if not isinstance(block, dict) or not block.get("number") or not block.get("hash"):
+                    raise RuntimeError(f"Malformed finalized block: {block}")
                 selected = block
                 selected_provider = url
-        except Exception as exc:
-            observations.append({"provider": url, "status": "error", "error": str(exc)})
+                observations.append({
+                    "provider": url,
+                    "number": int(block["number"], 16),
+                    "hash": block["hash"],
+                    "timestamp": int(block["timestamp"], 16),
+                    "status": "selected",
+                })
+                continue
 
-    if selected is None or selected_provider is None:
-        raise RuntimeError(f"No RPC endpoint returned a finalized block: {observations}")
-
-    number = int(selected["number"], 16)
-    block_hash = str(selected["hash"])
-    timestamp = int(selected["timestamp"], 16)
-    verification: list[dict[str, Any]] = []
-    for url in RPC_URLS:
-        try:
+            number = int(selected["number"], 16)
             block = rpc_call(session, url, "eth_getBlockByNumber", [hex(number), False])
             got_hash = block.get("hash") if isinstance(block, dict) else None
+            match = isinstance(got_hash, str) and got_hash.lower() == str(selected["hash"]).lower()
             verification.append({
                 "provider": url,
                 "number": number,
                 "hash": got_hash,
-                "matches_selected_hash": isinstance(got_hash, str) and got_hash.lower() == block_hash.lower(),
+                "matches_selected_hash": match,
             })
+            if match:
+                corroborated = True
+                break
         except Exception as exc:
-            verification.append({"provider": url, "status": "error", "error": str(exc)})
+            target = observations if selected is None else verification
+            target.append({"provider": url, "status": "error", "error": str(exc)})
 
-    if not any(v.get("matches_selected_hash") for v in verification if v.get("provider") != selected_provider):
+    if selected is None or selected_provider is None:
+        raise RuntimeError(f"No RPC endpoint returned a finalized block: {observations}")
+    if not corroborated:
         raise RuntimeError(f"Finalized block was not independently corroborated: {verification}")
 
+    number = int(selected["number"], 16)
+    block_hash = str(selected["hash"])
+    timestamp = int(selected["timestamp"], 16)
     return {
         "chain": CHAIN,
         "chain_id": CHAIN_ID,
@@ -71,7 +74,7 @@ def determine_finalized_block(session: requests.Session) -> dict[str, Any]:
         "block_hash": block_hash,
         "block_timestamp_unix": timestamp,
         "block_timestamp_utc": datetime.fromtimestamp(timestamp, timezone.utc).isoformat().replace("+00:00", "Z"),
-        "selection_rule": "Ethereum JSON-RPC finalized block at execution time",
+        "selection_rule": "Ethereum JSON-RPC finalized block at execution time, independently corroborated",
         "selected_provider": selected_provider,
         "finalized_observations": observations,
         "block_hash_verification": verification,
@@ -83,7 +86,7 @@ def get_web3_provider(block_number: int) -> tuple[Web3, str, list[dict[str, Any]
     attempts: list[dict[str, Any]] = []
     for url in RPC_URLS:
         try:
-            w3 = Web3(Web3.HTTPProvider(url, request_kwargs={"timeout": 60}))
+            w3 = Web3(Web3.HTTPProvider(url, request_kwargs={"timeout": 30}))
             chain_id = w3.eth.chain_id
             block = w3.eth.get_block(block_number)
             if chain_id != CHAIN_ID:
